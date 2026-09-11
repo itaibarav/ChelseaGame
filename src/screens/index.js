@@ -1,5 +1,5 @@
 import { $, modal, stickerHTML } from '../core/dom.js';
-import { API_BASE, crestOf, matchDate, mediaUrl, nextMatch, online } from '../net/feed.js';
+import { API_BASE, crestOf, matchDate, mediaUrl, nextMatch, online, teamHe } from '../net/feed.js';
 import { CARDS, CATS, GAMES, LAYER_TABS, MOCK_MATCH, MOCK_POSTS, PACKS, TOTAL, byLayer } from '../data/cards.js';
 import { MUT } from '../core/mut.js';
 import { S, collected, esc, got, today } from '../core/state.js';
@@ -49,7 +49,7 @@ export function homeView(){
       <div class="mid"><div class="t">${esc(m.competition||'המשחק הבא')}</div>
         <div class="d">${matchDate(m.date)}</div>
         <span class="chip">${m.homeAway==='H'?'בבית':'בחוץ'}</span></div>
-      <div class="side">${crestOf(m)}<small>${esc(m.opponent)}</small></div></div>`;})()}
+      <div class="side">${crestOf(m)}<small>${esc(teamHe(m.opponent))}</small></div></div>`;})()}
   <div class="tiles">
     <button class="tile tile-gold" data-act="go-shop"><div style="font-size:34px">&#127873;</div><div class="lbl">חנות מעטפות</div></button>
     <button class="tile tile-blue" data-act="go-games"><div style="font-size:34px">&#127918;</div><div class="lbl">הרוויחו מטבעות<br>9 משחקים</div></button>
@@ -114,7 +114,7 @@ export function matchesModal(){
       <p>${API_BASE?'השרת לא החזיר משחקים. בדוק שמפתח ה-API מוגדר.':'צריך לחבר את האפליקציה לשרת כדי למשוך משחקים.'}</p>
       <button class="btn btn-ghost" data-act="close" style="width:100%">סגירה</button></div>`);
   const row=m=>`<div class="mrow">
-      <div class="mo">${crestOf(m)}<span>${esc(m.opponent)}</span></div>
+      <div class="mo">${crestOf(m)}<span>${esc(teamHe(m.opponent))}</span></div>
       <div class="mc">${m.score?`<b class="sc ${m.result==='W'?'w':m.result==='L'?'l':'d'}">${m.score}</b>`
                               :`<span class="vs">${matchDate(m.date)}</span>`}</div>
       <div class="mh">${m.homeAway==='H'?'בית':'חוץ'}</div></div>`;

@@ -31,4 +31,30 @@ export const matchDate=iso=>{
 };
 export const crestOf=m=>m.opponentLogo
   ? `<img class="crest" src="${mediaUrl(m.opponentLogo)}" alt="" onerror="this.style.visibility='hidden'">`
-  : crestSVG('#C8102E','#FFFFFF',(m.opponent||'?').slice(0,1));
+  : crestSVG('#C8102E','#FFFFFF',teamHe(m.opponent||'?').slice(0,1));
+
+/* שמות הקבוצות כפי שה-API (football-data.org, shortName) מחזיר → עברית.
+   עשרים קבוצות הפרמייר ליג של העונה הנוכחית, כולל העולות. */
+export const TEAM_HE={
+  'Arsenal':"ארסנל",
+  'Aston Villa':"אסטון וילה",
+  'Chelsea':"צ'לסי",
+  'Everton':"אברטון",
+  'Fulham':"פולהאם",
+  'Liverpool':"ליברפול",
+  'Man City':"מנצ'סטר סיטי",
+  'Man United':"מנצ'סטר יונייטד",
+  'Newcastle':"ניוקאסל",
+  'Sunderland':"סנדרלנד",
+  'Tottenham':"טוטנהאם",
+  'Hull City':"האל סיטי",
+  'Leeds United':"לידס יונייטד",
+  'Ipswich Town':"איפסוויץ' טאון",
+  'Nottingham':"נוטינגהאם פורסט",
+  'Crystal Palace':"קריסטל פאלאס",
+  'Brighton Hove':"ברייטון",
+  'Brentford':"ברנטפורד",
+  'Bournemouth':"בורנמות'",
+  'Coventry City':"קובנטרי סיטי",
+};
+export const teamHe=name=>TEAM_HE[name]||name;
