@@ -1,0 +1,10 @@
+node_modules/
+dist/
+android/
+.DS_Store
+*.local
+
+# הגדרות מקומיות עם סודות
+public/app-config.js
+server/config.json
+server/data/

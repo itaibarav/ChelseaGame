@@ -25,9 +25,9 @@ node server/server.mjs
 בסוף, בתיקיית האפליקציה:
 
 ```bash
-cp app-config.example.js app-config.js
+cp app-config.example.js public/app-config.js
 # ערוך את apiBase כך שיצביע לכתובת השרת
-python3 tools/build.py
+npm run build
 ```
 
 בלי `app-config.js` האפליקציה פשוט עובדת עם תוכן לדוגמה ולא מנסה לפנות לרשת.

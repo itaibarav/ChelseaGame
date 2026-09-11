@@ -35,6 +35,13 @@ document.addEventListener('click',e=>{
   const d=b.dataset;
   if(d.nav){if(S.screen==='album')MUT.NEW_IDS=new Set();S.screen=d.nav;closeModal();endTimer();MUT.G=null;MUT.PK=null;return render();}
   if(d.tab){S.tab=d.tab;return render();}
+  if(d.mt){
+    const up=d.mt==='up';
+    b.parentElement.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+    $('#mUp').style.display=up?'':'none';
+    $('#mPast').style.display=up?'none':'';
+    return;
+  }
   if(d.avtab){S.avTab=d.avtab;return render();}
   if(d.equip==='none'){S.eq[S.avTab]=null;save();return render();}
   if(d.pk)return packTap(d.pk);

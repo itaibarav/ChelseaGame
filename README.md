@@ -61,7 +61,7 @@ server/                שרת הביניים
 ## שרת הביניים
 
 מגיש פוסטים מאינסטגרם ולוח משחקים. ראה `server/README.md`.
-כדי לחבר את האפליקציה: `cp app-config.example.js app-config.js` ועדכן את `apiBase`.
+כדי לחבר את האפליקציה: `cp app-config.example.js public/app-config.js` ועדכן את `apiBase`.
 בלי הקובץ הזה האפליקציה עובדת עם תוכן לדוגמה.
 
 ## אנדרואיד
