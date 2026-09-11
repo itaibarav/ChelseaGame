@@ -105,7 +105,7 @@ export const byLayer=l=>Object.values(ITEMS).filter(i=>i.layer===l);
 export const LAYER_TABS=[['kit','ערכות'],['hat','כובעים'],['scarf','צעיפים'],['boots','נעליים']];
 
 /* --- mock content (deferred data sources) --- */
-export const MOCK_MATCH={home:'צ׳לסי',away:'ארסנל',comp:'פרמייר ליג',when:'שבת, 20:30'};
+export const MOCK_MATCH={home:'צ׳לסי',away:'ארסנל',when:'שבת, 20:30'};
 export const MOCK_POSTS=[
   {id:'p1',emoji:'🏟️',txt:'ליל משחק בסטמפורד ברידג׳ — האווירה ביציעים הייתה חשמלית מהדקה הראשונה.'},
   {id:'p2',emoji:'🎉',txt:'מפגש אוהדים בתל אביב בשבוע הבא. פרטים והרשמה בסטורי.'},

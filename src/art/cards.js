@@ -24,7 +24,7 @@ export const clubBadge=(cx,cy,r)=>{
     ${lion}</g>`;
 };
 
-export function art(c,hideNum){
+export function art(c,hideNum,showPlay){
   const w=90,h=120,gid='g'+c.no;
   const ph=PHOTOS[c.id];
   if(c.cat==='squad'&&ph){
@@ -50,7 +50,7 @@ export function art(c,hideNum){
       <image href="${ph}" x="6" y="6" width="${w-12}" height="${h-12}" preserveAspectRatio="xMidYMin slice" clip-path="url(#lp${gid})"/>
       <rect x="6" y="6" width="${w-12}" height="${h-12}" fill="url(#lg${gid})"/>
       <rect x="3" y="3" width="${w-6}" height="${h-6}" fill="none" stroke="#C9A227" stroke-width="1.6"/>
-      <circle cx="45" cy="52" r="11" fill="rgba(0,0,0,.55)" stroke="#C9A227" stroke-width="1.2"/><path d="M42 47 l8 5 -8 5z" fill="#fff"/>
+      ${showPlay?`<circle cx="45" cy="52" r="11" fill="rgba(0,0,0,.55)" stroke="#C9A227" stroke-width="1.2"/><path d="M42 47 l8 5 -8 5z" fill="#fff"/>`:''}
       <text x="45" y="${h-20}" font-size="8" font-weight="700" text-anchor="middle" fill="#FFF3C4">${esc(c.name)}</text>
       <text x="45" y="${h-9}" font-size="6.5" text-anchor="middle" fill="#C9A227">${esc(c.year)}</text></svg>`;}
   if(c.cat==='squad'){const lux=c.rarity==='luxury';
@@ -67,7 +67,7 @@ export function art(c,hideNum){
       <rect x="6" y="6" width="${w-12}" height="${h-12}" fill="#3A2A08"/>
       <circle cx="45" cy="44" r="24" fill="#5A430F"/><circle cx="45" cy="38" r="10" fill="#C9A227" opacity=".8"/>
       <path d="M30 60 q15 -12 30 0 v8 h-30z" fill="#C9A227" opacity=".8"/>
-      <circle cx="45" cy="44" r="11" fill="rgba(0,0,0,.55)"/><path d="M42 39 l8 5 -8 5z" fill="#fff"/>
+      ${showPlay?`<circle cx="45" cy="44" r="11" fill="rgba(0,0,0,.55)"/><path d="M42 39 l8 5 -8 5z" fill="#fff"/>`:''}
       <text x="45" y="${h-22}" font-size="8" font-weight="700" text-anchor="middle" fill="#FFF3C4">${esc(c.name)}</text>
       <text x="45" y="${h-11}" font-size="6.5" text-anchor="middle" fill="#C9A227">${esc(c.year)}</text></svg>`;
   if(c.cat==='trophy')
@@ -103,10 +103,11 @@ export function art(c,hideNum){
       <rect width="${w}" height="${h}" fill="#0A2A5C"/>
       <image href="${ph}" x="0" y="0" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice" clip-path="url(#xp${gid})"/>
       <rect width="${w}" height="${h}" fill="url(#xg${gid})"/>
+      ${showPlay?`<circle cx="45" cy="55" r="11" fill="rgba(0,0,0,.55)" stroke="#C9A227" stroke-width="1.2"/><path d="M42 50 l8 5 -8 5z" fill="#fff"/>`:''}
       <text x="45" y="${h-8}" font-size="8" font-weight="700" text-anchor="middle" fill="#fff">${esc(c.name)}</text></svg>`;
     return `<svg viewBox="0 0 ${w} ${h}"><rect width="${w}" height="${h}" fill="#0B2A5E"/>
       <circle cx="45" cy="50" r="26" fill="rgba(255,255,255,.08)"/>
-      ${clubBadge(45,50,17)}
+      ${showPlay?`<circle cx="45" cy="50" r="11" fill="rgba(0,0,0,.55)" stroke="#C9A227" stroke-width="1.2"/><path d="M42 45 l8 5 -8 5z" fill="#fff"/>`:clubBadge(45,50,17)}
       <text x="45" y="${h-8}" font-size="8" font-weight="700" text-anchor="middle" fill="#fff">${esc(c.name)}</text></svg>`;
   }
   return `<svg viewBox="0 0 ${w} ${h}"><rect width="${w}" height="${h}" fill="#062B63"/>

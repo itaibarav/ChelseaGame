@@ -17,7 +17,7 @@ export async function refreshFeed(force){
     if(!r.ok)return;
     const d=await r.json();
     if(d.news&&Array.isArray(d.news.posts))S.news=d.news.posts;
-    if(d.matches){S.matches={past:d.matches.past||[],upcoming:d.matches.upcoming||[]};}
+    if(d.matches){S.matches={past:d.matches.past||[],upcoming:d.matches.upcoming||[],teamLogo:d.matches.teamLogo||null};}
     S.feedAt=Date.now();save();
     if(S.screen==='news'||S.screen==='home')render();
   }catch(e){}
@@ -32,6 +32,9 @@ export const matchDate=iso=>{
 export const crestOf=m=>m.opponentLogo
   ? `<img class="crest" src="${mediaUrl(m.opponentLogo)}" alt="" onerror="this.style.visibility='hidden'">`
   : crestSVG('#C8102E','#FFFFFF',teamHe(m.opponent||'?').slice(0,1));
+export const ownCrest=()=>(S.matches&&S.matches.teamLogo)
+  ? `<img class="crest" src="${mediaUrl(S.matches.teamLogo)}" alt="" onerror="this.style.visibility='hidden'">`
+  : crestSVG('#034694','#FFC83D','C');
 
 /* שמות הקבוצות כפי שה-API (football-data.org, shortName) מחזיר → עברית.
    עשרים קבוצות הפרמייר ליג של העונה הנוכחית, כולל העולות. */

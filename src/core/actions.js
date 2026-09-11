@@ -5,7 +5,7 @@ import { S, esc, got, pick, save, shuffle } from '../core/state.js';
 import { art, coinSVG } from '../art/cards.js';
 import { avatarSVG } from '../art/avatar.js';
 import { confetti, packArtSVG, raysSVG, sfx } from '../core/fx.js';
-import LEGEND_VIDEOS from '../data/legendVideos.js';
+import CARD_VIDEOS from '../data/cardVideos.js';
 import { render } from '../core/router.js';
 import { stadiumBG } from '../art/stadium.js';
 
@@ -105,16 +105,19 @@ export function cardDetail(id){
   if(c.year)rows.push(['שנים',c.year]);
   rows.push(['מספר באלבום','#'+c.no],['נדירות',{common:'רגילה',rare:'נדירה',luxury:'לוקסוס'}[c.rarity]]);
   if(S.inv[id]>1)rows.push(['ברשותך','x'+S.inv[id]]);
-  modal(`<div class="sheet"><div class="detail-art ${c.rarity==='luxury'?'lux':''}">${art(c)}</div>
+  const playable=!!CARD_VIDEOS[c.id];
+  const artClass=`detail-art ${c.rarity==='luxury'?'lux':''}`;
+  modal(`<div class="sheet">${playable
+      ?`<button class="${artClass}" data-yt="${c.id}">${art(c,false,true)}</button>`
+      :`<div class="${artClass}">${art(c)}</div>`}
     <h2>${esc(c.name)}</h2>
     <div style="text-align:start;margin-bottom:14px">${rows.map(r=>`<div class="kv"><span>${r[0]}</span><b>${esc(r[1])}</b></div>`).join('')}</div>
-    ${c.cat==='legend'&&LEGEND_VIDEOS[c.id]?`<button class="btn btn-gold" style="width:100%;margin-bottom:8px" data-yt="${c.id}">▶ קטעי מחץ</button>`:''}
     <button class="btn btn-ghost" data-act="close" style="width:100%">סגירה</button></div>`);
 }
 
 export function playHighlight(id){
-  const c=BY_ID[id],vid=LEGEND_VIDEOS[id];
-  if(!vid)return toast('אין עדיין קטע וידאו לשחקן הזה');
+  const c=BY_ID[id],vid=CARD_VIDEOS[id];
+  if(!vid)return toast('אין עדיין קטע וידאו לקלף הזה');
   modal(`<div class="sheet"><h2 style="margin-bottom:12px">${esc(c.name)} — קטעי מחץ</h2>
     <div style="position:relative;padding-top:56.25%;border-radius:14px;overflow:hidden;margin-bottom:14px;background:#000">
       <iframe style="position:absolute;inset:0;width:100%;height:100%;border:0"

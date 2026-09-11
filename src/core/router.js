@@ -1,3 +1,4 @@
+import { App } from '@capacitor/app';
 import { $, closeModal, modal, toast } from '../core/dom.js';
 import { BY_ID } from '../data/cards.js';
 import { GAME_START } from '../games/run.js';
@@ -162,3 +163,10 @@ if(!S.name)onboarding();
 refreshFeed();
 if(typeof window!=='undefined'){window.addEventListener('online',()=>{refreshFeed(true);render();});
   window.addEventListener('offline',render);}
+
+/* כפתור החזרה באנדרואיד: יוצא ממסך מלא (וידאו) או סוגר מודל במקום לצאת מהאפליקציה */
+App.addListener('backButton',()=>{
+  if(document.fullscreenElement){document.exitFullscreen();return;}
+  if($('#modal').innerHTML.trim()){closeModal();return;}
+  App.exitApp();
+});

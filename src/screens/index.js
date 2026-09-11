@@ -1,5 +1,5 @@
 import { $, modal, stickerHTML } from '../core/dom.js';
-import { API_BASE, crestOf, matchDate, mediaUrl, nextMatch, online, teamHe } from '../net/feed.js';
+import { API_BASE, crestOf, matchDate, mediaUrl, nextMatch, online, ownCrest, teamHe } from '../net/feed.js';
 import { CARDS, CATS, GAMES, LAYER_TABS, MOCK_MATCH, MOCK_POSTS, PACKS, TOTAL, byLayer } from '../data/cards.js';
 import { MUT } from '../core/mut.js';
 import { S, collected, esc, got, today } from '../core/state.js';
@@ -41,12 +41,12 @@ export function homeView(){
   ${(()=>{const m=nextMatch();
     if(!m)return `<div class="card match" data-act="matches">
       <div class="side">${crestSVG('#034694','#FFC83D','C')}<small>${MOCK_MATCH.home}</small></div>
-      <div class="mid"><div class="t">${MOCK_MATCH.comp}</div><div class="d">${MOCK_MATCH.when}</div>
+      <div class="mid"><div class="t">המשחק הבא:</div><div class="d">${MOCK_MATCH.when}</div>
         <span class="chip">${API_BASE?'ממתין לשרת':'נתוני דוגמה'}</span></div>
       <div class="side">${crestSVG('#C8102E','#FFFFFF','A')}<small>${MOCK_MATCH.away}</small></div></div>`;
     return `<div class="card match" data-act="matches">
-      <div class="side">${crestSVG('#034694','#FFC83D','C')}<small>צ׳לסי</small></div>
-      <div class="mid"><div class="t">${esc(m.competition||'המשחק הבא')}</div>
+      <div class="side">${ownCrest()}<small>צ׳לסי</small></div>
+      <div class="mid"><div class="t">המשחק הבא:</div>
         <div class="d">${matchDate(m.date)}</div>
         <span class="chip">${m.homeAway==='H'?'בבית':'בחוץ'}</span></div>
       <div class="side">${crestOf(m)}<small>${esc(teamHe(m.opponent))}</small></div></div>`;})()}
@@ -84,7 +84,7 @@ export function gamesView(){
   return hud()+`<div class="head"><h1>משחקונים</h1><p>שחקו, צברו מטבעות, קנו מעטפות</p></div>
     <div class="glist">${GAMES.map(([n,e,k])=>`<button class="gtile ${k?'':'soon'}" ${k?`data-game="${k}"`:''}>
       <span class="emoji">${e}</span><span>${n}</span>${k?'':'<small style="font-size:10px">בקרוב</small>'}</button>`).join('')}</div>
-    <p class="note">כל שמונת המשחקונים פעילים.</p>`;
+    <p class="note">כל תשעת המשחקונים פעילים.</p>`;
 }
 
 export function newsView(){

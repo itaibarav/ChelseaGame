@@ -214,10 +214,13 @@ async function fetchMatches() {
     return (await r.json()).matches || [];
   };
 
-  const [finished, scheduled] = await Promise.all([
+  const [finished, scheduled, teamInfo] = await Promise.all([
     call('FINISHED', pastCount),
     call('SCHEDULED', upcomingCount),
+    fetch(`https://api.football-data.org/v4/teams/${teamId}`, { headers: { 'X-Auth-Token': apiKey } })
+      .then(r => (r.ok ? r.json() : null)).catch(() => null),
   ]);
+  const teamLogo = teamInfo?.crest ? await cacheImage(teamInfo.crest) : null;
 
   const map = async (m) => {
     const home = m.homeTeam.id === teamId;
@@ -241,7 +244,7 @@ async function fetchMatches() {
     .sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, pastCount);
   const upcoming = (await Promise.all(scheduled.map(map)))
     .sort((a, b) => new Date(a.date) - new Date(b.date)).slice(0, upcomingCount);
-  return { source: 'football-data', past, upcoming };
+  return { source: 'football-data', past, upcoming, teamLogo };
 }
 
 /* ------------------------------------------------------------------ */

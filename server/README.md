@@ -144,7 +144,7 @@ curl -s localhost:8787/admin/ig-check -H 'X-Admin-Token: הסיסמה-שלך'
 | :--- | :--- |
 | `GET /api/feed` | חדשות ומשחקים בקריאה אחת — זו שהאפליקציה משתמשת בה |
 | `GET /api/news` | פוסטים בלבד |
-| `GET /api/matches` | `{past, upcoming}` |
+| `GET /api/matches` | `{past, upcoming, teamLogo}` |
 | `GET /media/<file>` | תמונה שמורה |
 | `GET /health` | בדיקת חיים ומצב ההגדרות |
 | `GET /admin` | ממשק ניהול הרשימה |
