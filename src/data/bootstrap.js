@@ -17,12 +17,14 @@ W.KIT_DESIGN2 = kits.design;
 W.KIT_YEAR    = kits.year;
 
 W.ALBUM_EXTRA = album.extra;
-W.OVERRIDES   = { ...album.overrides, photos: {} };
+W.OVERRIDES   = { photos: {}, ...album.overrides };
 
-/* כל התמונות הן קבצים תחת public/assets ולא base64 */
+/* תמונות סגל/אגדות/ערכות הן קבצים תחת public/assets. תמונות מדבקות
+   וקטגוריות מותאמות אישית (tools/sticker-studio.html) הן base64 מוטמע
+   ישירות בקובץ, כפי שהכלי מייצא אותן. */
 W.PHOTOS       = media.photos;
 W.KIT_PHOTOS   = {};
-W.EXTRA_PHOTOS = {};
+W.EXTRA_PHOTOS = album.extraPhotos || {};
 W.FILL_PHOTOS  = {};
 W.GAME_ART     = media.art;
 
