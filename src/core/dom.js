@@ -6,7 +6,8 @@ import { art } from '../art/cards.js';
 export const $=s=>document.querySelector(s);
 export function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);
   setTimeout(()=>{t.style.transition='opacity .3s';t.style.opacity='0';setTimeout(()=>t.remove(),320);},1500);}
-export const modal=h=>$('#modal').innerHTML=`<div class="ov" data-close>${h}</div>`;
+export const modal=(h,opts)=>{const closable=!opts||opts.closable!==false;
+  $('#modal').innerHTML=`<div class="ov"${closable?' data-close':''}>${h}</div>`;};
 export const closeModal=()=>$('#modal').innerHTML='';
 $('#modal').addEventListener('click',e=>{if(e.target.hasAttribute('data-close'))closeModal();});
 

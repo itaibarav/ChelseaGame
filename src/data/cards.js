@@ -90,7 +90,7 @@ export const SCARVES=[
 export const HATS=[['av-hat-beanie','כובע גרב',20,'beanie',['#1E6BE6','#0F4FB5']],['av-hat-cap','כובע מצחייה',20,'cap',['#034694','#FFC83D']],['av-hat-bucket','כובע פטרייה',30,'bucket',['#DDE7F5','#034694']],['av-hat-crown','כתר אלופים',60,'crown',['#FFC83D','#B87700']]];
 /* [מזהה, שם, מחיר, [צבע ראשי, הדגשה, סוליה ופקקים]] */
 export const BOOTS=[
- ['av-boot-white','כחול ולבן', 0,['#1E5BE0','#FFFFFF','#0B2E7A']],
+ ['av-boot-white','אפורות',    0,['#8A9199','#FFFFFF','#4B5157']],
  ['av-boot-blue', 'ניאון ושחור',25,['#C6F51D','#141414','#7E9E12']],
  ['av-boot-neon', 'זהב וכחול', 35,['#E8B93B','#123A9E','#9C7615']],
  ['av-boot-gold', 'שחור ותכלת',70,['#1A1A1A','#5FD4F5','#000000']]];

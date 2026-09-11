@@ -152,7 +152,7 @@ export function avatarSVG(cls){
         <path d="M62 82 a9 9 0 0 0 16 0" fill="none" stroke="${D.trim}" stroke-width="2.6"/>
         ${shirtDecor(K,D)}
         ${shirtCuffs(D)}
-        ${kitBadge(D)}
+        ${kit.req?kitBadge(D):''}
         ${sc?scarfSVG(sc):''}
       </g>
       <g class="arm l"><rect x="26" y="96" width="12" height="34" rx="6" fill="#F0C9A4"/></g>

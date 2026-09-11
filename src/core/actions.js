@@ -85,10 +85,11 @@ export function packTap(what){
   if(what==='done'){MUT.PK=null;closeModal();S.screen='album';return render();}
 }
 
+export const RECYCLE_VALUE={common:1,rare:2,luxury:3};
 export function recycleAll(){
   let total=0,n=0;
   Object.keys(S.inv).forEach(id=>{const extra=S.inv[id]-1;
-    if(extra>0){total+=extra;n+=extra;S.inv[id]=1;}});   /* מטבע אחד לכל מדבקה ממוחזרת */
+    if(extra>0){const v=RECYCLE_VALUE[(BY_ID[id]||{}).rarity]||1;total+=extra*v;n+=extra;S.inv[id]=1;}});
   if(!n)return toast('אין כפילויות למחזור');
   S.coins+=total;save();sfx('coin');render();toast(`מוחזרו ${n} כפילויות → ${total} מטבעות`);
 }

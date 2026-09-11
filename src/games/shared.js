@@ -38,6 +38,6 @@ export function payout(coins,title){
     <p>הרווחת ${coins} מטבעות</p>
     <div class="endBtns">
       ${k?`<button class="btn btn-gold" data-again="${k}">שחק שוב</button>`:''}
-      <button class="btn btn-ghost" data-act="close">סיום</button></div></div>`);
+      <button class="btn btn-ghost" data-act="close">סיום</button></div></div>`,{closable:false});
   render();
 }
