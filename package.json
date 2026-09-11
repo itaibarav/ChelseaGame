@@ -1,0 +1,21 @@
+{
+  "name": "chelsea-game",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --host",
+    "server": "node server/server.mjs",
+    "android": "npm run build && npx cap sync android && npx cap open android"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0",
+    "@capacitor/cli": "^6.1.0"
+  },
+  "dependencies": {
+    "@capacitor/core": "^6.1.0",
+    "@capacitor/android": "^6.1.0"
+  }
+}

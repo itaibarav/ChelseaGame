@@ -1,0 +1,26 @@
+{
+  "port": 8787,
+  "allowOrigin": "*",
+  "adminToken": "בחר-סיסמה-כאן",
+  "news": {
+    "mode": "curated",
+    "limit": 12,
+    "graph": {
+      "login": "instagram",
+      "apiVersion": "v23.0",
+      "userId": "me",
+      "accessToken": ""
+    }
+  },
+  "matches": {
+    "provider": "football-data",
+    "apiKey": "",
+    "teamId": 61,
+    "pastCount": 10,
+    "upcomingCount": 10
+  },
+  "ttlMinutes": {
+    "news": 15,
+    "matches": 30
+  }
+}

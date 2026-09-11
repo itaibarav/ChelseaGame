@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>עורך הערכות — אלבום הבלוז</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=Secular+One&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#071A38;color:#fff;font-family:Rubik,system-ui,sans-serif;padding:18px 14px 60px}
+.wrap{max-width:1120px;margin:0 auto}
+h1{font-family:'Secular One';font-weight:400;font-size:27px;margin:0 0 4px}
+.sub{color:#9FB8DA;font-size:13.5px;margin:0 0 16px;line-height:1.65;max-width:800px}
+button,select,input{font-family:inherit}
+.btn{font-weight:700;font-size:13.5px;border:0;border-radius:11px;padding:10px 16px;cursor:pointer}
+.go{background:linear-gradient(180deg,#FFD766,#E09800);color:#3A2400}
+.alt{background:rgba(255,255,255,.1);color:#fff;border:1.5px solid rgba(255,255,255,.22)}
+.btn:disabled{opacity:.4;cursor:default}
+.bar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.prog{height:7px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden;margin-bottom:14px}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2C7DF0,#FFC83D);transition:width .25s}
+.panel{background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.13);border-radius:14px;
+  padding:12px 14px;margin-bottom:14px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;font-size:12.5px}
+.panel label{display:flex;align-items:center;gap:7px;color:#C6D8F2}
+.panel input[type=color]{width:36px;height:28px;border:0;border-radius:7px;background:none;padding:0;cursor:pointer}
+.panel input[type=number]{width:76px;background:rgba(0,0,0,.3);color:#fff;border:1.5px solid rgba(255,255,255,.18);
+  border-radius:8px;padding:6px}
+.preview{background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.13);border-radius:14px;
+  padding:14px;margin-bottom:14px;display:none;gap:16px;align-items:center}
+.preview.on{display:flex}
+.preview .card{width:150px;height:200px;border-radius:12px;background:linear-gradient(180deg,#0E3D7E,#04204F);
+  display:grid;place-items:center;border:2.5px solid #fff}
+.preview .card img{width:88%;height:88%;object-fit:contain}
+.preview .txt{font-size:13px;color:#C6D8F2;line-height:1.7}
+.seasons{display:grid;gap:10px}
+.season{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:10px 12px;
+  display:grid;grid-template-columns:78px repeat(3,1fr);gap:12px;align-items:center}
+.season .yr{font-family:'Secular One';font-size:17px;color:#FFC83D}
+.slot{display:flex;gap:9px;align-items:center;background:rgba(0,0,0,.22);border-radius:11px;padding:7px 9px;
+  border:1.5px solid transparent}
+.slot.ok{border-color:rgba(60,200,120,.45)}
+.slot.miss{border-color:rgba(229,37,42,.32)}
+.slot .box{width:56px;height:56px;border-radius:8px;background:#0D2E5E;display:grid;place-items:center;flex:0 0 auto}
+.slot .box img{width:100%;height:100%;object-fit:contain;display:block}
+.slot .meta{flex:1;min-width:0}
+.slot .meta b{display:block;font-size:12px}
+.slot .meta small{display:block;font-size:10.5px;color:#8FA3C0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slot .tools{display:flex;flex-direction:column;gap:4px;align-items:center}
+.slot input[type=color]{width:26px;height:22px;border:0;border-radius:5px;background:none;padding:0;cursor:pointer}
+.slot label.up{cursor:pointer;font-size:10px;color:#FFC83D}
+.slot label.up input{display:none}
+.log{margin-top:16px;background:rgba(0,0,0,.32);border-radius:12px;padding:12px;font-size:12px;
+  color:#9FB8DA;max-height:190px;overflow:auto;white-space:pre-wrap;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>עורך הערכות</h1>
+  <p class="sub">ויקישיתוף שומר כל ערכה כשלושה קבצים נפרדים שעומדים <b>זה לצד זה</b> — שרוול שמאל, גוף, שרוול ימין —
+  וכל אחד ברוחב ובגובה משלו. הכלי קורא את המידות האמיתיות של כל חלק, מרכיב אותם לחולצה שלמה,
+  וחותך את הרקע כך שתישאר חולצה על שקוף. יש בדיקה מקדימה על ערכה אחת לפני שמריצים על כולן.</p>
+
+  <div class="bar">
+    <button class="btn go" id="scan">1. סרוק את ויקישיתוף</button>
+    <button class="btn alt" id="test" disabled>2. בדיקה על ערכה אחת</button>
+    <button class="btn alt" id="build" disabled>3. הרכב את כולן</button>
+    <button class="btn go" id="export" disabled>4. הורד kits.js</button>
+    <span id="stat" style="color:#9FB8DA;font-size:13px"></span>
+  </div>
+
+  <div class="panel">
+    <label>בית <input type="color" id="cHome" value="#034694"></label>
+    <label>חוץ <input type="color" id="cAway" value="#F2F4F8"></label>
+    <label>שלישית <input type="color" id="cThird" value="#16232F"></label>
+    <label>מעונה <input type="number" id="y0" value="2007"></label>
+    <label>עד <input type="number" id="y1" value="2026"></label>
+    <label><input type="checkbox" id="withShorts"> כולל מכנסיים וגרביים</label>
+    <label><input type="checkbox" id="flip"> הפוך מסכה (אם הצורה יוצאת הפוך)</label>
+  </div>
+
+  <div class="preview" id="preview">
+    <div class="card"><img id="pvImg" alt=""></div>
+    <div class="txt" id="pvTxt"></div>
+  </div>
+
+  <div class="prog"><i id="pfill"></i></div>
+  <div class="seasons" id="grid"></div>
+  <div class="log" id="log">מוכן.</div>
+</div>
+
+<script>
+const OUT=340;                                   // רוחב תמונת הפלט
+const TYPES=[['h','home','ערכת בית'],['a','away','ערכת חוץ'],['t','third','ערכה שלישית']];
+const BASE={la:'File:Kit left arm.svg',body:'File:Kit body.svg',ra:'File:Kit right arm.svg',
+            sh:'File:Kit shorts.svg',so:'File:Kit socks long.svg'};
+const PARTS=['la','body','ra','sh','so'];
+
+const $=s=>document.querySelector(s);
+const log=m=>{const l=$('#log');l.textContent+='\n'+m;l.scrollTop=l.scrollHeight;};
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+let FOUND={la:{},body:{},ra:{},sh:{},so:{}};
+let KITS={};
+let GEO=null;          // {la:{w,h,img}, ...} + mode
+let thumbCache={};
+
+const api=async params=>{
+  const u='https://commons.wikimedia.org/w/api.php?'+new URLSearchParams({format:'json',origin:'*',...params});
+  const r=await fetch(u);if(!r.ok)throw new Error('HTTP '+r.status);return r.json();
+};
+const loadImg=src=>new Promise((res,rej)=>{
+  const i=new Image();i.crossOrigin='anonymous';
+  i.onload=()=>res(i);i.onerror=()=>rej(new Error('טעינה נכשלה'));i.src=src;});
+
+async function fileMeta(title,width){
+  const ck=title+'|'+width;
+  if(thumbCache[ck])return thumbCache[ck];
+  const d=await api({action:'query',prop:'imageinfo',iiprop:'url|size',iiurlwidth:String(width),titles:title});
+  const p=Object.values(d.query&&d.query.pages||{})[0];
+  const i=p&&p.imageinfo&&p.imageinfo[0];
+  if(!i)return null;
+  const r={url:i.thumburl||i.url,w:i.width,h:i.height};
+  thumbCache[ck]=r;return r;
+}
+
+/* ---------- 1. scan ---------- */
+function parseName(title){
+  const m=title.match(/(?:chelsea|chelseafc|cfc)[\s_]?(\d{4}|\d{6})[\s_]?(?:3rd|third|[hat3])/i);
+  if(!m)return null;
+  const t=(title.match(/(\d{4}|\d{6})[\s_]?(3rd|third|[hat3])/i)||[])[2].toLowerCase();
+  const type=(t==='3'||t==='3rd'||t==='third')?'t':t;
+  if(!'hat'.includes(type))return null;
+  const yy=parseInt(m[1].slice(0,2),10);
+  return {year:yy>=50?1900+yy:2000+yy,type};
+}
+async function scanPrefix(prefix,bucket){
+  let cont=null,n=0;
+  do{
+    const p={action:'query',list:'allimages',aiprefix:prefix,ailimit:'500',aiprop:'url'};
+    if(cont)p.aicontinue=cont;
+    const d=await api(p);
+    for(const im of (d.query&&d.query.allimages)||[]){
+      const info=parseName(im.name);if(!info)continue;
+      const key=info.year+info.type;
+      if(!FOUND[bucket][key])FOUND[bucket][key]={title:'File:'+im.name,name:im.name};
+      n++;
+    }
+    cont=d.continue&&d.continue.aicontinue;
+  }while(cont);
+  return n;
+}
+async function scan(){
+  $('#scan').disabled=true;
+  FOUND={la:{},body:{},ra:{},sh:{},so:{}};
+  const jobs=[['Kit left arm chelsea','la'],['Kit left arm cfc','la'],
+              ['Kit body chelsea','body'],['Kit body cfc','body'],
+              ['Kit right arm chelsea','ra'],['Kit right arm cfc','ra'],
+              ['Kit shorts chelsea','sh'],['Kit socks chelsea','so']];
+  for(const [pre,b] of jobs){
+    try{await scanPrefix(pre,b);}catch(e){log('שגיאה: '+pre+' — '+e.message);}
+    await sleep(110);
+  }
+  log('נמצאו — גוף '+Object.keys(FOUND.body).length+', שרוולים '+Object.keys(FOUND.la).length+
+      ', מכנסיים '+Object.keys(FOUND.sh).length+', גרביים '+Object.keys(FOUND.so).length);
+  render();
+  $('#scan').disabled=false;$('#test').disabled=false;$('#build').disabled=false;
+  log('הרץ "בדיקה על ערכה אחת" לפני שמריצים על כולן.');
+}
+
+/* ---------- 2. geometry ---------- */
+async function loadGeo(){
+  if(GEO)return GEO;
+  const g={};
+  for(const k of PARTS){
+    const m=await fileMeta(BASE[k],240);
+    if(!m){log('לא נטען '+BASE[k]);continue;}
+    g[k]={w:m.w,h:m.h,img:await loadImg(m.url)};
+  }
+  // זיהוי קוטביות המסכה: אם מרכז הגוף שקוף — הקובץ מסמן את החוץ
+  const c=document.createElement('canvas');c.width=g.body.img.width;c.height=g.body.img.height;
+  const x=c.getContext('2d');x.drawImage(g.body.img,0,0);
+  const mid=x.getImageData((c.width/2)|0,(c.height/2)|0,1,1).data[3];
+  const corner=x.getImageData(1,1,1,1).data[3];
+  g.mode=(mid<40&&corner>150)?'hole':'silhouette';
+  log('מידות: שרוול '+g.la.w+'×'+g.la.h+' · גוף '+g.body.w+'×'+g.body.h+
+      ' · מכנס '+g.sh.w+'×'+g.sh.h+' · גרב '+g.so.w+'×'+g.so.h);
+  log('סוג מסכה שזוהה: '+(g.mode==='hole'?'הקובץ מסמן את השטח מחוץ לבגד':'הקובץ הוא צללית הבגד עצמו'));
+  GEO=g;return g;
+}
+
+/** צובע חלק בודד בצבע הבסיס ומחזיר קנבס שקוף מסביב */
+function tintPart(part,color,mode){
+  const w=part.img.width,h=part.img.height;
+  const c=document.createElement('canvas');c.width=w;c.height=h;
+  const x=c.getContext('2d');
+  if(mode==='hole'){
+    x.fillStyle=color;x.fillRect(0,0,w,h);
+    x.globalCompositeOperation='destination-out';
+    x.drawImage(part.img,0,0);
+  }else{
+    x.drawImage(part.img,0,0);
+    x.globalCompositeOperation='source-in';
+    x.fillStyle=color;x.fillRect(0,0,w,h);
+  }
+  return c;
+}
+
+/* ---------- 3. compose ---------- */
+async function buildOne(year,type,color,withShorts,flip){
+  const key=year+type;
+  if(!FOUND.body[key])return null;
+  const g=await loadGeo();
+  const mode=flip?(g.mode==='hole'?'silhouette':'hole'):g.mode;
+
+  const shirtW=g.la.w+g.body.w+g.ra.w, shirtH=Math.max(g.la.h,g.body.h,g.ra.h);
+  const totalW=shirtW;
+  const totalH=withShorts?shirtH+g.sh.h+g.so.h:shirtH;
+  const s=OUT/totalW;
+  const c=document.createElement('canvas');
+  c.width=Math.round(totalW*s);c.height=Math.round(totalH*s);
+  const x=c.getContext('2d');
+  x.imageSmoothingQuality='high';
+
+  const layout=[
+    ['la',  0,                     0,        g.la.w,   g.la.h],
+    ['body',g.la.w,                0,        g.body.w, g.body.h],
+    ['ra',  g.la.w+g.body.w,       0,        g.ra.w,   g.ra.h],
+  ];
+  if(withShorts){
+    layout.push(['sh', g.la.w+(g.body.w-g.sh.w)/2, shirtH,          g.sh.w, g.sh.h]);
+    layout.push(['so', (shirtW-g.so.w)/2,          shirtH+g.sh.h,   g.so.w, g.so.h]);
+  }
+
+  const used=[];
+  // שכבה 1 — צבע הבסיס בצורת הבגד
+  for(const [k,px,py,pw,ph] of layout){
+    if(!g[k])continue;
+    x.drawImage(tintPart(g[k],color,mode),px*s,py*s,pw*s,ph*s);
+  }
+  // שכבה 2 — הדוגמה של העונה מעל, בדיוק באותו מקום ובאותו גודל
+  for(const [k,px,py,pw,ph] of layout){
+    const f=FOUND[k]&&FOUND[k][key];
+    if(!f)continue;
+    try{
+      const m=await fileMeta(f.title,Math.round(pw*s));
+      if(!m)continue;
+      const im=await loadImg(m.url);
+      x.drawImage(im,px*s,py*s,pw*s,ph*s);
+      used.push(f.name);
+    }catch(e){}
+  }
+  return {img:c.toDataURL('image/png'),sources:used,color};
+}
+
+/* ---------- UI ---------- */
+async function testOne(){
+  $('#test').disabled=true;
+  const y0=+$('#y0').value;
+  let target=null;
+  for(let y=y0;y<=+$('#y1').value&&!target;y++)
+    for(const [t] of TYPES) if(FOUND.body[y+t]){target=[y,t];break;}
+  if(!target){log('אין ערכה לבדיקה — הרץ סריקה קודם.');$('#test').disabled=false;return;}
+  const [y,t]=target;
+  const col={h:$('#cHome').value,a:$('#cAway').value,t:$('#cThird').value}[t];
+  try{
+    const r=await buildOne(y,t,col,$('#withShorts').checked,$('#flip').checked);
+    if(!r)throw new Error('לא הורכב');
+    $('#pvImg').src=r.img;
+    $('#pvTxt').innerHTML=`<b>${y}/${String((y+1)%100).padStart(2,'0')} · ${TYPES.find(x=>x[0]===t)[2]}</b><br>
+      שכבות: ${r.sources.join('<br>')||'—'}<br><br>
+      אם החולצה נראית נכון — המשך ל"הרכב את כולן".<br>
+      אם הצורה הפוכה או מוזרה — סמן "הפוך מסכה" ובדוק שוב.`;
+    $('#preview').classList.add('on');
+    log('בדיקה הורכבה עבור '+y+t);
+  }catch(e){log('בדיקה נכשלה: '+e.message);}
+  $('#test').disabled=false;
+}
+
+async function buildAll(){
+  $('#build').disabled=true;
+  const y0=+$('#y0').value,y1=+$('#y1').value;
+  const colors={h:$('#cHome').value,a:$('#cAway').value,t:$('#cThird').value};
+  const ws=$('#withShorts').checked,fl=$('#flip').checked;
+  const list=[];
+  for(let y=y0;y<=y1;y++)for(const [t] of TYPES)list.push([y,t]);
+  let done=0,ok=0;
+  for(const [y,t] of list){
+    const id=`kit-${y}-${TYPES.find(x=>x[0]===t)[1]}`;
+    if(KITS[id]&&KITS[id].manual){ok++;}
+    else{
+      try{const r=await buildOne(y,t,colors[t],ws,fl);
+        if(r){KITS[id]=r;ok++;}else delete KITS[id];}
+      catch(e){log('! '+id+' — '+e.message);}
+    }
+    done++;$('#pfill').style.width=(done/list.length*100)+'%';
+    if(done%6===0)render();
+    await sleep(30);
+  }
+  render();$('#build').disabled=false;$('#export').disabled=!ok;
+  log('\nהורכבו '+ok+' ערכות מתוך '+list.length+'.');
+}
+
+function render(){
+  const y0=+$('#y0').value,y1=+$('#y1').value;
+  let html='';
+  for(let y=y0;y<=y1;y++){
+    html+=`<div class="season"><div class="yr">${y}/${String((y+1)%100).padStart(2,'0')}</div>`;
+    for(const [t,slug,label] of TYPES){
+      const id=`kit-${y}-${slug}`,k=KITS[id],avail=!!FOUND.body[y+t];
+      html+=`<div class="slot ${k?'ok':(avail?'':'miss')}">
+        <div class="box">${k?`<img src="${k.img}">`:'<span style="opacity:.3">—</span>'}</div>
+        <div class="meta"><b>${label}</b><small>${
+          k?(k.manual?'תמונה שלך':(k.sources[0]||'הורכב')):(avail?'נמצא, טרם הורכב':'לא קיים')}</small></div>
+        <div class="tools">
+          <input type="color" value="${k?k.color:'#034694'}" data-col="${id}" title="צבע בסיס">
+          <label class="up">העלה<input type="file" accept="image/*" data-up="${id}"></label>
+        </div></div>`;
+    }
+    html+='</div>';
+  }
+  $('#grid').innerHTML=html;
+  const n=Object.keys(KITS).length;
+  $('#stat').textContent=n?n+' ערכות מוכנות':'';
+}
+
+document.addEventListener('change',async e=>{
+  const col=e.target.closest('[data-col]');
+  if(col){
+    const m=col.dataset.col.match(/kit-(\d+)-(\w+)/);
+    const t=TYPES.find(x=>x[1]===m[2])[0];
+    const r=await buildOne(+m[1],t,col.value,$('#withShorts').checked,$('#flip').checked);
+    if(r){KITS[col.dataset.col]=r;render();}else log('אין שכבות עבור '+col.dataset.col);
+    return;
+  }
+  const up=e.target.closest('[data-up]');
+  if(up&&up.files[0]){
+    const id=up.dataset.up,bmp=await createImageBitmap(up.files[0]);
+    const c=document.createElement('canvas');c.width=OUT;c.height=OUT;
+    const x=c.getContext('2d'),s=Math.min(OUT/bmp.width,OUT/bmp.height);
+    x.drawImage(bmp,(OUT-bmp.width*s)/2,(OUT-bmp.height*s)/2,bmp.width*s,bmp.height*s);
+    KITS[id]={img:c.toDataURL('image/png'),sources:['תמונה פרטית'],color:'#000',manual:true};
+    render();$('#export').disabled=false;log('↑ '+id);
+  }
+});
+$('#scan').addEventListener('click',scan);
+$('#test').addEventListener('click',testOne);
+$('#build').addEventListener('click',buildAll);
+$('#export').addEventListener('click',()=>{
+  const P={},C=[];
+  for(const [id,k] of Object.entries(KITS)){
+    P[id]=k.img;
+    C.push({id,author:k.manual?'תמונה פרטית':'Wikimedia Commons',
+      license:k.manual?'שימוש אישי':'CC / PD',page:(k.sources||[]).join(', ')});
+  }
+  const txt='window.KIT_PHOTOS='+JSON.stringify(P)+';\nwindow.KIT_CREDITS='+JSON.stringify(C)+';\n';
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([txt],{type:'text/javascript'}));
+  a.download='kits.js';a.click();
+  log('נוצר kits.js — '+(txt.length/1048576).toFixed(2)+'MB, '+Object.keys(P).length+' ערכות');
+});
+$('#y0').addEventListener('change',render);
+$('#y1').addEventListener('change',render);
+render();
+</script>
+</body>
+</html>

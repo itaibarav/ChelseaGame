@@ -1,0 +1,7 @@
+{
+  "appId": "com.itaibarav.chelseagame",
+  "appName": "אלבום הבלוז",
+  "webDir": "dist",
+  "android": { "allowMixedContent": true },
+  "server": { "androidScheme": "https" }
+}
