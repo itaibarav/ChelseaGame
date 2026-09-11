@@ -7,7 +7,7 @@ import { PHOTO_CREDITS } from '../data/globals.js';
 import { S, esc, save, today } from '../core/state.js';
 import { albumView, animateCoins, avatarView, gamesView, homeView, matchesModal, newsView, shopView } from '../screens/index.js';
 import { answerValue } from '../games/value.js';
-import { buyItem, cardDetail, openPack, packTap, recycleAll, tapItem } from '../core/actions.js';
+import { buyItem, cardDetail, openPack, packTap, playHighlight, recycleAll, tapItem } from '../core/actions.js';
 import { coinSVG } from '../art/cards.js';
 import { confetti, sfx } from '../core/fx.js';
 import { endTimer, payout } from '../games/shared.js';
@@ -48,6 +48,7 @@ document.addEventListener('click',e=>{
   if(d.buy)return buyItem(d.buy);
   if(d.item)return tapItem(d.item);
   if(d.card)return cardDetail(d.card);
+  if(d.yt)return playHighlight(d.yt);
   if(d.pack)return openPack(d.pack);
   if(d.read){if(!S.read.includes(d.read)){S.read.push(d.read);S.coins+=10;save();sfx('coin');render();toast('+10 מטבעות');}return;}
   if(d.game&&GAME_START[d.game])return GAME_START[d.game]();
@@ -62,7 +63,6 @@ document.addEventListener('click',e=>{
   if(a==='snd'){MUT.SND=!MUT.SND;if(MUT.SND)sfx('pop');return render();}
   if(a==='close')return closeModal();
   if(a==='quit')return payout((MUT.G&&MUT.G.coins)||0,'סיימת');
-  if(a==='yt')return toast('נגן היוטיוב ייחובר עם מזהי הווידאו');
   if(a==='go-album'){S.screen='album';return render();}
   if(a==='go-shop'){S.screen='shop';return render();}
   if(a==='go-games'){S.screen='games';return render();}

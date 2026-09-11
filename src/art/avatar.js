@@ -39,6 +39,7 @@ export function designOf(item){
     sponsor:y<=2000?'AUTOGLASS':y<=2004?'Fly Emirates':y<=2007?'SAMSUNG mobile'
            :y<=2014?'SAMSUNG':y<=2019?'YOKOHAMA':y<=2023?'3':y<=2024?'BingX':'USDC',
   }, (id&&KIT_DESIGN[id])||{}, (id&&KIT_DESIGN2[id])||{});
+  if(!id)d.sponsor='';   /* ערכת האימון היא ערכה גנרית בלי חסות משחק */
   d.ink=d.ink||(lum(K.body)>0.58?'#12233F':'#FFFFFF');
   d.pat=d.pat||(lum(K.body)>0.58?'#0B2545':'#FFFFFF');
   d.trim=d.trim||K.trim;

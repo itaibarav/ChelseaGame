@@ -5,6 +5,7 @@ import { S, esc, got, pick, save, shuffle } from '../core/state.js';
 import { art, coinSVG } from '../art/cards.js';
 import { avatarSVG } from '../art/avatar.js';
 import { confetti, packArtSVG, raysSVG, sfx } from '../core/fx.js';
+import LEGEND_VIDEOS from '../data/legendVideos.js';
 import { render } from '../core/router.js';
 import { stadiumBG } from '../art/stadium.js';
 
@@ -107,7 +108,19 @@ export function cardDetail(id){
   modal(`<div class="sheet"><div class="detail-art ${c.rarity==='luxury'?'lux':''}">${art(c)}</div>
     <h2>${esc(c.name)}</h2>
     <div style="text-align:start;margin-bottom:14px">${rows.map(r=>`<div class="kv"><span>${r[0]}</span><b>${esc(r[1])}</b></div>`).join('')}</div>
-    ${c.cat==='legend'?'<button class="btn btn-gold" style="width:100%;margin-bottom:8px" data-act="yt">▶ קטעי מחץ</button>':''}
+    ${c.cat==='legend'&&LEGEND_VIDEOS[c.id]?`<button class="btn btn-gold" style="width:100%;margin-bottom:8px" data-yt="${c.id}">▶ קטעי מחץ</button>`:''}
+    <button class="btn btn-ghost" data-act="close" style="width:100%">סגירה</button></div>`);
+}
+
+export function playHighlight(id){
+  const c=BY_ID[id],vid=LEGEND_VIDEOS[id];
+  if(!vid)return toast('אין עדיין קטע וידאו לשחקן הזה');
+  modal(`<div class="sheet"><h2 style="margin-bottom:12px">${esc(c.name)} — קטעי מחץ</h2>
+    <div style="position:relative;padding-top:56.25%;border-radius:14px;overflow:hidden;margin-bottom:14px;background:#000">
+      <iframe style="position:absolute;inset:0;width:100%;height:100%;border:0"
+        src="https://www.youtube-nocookie.com/embed/${vid}?autoplay=1&playsinline=1&rel=0"
+        title="${esc(c.name)} — קטעי מחץ" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+    </div>
     <button class="btn btn-ghost" data-act="close" style="width:100%">סגירה</button></div>`);
 }
 
