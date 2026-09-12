@@ -24,6 +24,7 @@ export default {
   'legend-17':'bjW5yJB40KE', /* עדן הזאר */
   'legend-18':'dgGbY3u4tU8', /* פיטר אוסגוד — ארכיון */
   'legend-19':'AGvR5I5jGP4', /* רון האריס — ארכיון */
+  'legend-x1':'JxbrTGz8qWY', /* סזאר אזפיליקוואטה */
 
   /* --- גביעים (cat2) --- */
   'cat2-x1':'LgJXstjEl_c',  /* אליפות העולם 2021 */
