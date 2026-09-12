@@ -123,6 +123,8 @@ export default {
   "ball": "/assets/art/ball.png",
   "lion": "/assets/art/lion.png",
   "stadium": "/assets/art/stadium.png",
-  "lionGold": "/assets/art/lionGold.png"
+  "lionGold": "/assets/art/lionGold.png",
+  "reece": "/assets/art/reece.jpg",
+  "palmer": "/assets/art/palmer.png"
  }
 };

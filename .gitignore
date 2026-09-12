@@ -8,3 +8,6 @@ android/
 public/app-config.js
 server/config.json
 server/data/
+
+# תיקיית העברה זמנית לתמונות מקור (לא נכנסות לגיט כפי שהן)
+assets-inbox/

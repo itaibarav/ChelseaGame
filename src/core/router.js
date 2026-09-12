@@ -15,7 +15,7 @@ import { endTimer, payout } from '../games/shared.js';
 import { flipMemory } from '../games/memory.js';
 import { online, refreshFeed } from '../net/feed.js';
 import { playRPS } from '../games/rps.js';
-import { guessCup } from '../games/shell.js';
+import { guessCup, shellStart } from '../games/shell.js';
 import { playTTT } from '../games/ttt.js';
 import { shirtKey } from '../games/shirt.js';
 import { shootPenalty } from '../games/penalty.js';
@@ -77,6 +77,7 @@ document.addEventListener('click',e=>{
   if(a==='credits')return creditsModal();
   if(a==='recycle')return recycleAll();
   if(a==='daily')return dailyModal();
+  if(a==='shell-start')return shellStart();
 });
 
 export function creditsModal(){
