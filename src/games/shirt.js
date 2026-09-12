@@ -4,7 +4,7 @@ import { SQUAD } from '../data/cards.js';
 import { cardOf, gameCard } from '../games/assets.js';
 import { payout } from '../games/shared.js';
 import { sfx } from '../core/fx.js';
-import { shuffle } from '../core/state.js';
+import { S, save, shuffle } from '../core/state.js';
 
 /* ======================= 1. מי החולצה ======================= */
 /* תור מעורבב — שחקן לא חוזר עד שכל הסגל עבר */
@@ -45,6 +45,7 @@ export function shirtKey(k){
     if(+MUT.G.input===MUT.G.cur[0]){
       MUT.G.streak++;const b=MUT.G.streak<STREAK.length?STREAK[MUT.G.streak]:10;
       MUT.G.coins+=3+b;sfx('coin');toast('נכון! +'+(3+b));
+      S.stats.shirtBestStreak=Math.max(S.stats.shirtBestStreak,MUT.G.streak);save();
     }else{MUT.G.streak=0;sfx('err');toast('לא מדויק — '+MUT.G.cur[0]);}
     const s=$('#gS'),c=$('#gC');
     if(s)s.textContent='רצף '+MUT.G.streak;

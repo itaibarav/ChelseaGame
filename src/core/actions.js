@@ -47,7 +47,10 @@ export function openPack(type){
   const fresh=slots.map(id=>!got(id));
   slots.forEach(id=>S.inv[id]=(S.inv[id]||0)+1);
   MUT.NEW_IDS=new Set(slots.filter((id,i)=>fresh[i]));
-  S.stats.packsOpened++;if(type==='gold')S.stats.goldPacksOpened++;
+  S.stats.packsOpened++;
+  if(type==='gold')S.stats.goldPacksOpened++;
+  if(type==='legend')S.stats.legendPacksOpened++;
+  if(type==='kit')S.stats.kitPacksOpened++;
   save();
   MUT.PK={p,slots,fresh,i:-1};
   renderPack();render();
@@ -138,6 +141,9 @@ export function cardDetail(id){
 export function playHighlight(id){
   const c=BY_ID[id],vid=CARD_VIDEOS[id];
   if(!vid)return toast('אין עדיין קטע וידאו לקלף הזה');
+  if(c.cat==='legend')S.stats.legendVideoWatched=true;
+  if(c.cat==='cat2')S.stats.trophyVideoWatched=true;
+  save();
   modal(`<div class="sheet"><h2 style="margin-bottom:12px">${esc(c.name)} — סרטון היילייטס</h2>
     <div style="position:relative;padding-top:56.25%;border-radius:14px;overflow:hidden;margin-bottom:14px;background:#000">
       <iframe style="position:absolute;inset:0;width:100%;height:100%;border:0"
@@ -169,6 +175,22 @@ function getAlbumId(){
   return albumIdPromise;
 }
 
+/* פלאגין השמירה לגלריה (Media.savePhoto) יודע לטפל רק ב-data: URI או
+   ב-http(s) אמיתי (הוא מוריד אותו בעצמו ברשת) — נתיב יחסי כמו
+   /assets/stickers/x.jpg לא נתמך, כי הוא לא נגיש מחוץ ל-webview. לכן
+   תמיד ממירים קודם ל-data: URI דרך fetch, מתוך ה-webview עצמו. */
+async function toDataUrl(src){
+  if(src.startsWith('data:'))return src;
+  const res=await fetch(src);
+  const blob=await res.blob();
+  return await new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=()=>resolve(reader.result);
+    reader.onerror=reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
 export async function downloadPhoto(id){
   const c=BY_ID[id];
   if(!got(id))return;
@@ -177,8 +199,10 @@ export async function downloadPhoto(id){
   if(Capacitor.isNativePlatform()){
     try{
       const albumIdentifier=await getAlbumId();
-      await Media.savePhoto({path:src,albumIdentifier,fileName:`chelsea-${id}`});
+      const dataUrl=await toDataUrl(src);
+      await Media.savePhoto({path:dataUrl,albumIdentifier,fileName:`chelsea-${id}`});
       toast('התמונה נשמרה בגלריה! 📥');
+      if(c.cat==='cat5'){S.stats.bgDownloaded=true;save();}
     }catch(e){
       toast('שמירת התמונה נכשלה — נסו שוב');
     }
@@ -188,6 +212,7 @@ export async function downloadPhoto(id){
   a.href=src;a.download=`chelsea-${id}.jpg`;
   document.body.appendChild(a);a.click();a.remove();
   toast('התמונה יורדת… 📥');
+  if(c.cat==='cat5'){S.stats.bgDownloaded=true;save();}
 }
 
 export const LAYER_NAME={kit:'מדים',hat:'כובע',scarf:'צעיף',boots:'נעליים'};

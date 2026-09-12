@@ -1,5 +1,5 @@
 import { $, modal, stickerHTML } from '../core/dom.js';
-import { API_BASE, crestOf, matchDate, mediaUrl, nextMatch, online, ownCrest, teamHe } from '../net/feed.js';
+import { API_BASE, crestOf, lastMatch, matchDate, mediaUrl, nextMatch, online, ownCrest, teamHe } from '../net/feed.js';
 import { CARDS, CATS, GAMES, LAYER_TABS, MOCK_MATCH, MOCK_POSTS, PACKS, TOTAL, byLayer } from '../data/cards.js';
 import { TASKS } from '../data/tasks.js';
 import { MUT } from '../core/mut.js';
@@ -51,6 +51,14 @@ export function homeView(){
         <div class="d">${matchDate(m.date)}</div>
         <span class="chip">${m.homeAway==='H'?'בבית':'בחוץ'}</span></div>
       <div class="side">${crestOf(m)}<small>${esc(teamHe(m.opponent))}</small></div></div>`;})()}
+  ${(()=>{const m=lastMatch();
+    if(!m)return '';
+    return `<div class="card match" data-act="matches">
+      <div class="side">${ownCrest()}<small>צ׳לסי</small></div>
+      <div class="mid"><div class="t">התוצאה האחרונה:</div>
+        <b class="sc ${m.result==='W'?'w':m.result==='L'?'l':'d'}">${esc(m.score||'')}</b>
+        <div class="d">${matchDate(m.date)}</div></div>
+      <div class="side">${crestOf(m)}<small>${esc(teamHe(m.opponent))}</small></div></div>`;})()}
   <div class="tiles">
     <button class="tile tile-gold" data-act="go-shop"><div style="font-size:34px">&#127873;</div><div class="lbl">חנות מעטפות</div></button>
     <button class="tile tile-blue" data-act="go-games"><div style="font-size:34px">&#127918;</div><div class="lbl">הרוויחו מטבעות<br>10 משחקים</div></button>
@@ -63,20 +71,26 @@ export function homeView(){
 
 export function tasksView(){
   const done=S.claimedTasks.length,total=TASKS.length,pct=Math.round(done/total*100);
+  const ready=[],locked=[],completed=[];
+  TASKS.forEach(t=>{
+    if(S.claimedTasks.includes(t.id))completed.push(t);
+    else if(t.check())ready.push(t);
+    else locked.push(t);
+  });
+  const row=(t,claimed)=>`<div class="pack ${claimed?'done':''}">
+    <div class="txt"><b>${esc(t.label)}</b><small>פרס: ${t.reward} מטבעות</small></div>
+    ${claimed?'<span class="chip">&#9989; נאסף</span>'
+      :ready.includes(t)?`<button class="buy" data-claim="${t.id}">איסוף ${coinSVG(15)}</button>`
+      :'<span class="chip">&#128274; נעול</span>'}
+  </div>`;
   return hud()+`<div class="head"><h1>משימות</h1><p>השלימו משימות במשחקים וקבלו מטבעות</p></div>
     <div class="hero-row">
       <div class="btn btn-blue progress-btn" style="width:100%">
         <div class="fill" style="width:${pct}%"></div><span>&#127942; ${done}/${total} משימות הושלמו</span></div>
     </div>
-    <div class="packs">${TASKS.map(t=>{
-      const claimed=S.claimedTasks.includes(t.id);
-      const ready=!claimed&&t.check();
-      return `<div class="pack ${claimed?'done':''}">
-        <div class="txt"><b>${esc(t.label)}</b><small>פרס: ${t.reward} מטבעות</small></div>
-        ${claimed?'<span class="chip">&#9989; נאסף</span>'
-          :ready?`<button class="buy" data-claim="${t.id}">איסוף ${coinSVG(15)}</button>`
-          :'<span class="chip">&#128274; נעול</span>'}
-      </div>`;}).join('')}</div>`;
+    <div class="packs">${ready.map(t=>row(t,false)).join('')}${locked.map(t=>row(t,false)).join('')}</div>
+    ${completed.length?`<div class="head" style="padding-top:6px"><h1 style="font-size:19px">&#128081; משימות שהושלמו</h1></div>
+    <div class="packs">${completed.map(t=>row(t,true)).join('')}</div>`:''}`;
 }
 
 export function albumView(){

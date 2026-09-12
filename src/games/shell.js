@@ -24,7 +24,14 @@ const xSVG=`<svg viewBox="0 0 60 60"><g stroke="#FF6B6B" stroke-width="7" stroke
   <path d="M18 18 L42 42"/><path d="M42 18 L18 42"/></g></svg>`;
 const lionSVG=`<svg viewBox="0 0 60 60">${clubBadge(30,30,18)}</svg>`;
 
-const winAmt=streak=>streak>=3?25:15;
+/* קושי עולה עם הרצף: סיבוב 1-2 קל (15 מטבעות), 3-4 בינוני (25),
+   מסיבוב 5 ואילך הכי קשה — אבל עדיין הוגן לילד — ותמיד 50 מטבעות. */
+const winAmt=streak=>streak>=5?50:streak>=3?25:15;
+function shellDifficulty(round){
+  if(round>=5)return{swaps:13,interval:420,label:'קשה',cls:'hard'};
+  if(round>=3)return{swaps:10,interval:520,label:'בינוני',cls:'mid'};
+  return{swaps:8,interval:650,label:'קל',cls:'easy'};
+}
 
 /* תגובת ריס: 'mixing' נעה כל עוד הוא מערבב, 'win'/'lose' לרגע אחרי הניחוש */
 function shellReact(mood,ms){
@@ -61,8 +68,9 @@ const stageHTML=closed=>`<div class="shStage"><div class="shTable"></div>
   <div class="shCups" id="shCups">${cupsHTML(closed)}</div></div>`;
 
 function renderIntro(){
+  const diff=shellDifficulty(MUT.G.round);
   modal(`<div class="sheet game">
-    <div class="ghud"><span>סיבוב ${MUT.G.round}</span><span>רצף ${MUT.G.streak}</span><span>${MUT.G.coins} 🪙</span></div>
+    <div class="ghud"><span>סיבוב ${MUT.G.round}</span><span class="lvl ${diff.cls}">רמה ${diff.label}</span><span>${MUT.G.coins} 🪙</span></div>
     <h2 style="margin:2px 0 6px;font-size:21px">ריס ג'יימס מערבב</h2>
     <div class="shArena"><div class="shFig" id="shFig">${jamesFig}</div></div>
     <p style="min-height:22px;margin:8px 0">ריס עומד ליד השולחן — האריה מתחת לאחת הכוסות. עקבו אחריו בעיניים!</p>
@@ -72,8 +80,9 @@ function renderIntro(){
 }
 
 function frame(hint){
+  const diff=shellDifficulty(MUT.G.round);
   return `<div class="sheet game">
-    <div class="ghud"><span>סיבוב ${MUT.G.round}</span><span>רצף ${MUT.G.streak}</span><span>${MUT.G.coins} 🪙</span></div>
+    <div class="ghud"><span>סיבוב ${MUT.G.round}</span><span class="lvl ${diff.cls}">רמה ${diff.label}</span><span>${MUT.G.coins} 🪙</span></div>
     <h2 style="margin:2px 0 6px;font-size:21px">ריס ג'יימס מערבב</h2>
     <div class="shArena"><div class="shFig" id="shFig">${jamesFig}</div></div>
     <p id="shHint" style="min-height:22px;margin:8px 0">${hint}</p>
@@ -82,6 +91,8 @@ function frame(hint){
 }
 
 function renderReveal(){
+  const diff=shellDifficulty(MUT.G.round);
+  MUT.G.diff=diff;
   modal(frame('שימו לב — האריה שם! 👀'),{closable:false});
   $('#shCups').classList.add('open');
   setTimeout(()=>{
@@ -89,7 +100,7 @@ function renderReveal(){
     $('#shCups').classList.remove('open');
     $('#shHint').textContent='ריס מערבב את הכוסות…';
     const f=$('#shFig');if(f)f.classList.add('mixing');
-    setTimeout(shuffleStep,500,8);
+    setTimeout(shuffleStep,500,MUT.G.diff.swaps);
   },1500);
 }
 
@@ -107,7 +118,7 @@ function shuffleStep(left){
   if(elA)elA.style.transform=`translateX(${(slotB-1)*72}px)`;
   if(elB)elB.style.transform=`translateX(${(slotA-1)*72}px)`;
   sfx('pop');
-  setTimeout(shuffleStep,650,left-1);
+  setTimeout(shuffleStep,MUT.G.diff.interval,left-1);
 }
 
 export function guessCup(identity){

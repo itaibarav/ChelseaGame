@@ -23,6 +23,7 @@ export async function refreshFeed(force){
   }catch(e){}
 }
 export const nextMatch=()=>(S.matches&&S.matches.upcoming&&S.matches.upcoming[0])||null;
+export const lastMatch=()=>(S.matches&&S.matches.past&&S.matches.past[0])||null;
 export const matchDate=iso=>{
   const d=new Date(iso);
   if(isNaN(d))return '';

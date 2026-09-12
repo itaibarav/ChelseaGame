@@ -13,6 +13,9 @@ const allHatsOwned=()=>HATS.every(([id])=>S.owned.includes(id));
 const catComplete=cat=>{const list=CARDS.filter(c=>c.cat===cat);return list.length>0&&list.every(c=>got(c.id));};
 
 export const TASKS=[
+ {id:'shirt-5',   label:'נחש 5 מספרים נכונים במשחק אחד ב"מי החולצה?"',  reward:20,  check:()=>S.stats.shirtBestStreak>=5},
+ {id:'shirt-10',  label:'נחש 10 מספרים נכונים במשחק אחד ב"מי החולצה?"', reward:50,  check:()=>S.stats.shirtBestStreak>=10},
+ {id:'shirt-20',  label:'נחש 20 מספרים נכונים במשחק אחד ב"מי החולצה?"', reward:100, check:()=>S.stats.shirtBestStreak>=20},
  {id:'keepie-20', label:'הקפץ 20 פעמים במשחק הקפצות',        reward:20,  check:()=>S.stats.keepieBest>=20},
  {id:'keepie-40', label:'הקפץ 40 פעמים במשחק הקפצות',        reward:40,  check:()=>S.stats.keepieBest>=40},
  {id:'keepie-60', label:'הקפץ 60 פעמים במשחק הקפצות',        reward:60,  check:()=>S.stats.keepieBest>=60},
@@ -21,6 +24,7 @@ export const TASKS=[
  {id:'run-1000',  label:'עבור 1,000 מטר במשחק ריצת סטמפורד', reward:25,  check:()=>S.stats.runBest>=1000},
  {id:'run-2000',  label:'עבור 2,000 מטר במשחק ריצת סטמפורד', reward:50,  check:()=>S.stats.runBest>=2000},
  {id:'run-3000',  label:'עבור 3,000 מטר במשחק ריצת סטמפורד', reward:100, check:()=>S.stats.runBest>=3000},
+ {id:'run-4000',  label:'עבור 4,000 מטר במשחק ריצת סטמפורד', reward:150, check:()=>S.stats.runBest>=4000},
  {id:'pen-25',    label:'הבקע 25 שערים בדו-קרב פנדלים',      reward:25,  check:()=>S.stats.penaltyGoals>=25},
  {id:'pen-50',    label:'הבקע 50 שערים בדו-קרב פנדלים',      reward:50,  check:()=>S.stats.penaltyGoals>=50},
  {id:'pen-100',   label:'הבקע 100 שערים בדו-קרב פנדלים',     reward:100, check:()=>S.stats.penaltyGoals>=100},
@@ -46,11 +50,17 @@ export const TASKS=[
  {id:'scarves-2', label:'רכוש 2 צעיפים לאווטאר שלך',          reward:30,  check:()=>scarvesOwned()>=2},
  {id:'squad-full',label:'השלם את מדבקות כל הסגל באלבום',      reward:100, check:()=>catComplete('squad')},
  {id:'legend-full',label:'השלם את מדבקות כל האגדות באלבום',   reward:200, check:()=>catComplete('legend')},
+ {id:'bg-download',label:'הורד לטלפון רקע מתוך קלפי "רקע" באלבום', reward:25, check:()=>!!S.stats.bgDownloaded},
+ {id:'legend-video',label:'צפה בסרטון הייליטס של אגדה',       reward:40,  check:()=>!!S.stats.legendVideoWatched},
+ {id:'trophy-video',label:'צפה בסרטון של זכייה בגביע',        reward:50,  check:()=>!!S.stats.trophyVideoWatched},
  {id:'packs-20',  label:'קנה 20 מעטפות בחנות',                reward:50,  check:()=>S.stats.packsOpened>=20},
  {id:'packs-40',  label:'קנה 40 מעטפות בחנות',                reward:100, check:()=>S.stats.packsOpened>=40},
  {id:'packs-100', label:'קנה 100 מעטפות בחנות',               reward:150, check:()=>S.stats.packsOpened>=100},
+ {id:'packs-legend-15',label:'קנה 15 מעטפות אגדה בחנות',      reward:100, check:()=>S.stats.legendPacksOpened>=15},
+ {id:'packs-kit-15',label:'קנה 15 מעטפות מדים בחנות',         reward:100, check:()=>S.stats.kitPacksOpened>=15},
  {id:'gold-10',   label:'קנה 10 מעטפות זהב בחנות',            reward:200, check:()=>S.stats.goldPacksOpened>=10},
  {id:'recycle-25',label:'מחזר 25 קלפים כפולים',               reward:10,  check:()=>S.stats.recycled>=25},
  {id:'recycle-50',label:'מחזר 50 קלפים כפולים',               reward:30,  check:()=>S.stats.recycled>=50},
  {id:'recycle-100',label:'מחזר 100 קלפים כפולים',             reward:50,  check:()=>S.stats.recycled>=100},
+ {id:'recycle-200',label:'מחזר 200 קלפים כפולים',             reward:100, check:()=>S.stats.recycled>=200},
 ];

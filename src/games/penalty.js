@@ -2,7 +2,6 @@ import { $, modal } from '../core/dom.js';
 import { GA } from '../games/assets.js';
 import { MUT } from '../core/mut.js';
 import { confetti, sfx } from '../core/fx.js';
-import { payout } from '../games/shared.js';
 import { pick, S, save } from '../core/state.js';
 
 /* ======================= 4. דו-קרב פנדלים =======================
@@ -32,13 +31,19 @@ export const keeperSVG=`<svg viewBox="0 0 60 116">
   <rect x="21" y="68" width="8" height="40" rx="4" fill="#123A72"/>
   <rect x="31" y="68" width="8" height="40" rx="4" fill="#123A72"/></svg>`;
 
+/* רצף שערים ברציפות מזכה בפרס גדל: 7,7,10,10,15,15,15,20,20,25 — ומהרצף
+   העשירי והלאה נשאר קבוע על 25. הפסקת רצף (עצירה) לא מסיימת את המשחק,
+   רק מאפסת אותו — המשחק נמשך עד שהשחקן לוחץ "סיום". */
+export const PEN_TIERS=[7,7,10,10,15,15,15,20,20,25];
+export const penReward=streak=>PEN_TIERS[Math.min(streak,PEN_TIERS.length)-1];
+
 export function startPenalty(){
-  MUT.G={k:'penalty',coins:0,round:0,busy:false};
+  MUT.G={k:'penalty',coins:0,streak:0,shots:0,busy:false};
   const cells=[1,2,3,4,5,6].map(n=>{const b=cellBox(n);
     return `<button class="cell" data-cell="${n}" style="left:${b.l}%;top:${b.t}%;width:${b.w}%;height:${b.h}%">
       <span>${n}</span></button>`;}).join('');
   modal(`<div class="sheet game">
-    <div class="ghud"><span id="pR">בעיטה 1 מתוך 3</span><span id="pC">0 🪙</span></div>
+    <div class="ghud"><span id="pR">בעיטה 1</span><span id="pS">רצף 0</span><span id="pC">0 🪙</span></div>
     <h2 style="margin:2px 0 2px;font-size:21px">דו-קרב פנדלים</h2>
     <p id="pMsg" style="margin:0 0 6px">בחרו משבצת — השוער מכסה שתיים</p>
     <div class="goalwrap" id="pGoal">
@@ -82,15 +87,20 @@ export function shootPenalty(n){
   setTimeout(()=>{
     if(!MUT.G||MUT.G.k!=='penalty')return;
     const m=$('#pMsg');
-    if(saved){sfx('err');if(m)m.innerHTML='<b style="color:#FF9A9C">השוער עצר!</b>';}
-    else{MUT.G.coins+=7;S.stats.penaltyGoals++;save();sfx('win');confetti(18);
-      if(m)m.innerHTML='<b style="color:#8FE0A0">גול! +7</b>';
-      const c=$('#pC');if(c)c.textContent=MUT.G.coins+' 🪙';}
-    MUT.G.round++;
+    if(saved){
+      MUT.G.streak=0;sfx('err');
+      if(m)m.innerHTML='<b style="color:#FF9A9C">השוער עצר! הרצף התאפס</b>';
+    }else{
+      MUT.G.streak++;const gain=penReward(MUT.G.streak);
+      MUT.G.coins+=gain;S.stats.penaltyGoals++;save();sfx('win');confetti(MUT.G.streak>=10?30:18);
+      if(m)m.innerHTML=`<b style="color:#8FE0A0">גול! +${gain} · רצף ${MUT.G.streak}</b>`;
+      const c=$('#pC');if(c)c.textContent=MUT.G.coins+' 🪙';
+      const s=$('#pS');if(s)s.textContent='רצף '+MUT.G.streak;
+    }
+    MUT.G.shots++;
     setTimeout(()=>{
       if(!MUT.G||MUT.G.k!=='penalty')return;
-      if(MUT.G.round>=3)return payout(MUT.G.coins,MUT.G.coins>=14?'תותח!':'סיבוב הסתיים');
-      const r=$('#pR');if(r)r.textContent='בעיטה '+(MUT.G.round+1)+' מתוך 3';
+      const r=$('#pR');if(r)r.textContent='בעיטה '+(MUT.G.shots+1);
       if(m)m.textContent='בחרו משבצת — השוער מכסה שתיים';
       resetPenalty();MUT.G.busy=false;
     },1200);
