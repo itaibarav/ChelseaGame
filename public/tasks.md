@@ -1,4 +1,7 @@
 task explain | hebrew | reward
+the player hit 5 right answers in "guess the shirt number" in one match | נחש 5 מספרי נכונים במשחק אחד ב"מי החולצה?" | 20
+the player hit 10 right answers in "guess the shirt number" in one match | נחש 10 מספרי נכונים במשחק אחד ב"מי החולצה?" | 50
+the player hit 20 right answers in "guess the shirt number" in one match | נחש 20 מספרי נכונים במשחק אחד ב"מי החולצה?" | 100
 the player hit 20 score in הקפצות | הקפץ 20 פעמים במשחק הקפצות | 20
 the player hit 40 score in הקפצות | הקפץ 40 פעמים במשחק הקפצות | 40
 the player hit 60 score in הקפצות | הקפץ 60 פעמים במשחק הקפצות | 60
@@ -7,6 +10,7 @@ the player hit 100 score in הקפצות | הקפץ 100 פעמים במשחק ה
 the player hit 1000 distance in stamford run | עבור 1,000 מטר במשחק ריצת סטמפורד | 25
 the player hit 2000 distance in stamford run | עבור 2,000 מטר במשחק ריצת סטמפורד | 50
 the player hit 3000 distance in stamford run | עבור 3,000 מטר במשחק ריצת סטמפורד | 100
+the player hit 3000 distance in stamford run | עבור 4,000 מטר במשחק ריצת סטמפורד | 150
 the player score 25 goals in penalties battle game | הבקע 25 שערים בדו-קרב פנדלים | 25
 the player score 50 goals in penalties battle game | הבקע 50 שערים בדו-קרב פנדלים | 50
 the player score 100 goals in penalties battle game | הבקע 100 שערים בדו-קרב פנדלים | 100
@@ -35,8 +39,14 @@ the player complete the full legends page in the album | השלם את מדבק�
 the player purchase 20 packs | קנה 20 מעטפות בחנות | 50
 the player purchase 40 packs | קנה 40 מעטפות בחנות | 100
 the player purchase 100 packs | קנה 100 מעטפות בחנות | 150
+the player purchase 15 Legend packs | קנה 15 מעטפות אגדה בחנות | 100
+the player purchase 15 Kits packs | קנה 15 מעטפות זהב בחנות | 100
 the player purchase 10 gold packs | קנה 10 מעטפות זהב בחנות | 200
+the player download bacground to his device | הורד לטלפון רקע מתוך קלפי "רקע" באלבום | 25
+the player watched legend video | צפה בסרטון הייליטס של אגדה | 40
+the player watched cup winning video | צפה בסרטון של זכייה בגביע | 50
 the player recycle 25 card | מחזר 25 קלפים כפולים | 10
 the player recycle 50 card | מחזר 50 קלפים כפולים | 30
 the player recycle 100 card | מחזר 100 קלפים כפולים | 50
+the player recycle 100 card | מחזר 200 קלפים כפולים | 100
 
