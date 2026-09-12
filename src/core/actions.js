@@ -1,5 +1,7 @@
 import { $, closeModal, modal, stickerHTML, toast } from '../core/dom.js';
 import { ALL_IDS, BY_ID, COMMON_POOL, ITEMS, KIT_POOL, LEGEND_POOL, LUX_ONLY, PACKS, RARE_ONLY, RARE_POOL } from '../data/cards.js';
+import { Capacitor } from '@capacitor/core';
+import { Media } from '@capacitor-community/media';
 import { MUT } from '../core/mut.js';
 import { S, esc, got, pick, save, shuffle } from '../core/state.js';
 import { art, coinSVG } from '../art/cards.js';
@@ -107,14 +109,26 @@ export function cardDetail(id){
   rows.push(['מספר באלבום','#'+c.no],['נדירות',{common:'רגילה',rare:'נדירה',luxury:'לוקסוס'}[c.rarity]]);
   if(S.inv[id]>1)rows.push(['ברשותך','x'+S.inv[id]]);
   const playable=!!CARD_VIDEOS[c.id];
-  const downloadable=c.cat==='cat5'&&!!PHOTOS[c.id];
+  const isWallpaper=c.cat==='cat5'&&!!PHOTOS[c.id];
   const artClass=`detail-art ${c.rarity==='luxury'?'lux':''}`;
-  modal(`<div class="sheet">${playable
-      ?`<button class="${artClass}" data-yt="${c.id}">${art(c,false,true)}</button>`
-      :`<div class="${artClass}">${art(c)}</div>`}
+  /* תצוגת רקע: התמונה המלאה ביחס המסך של המכשיר, בלי חיתוך, כדי לראות איך זה ייראה כטפט */
+  const sw=Math.min(window.screen.width||9,window.screen.height||16);
+  const sh=Math.max(window.screen.width||9,window.screen.height||16);
+  const artHTML=isWallpaper
+    ?`<div class="wallpreview" style="aspect-ratio:${sw}/${sh}"><img src="${PHOTOS[c.id]}" alt=""></div>`
+    :playable?`<button class="${artClass}" data-yt="${c.id}">${art(c,false,true)}</button>`
+    :`<div class="${artClass}">${art(c)}</div>`;
+  const titlesHTML=(c.titles&&c.titles.length)
+    ?`<div style="text-align:start;margin-bottom:14px">
+        <div style="color:#9FB8DA;font-size:12.5px;margin-bottom:6px">תארים שזכה בהם עם צ'לסי</div>
+        ${c.titles.map(t=>`<div style="padding:4px 2px;font-size:14px">&#127942; ${esc(t)}</div>`).join('')}
+      </div>`
+    :'';
+  modal(`<div class="sheet">${artHTML}
     <h2>${esc(c.name)}</h2>
     <div style="text-align:start;margin-bottom:14px">${rows.map(r=>`<div class="kv"><span>${r[0]}</span><b>${esc(r[1])}</b></div>`).join('')}</div>
-    ${downloadable?`<button class="btn btn-blue" style="width:100%;margin-bottom:8px" data-dl="${c.id}">&#128229; הורד לטלפון</button>`:''}
+    ${titlesHTML}
+    ${isWallpaper?`<button class="btn btn-blue" style="width:100%;margin-bottom:8px" data-dl="${c.id}">&#128229; הורד לטלפון</button>`:''}
     <button class="btn btn-ghost" data-act="close" style="width:100%">סגירה</button></div>`);
 }
 
@@ -130,11 +144,43 @@ export function playHighlight(id){
     <button class="btn btn-ghost" data-act="close" style="width:100%">סגירה</button></div>`);
 }
 
-export function downloadPhoto(id){
+/* שמירה לגלריה של המכשיר: אנדרואיד לא יודע לשמור data: URI גדול מ-<a download>
+   בצורה אמינה, לכן באפליקציה הארוזה (native) משתמשים בפלאגין ששומר דרך
+   MediaStore. בדפדפן/תצוגה מקדימה (web) אין תמיכה בפלאגין, אז חוזרים
+   ל-<a download> הרגיל. */
+const ALBUM_NAME="אלבום הבלוז";
+let albumIdPromise=null;
+function getAlbumId(){
+  if(!albumIdPromise)albumIdPromise=(async()=>{
+    try{
+      let {albums}=await Media.getAlbums();
+      let found=albums.find(a=>a.name===ALBUM_NAME);
+      if(!found){
+        await Media.createAlbum({name:ALBUM_NAME});
+        ({albums}=await Media.getAlbums());
+        found=albums.find(a=>a.name===ALBUM_NAME);
+      }
+      return found?found.identifier:undefined;
+    }catch(e){return undefined;}
+  })();
+  return albumIdPromise;
+}
+
+export async function downloadPhoto(id){
   const c=BY_ID[id];
   if(!got(id))return;
   const src=PHOTOS[id];
   if(!src)return toast('אין תמונה זמינה להורדה');
+  if(Capacitor.isNativePlatform()){
+    try{
+      const albumIdentifier=await getAlbumId();
+      await Media.savePhoto({path:src,albumIdentifier,fileName:`chelsea-${id}`});
+      toast('התמונה נשמרה בגלריה! 📥');
+    }catch(e){
+      toast('שמירת התמונה נכשלה — נסו שוב');
+    }
+    return;
+  }
   const a=document.createElement('a');
   a.href=src;a.download=`chelsea-${id}.jpg`;
   document.body.appendChild(a);a.click();a.remove();

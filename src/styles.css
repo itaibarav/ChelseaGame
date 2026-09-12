@@ -139,6 +139,8 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .detail-art svg{display:block;width:100%;height:auto}
 .detail-art.lux{border-color:transparent;padding:3px;background:linear-gradient(120deg,#FFD700,#FFF6C9,#E8A200,#FFF6C9,#FFD700);
   background-size:260% 100%;animation:shimmer 2.6s linear infinite}
+.wallpreview{width:100%;max-width:220px;margin:0 auto 12px;border-radius:14px;overflow:hidden;border:3px solid #fff;background:#000}
+.wallpreview img{width:100%;height:100%;object-fit:contain;display:block}
 .kv{display:flex;justify-content:space-between;font-size:14px;padding:7px 2px;border-bottom:1px solid rgba(255,255,255,.09)}
 .kv span:first-child{color:#9FB8DA}
 .numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}

@@ -23,7 +23,7 @@ export const EXTRA_CATS=(EXTRA.cats||[]).map(c=>[c.key,c.label]);
 export const extrasIn=key=>(EXTRA.cards||[]).filter(c=>c.cat===key);
 export const pushExtras=key=>extrasIn(key).forEach(c=>CARDS.push({
   id:c.id,cat:c.cat,name:c.name,rarity:c.rarity||'common',
-  num:c.num,pos:c.pos,mv:c.mv,year:c.year,kit:c.kit}));
+  num:c.num,pos:c.pos,mv:c.mv,year:c.year,kit:c.kit,titles:c.titles}));
 SQUAD.forEach(([n,name,pos,mv])=>CARDS.push({id:'squad-'+n,cat:'squad',name,rarity:LUX.includes(n)?'luxury':'common',num:n,pos,mv}));
 pushExtras('squad');
 LEGENDS.forEach(([name,yr,lx],i)=>CARDS.push({id:'legend-'+i,cat:'legend',name,rarity:lx?'luxury':'rare',year:yr}));

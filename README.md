@@ -71,6 +71,18 @@ npx cap add android
 npm run android
 ```
 
+תיקיית `android/` לא נשמרת ב-git (מתחדשת מה-web build). אחרי `npx cap add android`
+צריך להוסיף ידנית ל-`android/app/src/main/AndroidManifest.xml`, בתוך `<!-- Permissions -->`,
+את ההרשאות שקטגוריית "רקעים" צריכה כדי לשמור תמונה לגלריה
+(`@capacitor-community/media`):
+
+```xml
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+<uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+```
+
 ## רישוי נכסים
 
 תמונות השחקנים והאגדות מוויקישיתוף ברישיון חופשי, עם מסך קרדיטים באפליקציה
