@@ -62,6 +62,9 @@ export function albumView(){
   return hud()+`<div class="head"><h1>האלבום שלי</h1><p>${collected()} מתוך ${TOTAL} מדבקות נאספו</p></div>
     <div class="tabs">${CATS.map(([k,l])=>{const n=CARDS.filter(c=>c.cat===k),o=n.filter(c=>got(c.id)).length;
       return `<button class="tab ${S.tab===k?'on':''}" data-tab="${k}">${l} ${o}/${n.length}</button>`;}).join('')}</div>
+    ${S.tab==='cat5'?'<p class="note">ניתן להוריד את התמונה &#128229;</p>'
+      :(S.tab==='legend'||S.tab==='cat2')?'<p class="note">אפשר ללחוץ על קלף כדי לצפות בסרטון ההיילייטס שלו &#127909;</p>'
+      :''}
     <div class="grid">${list.map(stickerHTML).join('')}</div>
     ${list.every(c=>!got(c.id))?'<p class="note">אין עדיין מדבקות בעמוד הזה. פתחו מעטפה בחנות.</p>':''}
     <div style="padding:0 var(--pad) 26px"><button class="btn btn-ghost" style="width:100%" data-act="credits">

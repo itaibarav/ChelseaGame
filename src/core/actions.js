@@ -6,6 +6,7 @@ import { art, coinSVG } from '../art/cards.js';
 import { avatarSVG } from '../art/avatar.js';
 import { confetti, packArtSVG, raysSVG, sfx } from '../core/fx.js';
 import CARD_VIDEOS from '../data/cardVideos.js';
+import { PHOTOS } from '../data/globals.js';
 import { render } from '../core/router.js';
 import { stadiumBG } from '../art/stadium.js';
 
@@ -106,25 +107,38 @@ export function cardDetail(id){
   rows.push(['מספר באלבום','#'+c.no],['נדירות',{common:'רגילה',rare:'נדירה',luxury:'לוקסוס'}[c.rarity]]);
   if(S.inv[id]>1)rows.push(['ברשותך','x'+S.inv[id]]);
   const playable=!!CARD_VIDEOS[c.id];
+  const downloadable=c.cat==='cat5'&&!!PHOTOS[c.id];
   const artClass=`detail-art ${c.rarity==='luxury'?'lux':''}`;
   modal(`<div class="sheet">${playable
       ?`<button class="${artClass}" data-yt="${c.id}">${art(c,false,true)}</button>`
       :`<div class="${artClass}">${art(c)}</div>`}
     <h2>${esc(c.name)}</h2>
     <div style="text-align:start;margin-bottom:14px">${rows.map(r=>`<div class="kv"><span>${r[0]}</span><b>${esc(r[1])}</b></div>`).join('')}</div>
+    ${downloadable?`<button class="btn btn-blue" style="width:100%;margin-bottom:8px" data-dl="${c.id}">&#128229; הורד לטלפון</button>`:''}
     <button class="btn btn-ghost" data-act="close" style="width:100%">סגירה</button></div>`);
 }
 
 export function playHighlight(id){
   const c=BY_ID[id],vid=CARD_VIDEOS[id];
   if(!vid)return toast('אין עדיין קטע וידאו לקלף הזה');
-  modal(`<div class="sheet"><h2 style="margin-bottom:12px">${esc(c.name)} — קטעי מחץ</h2>
+  modal(`<div class="sheet"><h2 style="margin-bottom:12px">${esc(c.name)} — סרטון היילייטס</h2>
     <div style="position:relative;padding-top:56.25%;border-radius:14px;overflow:hidden;margin-bottom:14px;background:#000">
       <iframe style="position:absolute;inset:0;width:100%;height:100%;border:0"
         src="https://www.youtube-nocookie.com/embed/${vid}?autoplay=1&playsinline=1&rel=0"
-        title="${esc(c.name)} — קטעי מחץ" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+        title="${esc(c.name)} — סרטון היילייטס" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
     </div>
     <button class="btn btn-ghost" data-act="close" style="width:100%">סגירה</button></div>`);
+}
+
+export function downloadPhoto(id){
+  const c=BY_ID[id];
+  if(!got(id))return;
+  const src=PHOTOS[id];
+  if(!src)return toast('אין תמונה זמינה להורדה');
+  const a=document.createElement('a');
+  a.href=src;a.download=`chelsea-${id}.jpg`;
+  document.body.appendChild(a);a.click();a.remove();
+  toast('התמונה יורדת… 📥');
 }
 
 export const LAYER_NAME={kit:'ערכה',hat:'כובע',scarf:'צעיף',boots:'נעליים'};
