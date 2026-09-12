@@ -22,7 +22,7 @@ export function startBubble(){
     if(t!==MUT.G.tier){MUT.G.tier=t;const l=$('#gl');if(l)l.textContent='מהירות '+(t+1);
       if(t>0)sfx('pop');}
     if(MUT.G.left<=0){MUT.G.over=true;endTimer();
-      setTimeout(()=>payout(MUT.G.score,'הזמן נגמר'),2000);}
+      setTimeout(()=>payout(MUT.G.score,'הזמן נגמר'),1000);}
   },1000);
   s.cv.addEventListener('pointerdown',e=>{
     if(MUT.G.over)return;

@@ -117,14 +117,23 @@ export default {
   "stadium-7": "/assets/stickers/stadium-7.jpg",
   "stadium-8": "/assets/stickers/stadium-8.jpg",
   "stadium-9": "/assets/stickers/stadium-9.jpg",
-  "stadium-0": "/assets/stickers/stadium-0.jpg"
+  "stadium-0": "/assets/stickers/stadium-0.jpg",
+  "cat5-x1": "/assets/stickers/cat5-x1.jpg",
+  "cat5-x2": "/assets/stickers/cat5-x2.jpg",
+  "cat5-x3": "/assets/stickers/cat5-x3.jpg",
+  "cat5-x4": "/assets/stickers/cat5-x4.jpg",
+  "cat5-x5": "/assets/stickers/cat5-x5.jpg",
+  "cat5-x6": "/assets/stickers/cat5-x6.jpg",
+  "cat5-x7": "/assets/stickers/cat5-x7.jpg",
+  "cat5-x8": "/assets/stickers/cat5-x8.jpg",
+  "cat5-x9": "/assets/stickers/cat5-x9.jpg"
  },
  "art": {
   "ball": "/assets/art/ball.png",
   "lion": "/assets/art/lion.png",
   "stadium": "/assets/art/stadium.png",
   "lionGold": "/assets/art/lionGold.png",
-  "reece": "/assets/art/reece.jpg",
+  "reece": "/assets/art/reece.png",
   "palmer": "/assets/art/palmer.png"
  }
 };

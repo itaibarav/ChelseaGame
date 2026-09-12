@@ -348,7 +348,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .rpsArena{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end;margin:4px 0 2px;min-height:216px}
 .rpsArena .side{display:flex;flex-direction:column;align-items:center;gap:4px}
 .rpsArena .who{font-size:12px;color:#9FB8DA;font-weight:700}
-.rpsArena .fig img{width:126px;height:auto;display:block}
+.rpsArena .fig svg{width:114px;height:190px;display:block}
 .rpsArena .hand{width:78px;height:78px}
 .rpsArena .hand.big{width:104px;height:104px}
 .rpsArena .hand.big .emo{font-size:82px}
@@ -370,18 +370,42 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 
 
 /* ---- תגובות של פאלמר ---- */
-@keyframes pShiver{0%,100%{transform:translateX(0) rotate(0)}
-  20%{transform:translateX(-3px) rotate(-3deg)}35%{transform:translateX(3px) rotate(3deg)}
-  50%{transform:translateX(-3px) rotate(-2deg)}65%{transform:translateX(3px) rotate(2deg)}80%{transform:translateX(-1px)}}
+.fig .pcold{opacity:0}
+.fig .pca,.fig .parm{transform-box:view-box}
+.fig .pca.a{transform-origin:38px 114px}
+.fig .pca.b{transform-origin:112px 117px}
+@keyframes pShow{0%,8%{opacity:0}16%,88%{opacity:1}100%{opacity:0}}
+@keyframes pHide{0%,8%{opacity:1}16%,88%{opacity:0}100%{opacity:1}}
+@keyframes pRubA{0%,16%,100%{transform:rotate(0)}30%{transform:rotate(-6deg)}
+  44%{transform:rotate(3deg)}58%{transform:rotate(-6deg)}72%{transform:rotate(3deg)}}
+@keyframes pRubB{0%,16%,100%{transform:rotate(0)}30%{transform:rotate(6deg)}
+  44%{transform:rotate(-3deg)}58%{transform:rotate(6deg)}72%{transform:rotate(-3deg)}}
+@keyframes pShiver{0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-2px)}35%{transform:translateX(2px)}
+  50%{transform:translateX(-2px)}65%{transform:translateX(2px)}80%{transform:translateX(-1px)}}
+.fig.win .pcold{animation:pShow 1.5s ease both}
+.fig.win .parm{animation:pHide 1.5s ease both}
+.fig.win .pca.a{animation:pRubA 1.5s ease-in-out both}
+.fig.win .pca.b{animation:pRubB 1.5s ease-in-out both}
 .fig.win{animation:pShiver 1.5s ease-in-out}
-.fig.lose{transform:translateY(3px) scale(.96);opacity:.85}
-.fig{transition:transform .25s,opacity .25s}
+.fig.lose{transform:translateY(3px)}
+.fig{transition:transform .25s}
 
 /* ---- ריס ג'יימס מערבב ---- */
 .shArena{display:flex;justify-content:center;margin:2px 0}
-.shArena .shFig{width:150px;height:150px;border-radius:14px;overflow:hidden;
-  border:3px solid rgba(255,255,255,.5);box-shadow:0 5px 0 rgba(0,0,0,.3)}
-.shArena .shFig img{width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block}
+.shArena .shFig{filter:drop-shadow(0 6px 4px rgba(0,0,0,.35))}
+.shArena .shFig img{height:178px;width:auto;display:block}
+@keyframes shWobble{0%,100%{transform:rotate(0) translateY(0)}
+  25%{transform:rotate(-3deg) translateY(-2px)}50%{transform:rotate(0) translateY(0)}
+  75%{transform:rotate(3deg) translateY(-2px)}}
+.shFig.mixing{animation:shWobble .65s ease-in-out infinite}
+@keyframes shWin{0%{transform:scale(1) translateY(0) rotate(0)}
+  30%{transform:scale(1.09) translateY(-11px) rotate(-5deg)}
+  55%{transform:scale(1.04) translateY(-4px) rotate(4deg)}
+  100%{transform:scale(1) translateY(0) rotate(0)}}
+.shFig.win{animation:shWin .8s ease}
+.shFig.lose{transform:translateY(6px) scale(.95);opacity:.8}
+.shFig{transition:transform .3s,opacity .3s}
 .shStage{position:relative;width:224px;margin:10px auto 4px;padding-bottom:16px}
 .shTable{position:absolute;left:0;right:0;bottom:0;height:26px;border-radius:9px;
   background:linear-gradient(180deg,#C6924F,#8A5A28);

@@ -1,4 +1,5 @@
 import { $, modal } from '../core/dom.js';
+import { LION } from '../art/cards.js';
 import { GA } from '../games/assets.js';
 import { MUT } from '../core/mut.js';
 import { confetti, sfx } from '../core/fx.js';
@@ -8,10 +9,42 @@ import { pick, S, save } from '../core/state.js';
 /* ======================= 7. אבן נייר ומספריים מול קול פאלמר ======================= */
 export const RPS=['rock','paper','scissors'];
 export const RPS_HE={rock:'אבן',paper:'נייר',scissors:'מספריים'};
-export const HAND_EMO={rock:'\u270A\uD83C\uDFFB',paper:'\u270B\uD83C\uDFFB',scissors:'\u270C\uD83C\uDFFC'};
+export const HAND_EMO={rock:'✊🏻',paper:'✋🏻',scissors:'✌🏼'};
 export const handSVG=(kind,flip)=>`<span class="emo${flip?' flip':''}">${HAND_EMO[kind]}</span>`;
 
-const palmerFig=GA.palmer?`<img src="${GA.palmer}" alt="">`:'🙂';
+/* הגוף מצויר בקוד כמו כל האווטארים במשחק; הראש הוא תמונת הפנים האמיתית
+   של קול פאלמר (רקע הוסר אוטומטית), מודבקת בדיוק במקום הראש המצויר. */
+export const palmerSVG=`<svg viewBox="0 0 150 250">
+  <ellipse cx="75" cy="243" rx="44" ry="6" fill="rgba(0,0,0,.16)"/>
+  <!-- רגליים ונעליים -->
+  <rect x="59" y="168" width="14" height="58" rx="7" fill="#F3D2AE"/>
+  <rect x="77" y="168" width="14" height="58" rx="7" fill="#F3D2AE"/>
+  <path d="M53 224 h23 v9 a5 5 0 0 1 -5 5 h-21 a4 4 0 0 1 -1 -8z" fill="#2050CC" stroke="#123A9E" stroke-width="2"/>
+  <path d="M74 224 h23 v9 a5 5 0 0 1 -5 5 h-21 a4 4 0 0 1 -1 -8z" fill="#2050CC" stroke="#123A9E" stroke-width="2"/>
+  <!-- מכנסיים -->
+  <path d="M48 148 h54 v34 h-22 l-5 -13 -5 13 h-22z" fill="#2050CC" stroke="#123A9E" stroke-width="2"/>
+  <!-- זרועות -->
+  <g class="parm l"><rect x="29" y="106" width="15" height="60" rx="7.5" fill="#F3D2AE"/></g>
+  <g class="parm r"><rect x="106" y="106" width="15" height="60" rx="7.5" fill="#F3D2AE"/></g>
+  <!-- שרוולים וגוף -->
+  <path d="M50 100 l-21 8 5 26 17 -7z" fill="#2050CC" stroke="#123A9E" stroke-width="2"/>
+  <path d="M100 100 l21 8 -5 26 -17 -7z" fill="#2050CC" stroke="#123A9E" stroke-width="2"/>
+  <rect x="48" y="98" width="54" height="54" rx="5" fill="#2050CC" stroke="#123A9E" stroke-width="2"/>
+  <path d="M62 98 L75 114 L88 98" fill="none" stroke="#123A9E" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M55 120 c4 3 9 2 14 -2 l12 -7 c-4 6 -10 9 -17 12 c-5 2 -8 1 -9 -3z" fill="#F2C230"/>
+  ${LION?`<image href="${LION}" x="84" y="103" width="16" height="21"/>`
+        :'<circle cx="92" cy="113" r="9" fill="#F2C230"/>'}
+  <path d="M63 130 h15 v11 a7.5 7.5 0 0 1 -15 0z" fill="#D9B14A" stroke="#B08A2E" stroke-width="1.4"/>
+  <g class="pcold">
+    <g class="pca a"><path d="M38 114 L100 120" fill="none" stroke="#F3D2AE" stroke-width="15" stroke-linecap="round"/>
+      <circle cx="100" cy="120" r="8.5" fill="#F5D5B0" stroke="#DDA97F" stroke-width="1"/></g>
+    <g class="pca b"><path d="M112 117 L46 123" fill="none" stroke="#EFC6A0" stroke-width="15" stroke-linecap="round"/>
+      <circle cx="46" cy="123" r="8.5" fill="#F5D5B0" stroke="#DDA97F" stroke-width="1"/></g>
+  </g>
+  <!-- ראש: התמונה האמיתית של קול פאלמר, ממורכזת מעל הצוואר -->
+  ${GA.palmer?`<image href="${GA.palmer}" x="41" y="4" width="68" height="94" preserveAspectRatio="xMidYMax meet"/>`
+             :'<rect x="34" y="14" width="82" height="84" rx="35" fill="#F5D5B0"/>'}
+</svg>`;
 
 export function palmerReact(mood,ms){
   const f=$('#pFig');if(!f)return;
@@ -28,7 +61,7 @@ export function startRPS(){
     <div class="rpsArena">
       <div class="side">
         <div class="who">קול פאלמר</div>
-        <div class="fig" id="pFig">${palmerFig}</div>
+        <div class="fig" id="pFig">${palmerSVG}</div>
         <div class="hand" id="pHand">${handSVG('rock')}</div>
       </div>
       <div class="side">

@@ -52,7 +52,7 @@ export function startKeepie(){
     paint();
     if(B.y-B.r>line){MUT.G.over=true;
       S.stats.keepieBest=Math.max(S.stats.keepieBest,MUT.G.taps);save();
-      return setTimeout(()=>payout(MUT.G.taps,MUT.G.taps>25?'הקפצן של המועדון!':'הכדור נפל'),2000);}
+      return setTimeout(()=>payout(MUT.G.taps,MUT.G.taps>25?'הקפצן של המועדון!':'הכדור נפל'),1000);}
     MUT.RAF=requestAnimationFrame(loop);
   }
 }
