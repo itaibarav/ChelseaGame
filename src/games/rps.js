@@ -3,7 +3,7 @@ import { LION } from '../art/cards.js';
 import { MUT } from '../core/mut.js';
 import { confetti, sfx } from '../core/fx.js';
 import { payout } from '../games/shared.js';
-import { pick } from '../core/state.js';
+import { pick, S, save } from '../core/state.js';
 
 /* ======================= 7. אבן נייר ומספריים מול קול פאלמר ======================= */
 export const RPS=['rock','paper','scissors'];
@@ -93,7 +93,7 @@ export function startRPS(){
     <p id="rMsg" style="min-height:22px;margin:6px 0 8px"></p>
     <div class="rpsPick">${RPS.map(k=>
       `<button data-rps="${k}"><span class="ic">${handSVG(k,true)}</span>${RPS_HE[k]}</button>`).join('')}</div>
-    <button class="btn btn-ghost" data-act="quit" style="width:100%;margin-top:10px">סיום</button></div>`);
+    <button class="btn btn-ghost" data-act="quit" style="width:100%;margin-top:10px">סיום</button></div>`,{closable:false});
 }
 export function playRPS(choice){
   if(!MUT.G||MUT.G.busy||MUT.G.k!=='rps')return;
@@ -116,7 +116,7 @@ export function revealRPS(choice){
   const beats={rock:'scissors',paper:'rock',scissors:'paper'};
   let gain=0,txt;
   if(ai===choice){gain=2;txt=`<b style="color:#FFD766">תיקו — שניכם ${RPS_HE[ai]} +2</b>`;sfx('pop');}
-  else if(beats[choice]===ai){gain=6;MUT.G.wins++;txt=`<b style="color:#8FE0A0">ניצחת! ${RPS_HE[choice]} מנצח ${RPS_HE[ai]} +6</b>`;sfx('win');confetti(16);
+  else if(beats[choice]===ai){gain=6;MUT.G.wins++;S.stats.rpsWins++;save();txt=`<b style="color:#8FE0A0">ניצחת! ${RPS_HE[choice]} מנצח ${RPS_HE[ai]} +6</b>`;sfx('win');confetti(16);
     palmerReact('lose',1000);}
   else{txt=`<b style="color:#FF9A9C">פאלמר לקח את זה — ${RPS_HE[ai]}</b>`;sfx('err');
     palmerReact('win',1500);}

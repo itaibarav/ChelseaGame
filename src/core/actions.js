@@ -11,6 +11,7 @@ import CARD_VIDEOS from '../data/cardVideos.js';
 import { PHOTOS } from '../data/globals.js';
 import { render } from '../core/router.js';
 import { stadiumBG } from '../art/stadium.js';
+import { TASKS } from '../data/tasks.js';
 
 /* ======================= ACTIONS ======================= */
 export function openPack(type){
@@ -37,14 +38,16 @@ export function openPack(type){
   const order=shuffle([0,1,2,3,4]),res={};
   if(type==='gold')res[order[0]]=()=>uniquePick(RARE_POOL,COMMON_POOL);
   if(type==='legend')res[order[0]]=()=>uniquePick(LEGEND_POOL,RARE_ONLY);
-  if(type==='kit'){res[order[0]]=()=>uniquePick(KIT_POOL,COMMON_POOL);
-                   res[order[1]]=()=>uniquePick(KIT_POOL,COMMON_POOL);}
-  const o=type==='gold'?{l:.06,r:.24}:{l:.015,r:.085},slots=[];
+  if(type==='kit')res[order[0]]=()=>uniquePick(KIT_POOL,COMMON_POOL);
+  /* הסלוטים החופשיים (לא אגדה/מדים מובטחים): נדיר/לוקסוס בסיכוי חצי מהרגיל,
+     כלומר פי 2 יותר סיכוי למדבקה רגילה. במעטפת זהב הסיכוי נשאר מוגבר כרגיל. */
+  const o=type==='gold'?{l:.06,r:.24}:{l:.0075,r:.0425},slots=[];
   for(let i=0;i<5;i++)slots.push(res[i]?res[i]():rollUnique(o));
 
   const fresh=slots.map(id=>!got(id));
   slots.forEach(id=>S.inv[id]=(S.inv[id]||0)+1);
   MUT.NEW_IDS=new Set(slots.filter((id,i)=>fresh[i]));
+  S.stats.packsOpened++;if(type==='gold')S.stats.goldPacksOpened++;
   save();
   MUT.PK={p,slots,fresh,i:-1};
   renderPack();render();
@@ -95,7 +98,7 @@ export function recycleAll(){
   Object.keys(S.inv).forEach(id=>{const extra=S.inv[id]-1;
     if(extra>0){const v=RECYCLE_VALUE[(BY_ID[id]||{}).rarity]||1;total+=extra*v;n+=extra;S.inv[id]=1;}});
   if(!n)return toast('אין כפילויות למחזור');
-  S.coins+=total;save();sfx('coin');render();toast(`מוחזרו ${n} כפילויות → ${total} מטבעות`);
+  S.coins+=total;S.stats.recycled+=n;save();sfx('coin');render();toast(`מוחזרו ${n} כפילויות → ${total} מטבעות`);
 }
 
 export function cardDetail(id){
@@ -187,7 +190,7 @@ export async function downloadPhoto(id){
   toast('התמונה יורדת… 📥');
 }
 
-export const LAYER_NAME={kit:'ערכה',hat:'כובע',scarf:'צעיף',boots:'נעליים'};
+export const LAYER_NAME={kit:'מדים',hat:'כובע',scarf:'צעיף',boots:'נעליים'};
 
 export function tapItem(id){
   const it=ITEMS[id];
@@ -224,6 +227,14 @@ export function previewItem(id){
         ${label}${!locked&&!short&&it.price?coinSVG(17):''}</button>
       <button class="btn btn-ghost" data-act="close">ביטול</button>
     </div></div>`);
+}
+
+export function claimTask(id){
+  if(S.claimedTasks.includes(id))return;
+  const t=TASKS.find(x=>x.id===id);
+  if(!t||!t.check())return;
+  S.claimedTasks.push(id);S.coins+=t.reward;save();
+  sfx('coin');confetti(20);render();toast(`המשימה הושלמה! +${t.reward} מטבעות`);
 }
 
 export function buyItem(id){

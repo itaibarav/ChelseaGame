@@ -6,7 +6,7 @@ import { PHOTOS } from '../data/globals.js';
 import { art } from '../art/cards.js';
 import { payout } from '../games/shared.js';
 import { sfx } from '../core/fx.js';
-import { shuffle } from '../core/state.js';
+import { S, save, shuffle } from '../core/state.js';
 
 /* ======================= 3. משחק זיכרון ======================= */
 export function startMemory(){
@@ -22,7 +22,7 @@ export function startMemory(){
     <p style="margin:2px 0 4px">מצאו את שישה זוגות האגדות</p>
     <div class="mgrid">${deck.map(d=>`<button class="mcard" data-mem="${d.i}">
       <span class="back">${back}</span><span class="face">${art(d.card)}</span></button>`).join('')}</div>
-    <button class="btn btn-ghost" data-act="quit" style="width:100%">סיום</button></div>`);
+    <button class="btn btn-ghost" data-act="quit" style="width:100%">סיום</button></div>`,{closable:false});
   MUT.G.timer=setInterval(()=>{
     MUT.G.left--;const t=$('#mT');if(t)t.textContent='⏱ '+MUT.G.left+'s';
     if(MUT.G.left<=0)payout(0,'נגמר הזמן');
@@ -46,6 +46,7 @@ export function flipMemory(i){
     const p=$('#mP');if(p)p.textContent=(MUT.G.done.length/2)+' / 6 זוגות';
     if(MUT.G.done.length===12){
       const sec=Math.round((Date.now()-MUT.G.start)/1000);
+      S.stats.memoryWins++;save();
       payout(sec<30?20:10,sec<30?'מהיר במיוחד!':'הושלם!');
     }
   },same?420:820);

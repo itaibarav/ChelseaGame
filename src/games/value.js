@@ -16,7 +16,7 @@ export function startValue(){
       <span style="font-family:Secular One;font-size:18px;opacity:.6">VS</span>
       <button class="vscard" data-vs="1" id="vB"></button></div>
     <p id="vMsg" style="min-height:22px;margin:0 0 8px"></p>
-    <button class="btn btn-ghost" data-act="quit" style="width:100%">סיום ואיסוף</button></div>`);
+    <button class="btn btn-ghost" data-act="quit" style="width:100%">סיום ואיסוף</button></div>`,{closable:false});
   nextValue();
 }
 export function nextValue(){

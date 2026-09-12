@@ -105,6 +105,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .pack{display:flex;align-items:center;gap:12px;border-radius:var(--r-lg);padding:12px;
   background:linear-gradient(150deg,rgba(255,255,255,.1),rgba(255,255,255,.03));border:1.5px solid rgba(255,255,255,.14)}
 .pack.gold{background:linear-gradient(150deg,rgba(255,200,61,.24),rgba(255,200,61,.05));border-color:rgba(255,214,102,.5)}
+.pack.done{opacity:.55}
 .pack .txt{flex:1}
 .pack .txt b{font-family:'Secular One';font-size:16px;font-weight:400;display:block}
 .pack .txt small{color:var(--muted);font-size:12px}
@@ -391,6 +392,20 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .fig.lose .pmouth.happy,.fig.lose .pbrow.happy{opacity:0}
 .fig.lose{transform:translateY(3px)}
 .fig{transition:transform .25s}
+
+/* ---- ריס ג'יימס מערבב ---- */
+.shArena{display:flex;justify-content:center;margin:2px 0}
+.shArena .shFig svg{width:128px;height:182px;display:block}
+.shCups{position:relative;height:78px;width:208px;margin:12px auto 4px}
+.shCol{position:absolute;top:0;left:72px;width:64px;height:64px;transition:transform .6s cubic-bezier(.3,.9,.4,1.1)}
+.shContent{position:absolute;inset:0;opacity:0;transition:opacity .25s}
+.shContent svg{width:100%;height:100%;display:block}
+.shCup{position:absolute;inset:0;width:100%;height:100%;transition:opacity .25s,transform .25s}
+.shCup svg{width:100%;height:100%;display:block}
+.shCups.open .shContent,.shCol.reveal .shContent{opacity:1}
+.shCups.open .shCup,.shCol.reveal .shCup{opacity:0;transform:translateY(-22px)}
+.shCol.picked .shContent{filter:drop-shadow(0 0 6px rgba(255,255,255,.65))}
+.shCol.lionslot .shContent{filter:drop-shadow(0 0 10px rgba(143,224,160,.95))}
 
 /* ---- ריצת סטמפורד ---- */
 .runScene{position:relative;width:100%;height:320px;border-radius:14px;overflow:hidden;

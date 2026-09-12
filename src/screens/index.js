@@ -1,6 +1,7 @@
 import { $, modal, stickerHTML } from '../core/dom.js';
 import { API_BASE, crestOf, matchDate, mediaUrl, nextMatch, online, ownCrest, teamHe } from '../net/feed.js';
 import { CARDS, CATS, GAMES, LAYER_TABS, MOCK_MATCH, MOCK_POSTS, PACKS, TOTAL, byLayer } from '../data/cards.js';
+import { TASKS } from '../data/tasks.js';
 import { MUT } from '../core/mut.js';
 import { S, collected, esc, got, today } from '../core/state.js';
 import { avatarSVG, itemThumb } from '../art/avatar.js';
@@ -52,9 +53,30 @@ export function homeView(){
       <div class="side">${crestOf(m)}<small>${esc(teamHe(m.opponent))}</small></div></div>`;})()}
   <div class="tiles">
     <button class="tile tile-gold" data-act="go-shop"><div style="font-size:34px">&#127873;</div><div class="lbl">חנות מעטפות</div></button>
-    <button class="tile tile-blue" data-act="go-games"><div style="font-size:34px">&#127918;</div><div class="lbl">הרוויחו מטבעות<br>9 משחקים</div></button>
+    <button class="tile tile-blue" data-act="go-games"><div style="font-size:34px">&#127918;</div><div class="lbl">הרוויחו מטבעות<br>10 משחקים</div></button>
+  </div>
+  <div class="hero-row">
+    <button class="btn btn-gold" style="width:100%" data-act="go-tasks">&#127942; משימות · ${S.claimedTasks.length}/${TASKS.length}</button>
   </div>
   <p class="note">כל האיורים נוצרים בקוד (SVG). לוח המשחקים מציג נתוני דוגמה עד שנחבר מקור נתונים.</p>`;
+}
+
+export function tasksView(){
+  const done=S.claimedTasks.length,total=TASKS.length,pct=Math.round(done/total*100);
+  return hud()+`<div class="head"><h1>משימות</h1><p>השלימו משימות במשחקים וקבלו מטבעות</p></div>
+    <div class="hero-row">
+      <div class="btn btn-blue progress-btn" style="width:100%">
+        <div class="fill" style="width:${pct}%"></div><span>&#127942; ${done}/${total} משימות הושלמו</span></div>
+    </div>
+    <div class="packs">${TASKS.map(t=>{
+      const claimed=S.claimedTasks.includes(t.id);
+      const ready=!claimed&&t.check();
+      return `<div class="pack ${claimed?'done':''}">
+        <div class="txt"><b>${esc(t.label)}</b><small>פרס: ${t.reward} מטבעות</small></div>
+        ${claimed?'<span class="chip">&#9989; נאסף</span>'
+          :ready?`<button class="buy" data-claim="${t.id}">איסוף ${coinSVG(15)}</button>`
+          :'<span class="chip">&#128274; נעול</span>'}
+      </div>`;}).join('')}</div>`;
 }
 
 export function albumView(){
@@ -87,7 +109,7 @@ export function gamesView(){
   return hud()+`<div class="head"><h1>משחקונים</h1><p>שחקו, צברו מטבעות, קנו מעטפות</p></div>
     <div class="glist">${GAMES.map(([n,e,k])=>`<button class="gtile ${k?'':'soon'}" ${k?`data-game="${k}"`:''}>
       <span class="emoji">${e}</span><span>${n}</span>${k?'':'<small style="font-size:10px">בקרוב</small>'}</button>`).join('')}</div>
-    <p class="note">כל תשעת המשחקונים פעילים.</p>`;
+    <p class="note">כל עשרת המשחקונים פעילים.</p>`;
 }
 
 export function newsView(){
@@ -130,7 +152,7 @@ export function matchesModal(){
 
 export function avatarView(){
   const items=byLayer(S.avTab);
-  return hud()+`<div class="head"><h1>הלוקר שלי</h1><p>הרכיבו את הדמות — ערכות נפתחות לפי האלבום</p></div>
+  return hud()+`<div class="head"><h1>הלוקר שלי</h1><p>הרכיבו את הדמות — מדים נפתחים לפי האלבום</p></div>
     <div class="studio">${stadiumBG(true)}${avatarSVG('avatar')}</div>
     <div class="tabs">${LAYER_TABS.map(([k,l])=>`<button class="tab ${S.avTab===k?'on':''}" data-avtab="${k}">${l}</button>`).join('')}
       ${S.avTab!=='kit'&&S.avTab!=='boots'?`<button class="tab" data-equip="none">הסרה</button>`:''}</div>
@@ -142,5 +164,5 @@ export function avatarView(){
         ${itemThumb(it)}<span class="nm">${esc(it.name)}</span>
         <span class="pr ${owned?'owned':''}">${owned?(on?'לבוש':'ברשותך'):(locked?'נעול':(it.price?it.price+' ':'חינם')+(it.price?coinSVG(13):''))}</span>
       </button>`;}).join('')}</div>
-    ${S.avTab==='kit'?'<p class="note">ערכה נפתחת לרכישה רק אחרי שאספתם את מדבקת הערכה המתאימה באלבום.</p>':''}`;
+    ${S.avTab==='kit'?'<p class="note">מדים נפתחים לרכישה רק אחרי שאספתם את מדבקת המדים המתאימה באלבום.</p>':''}`;
 }

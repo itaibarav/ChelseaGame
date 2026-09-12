@@ -2,12 +2,14 @@ import { $, modal } from '../core/dom.js';
 import { MUT } from '../core/mut.js';
 import { avatarSVG } from '../art/avatar.js';
 import { payout } from '../games/shared.js';
+import { S, save } from '../core/state.js';
 import { sfx } from '../core/fx.js';
 import { startBubble } from '../games/bubble.js';
 import { startKeepie } from '../games/keepie.js';
 import { startMemory } from '../games/memory.js';
 import { startPenalty } from '../games/penalty.js';
 import { startRPS } from '../games/rps.js';
+import { startShellGame } from '../games/shell.js';
 import { startShirt } from '../games/shirt.js';
 import { startTTT } from '../games/ttt.js';
 import { startValue } from '../games/value.js';
@@ -34,7 +36,7 @@ export function startRun(){
       <div class="rhint" id="rHint">הקישו כדי לצאת לדרך</div>
     </div>
     <p class="runTip">הקישו בכל מקום על המגרש כדי לקפוץ מעל הקונוסים</p>
-    <div class="runQuit"><button class="btn btn-ghost" data-act="quit" style="width:100%">סיום</button></div></div>`);
+    <div class="runQuit"><button class="btn btn-ghost" data-act="quit" style="width:100%">סיום</button></div></div>`,{closable:false});
 
   const sc=$('#rScene'),obsBox=$('#rObs'),run=$('#rRun');
   if(!sc)return;
@@ -74,6 +76,7 @@ export function startRun(){
 
   const die=()=>{
     MUT.G.over=true;run.classList.remove('go','air');sfx('err');
+    S.stats.runBest=Math.max(S.stats.runBest,Math.round(MUT.G.dist));save();
     payout(MUT.G.coins,MUT.G.dist>400?'ריצה מעולה!':'נתקלת בקונוס');
   };
 
@@ -113,4 +116,4 @@ export function startRun(){
 }
 
 export const GAME_START={shirt:startShirt,value:startValue,memory:startMemory,penalty:startPenalty,
-  rps:startRPS,ttt:startTTT,bubble:startBubble,keepie:startKeepie,run:startRun};
+  rps:startRPS,ttt:startTTT,bubble:startBubble,keepie:startKeepie,run:startRun,shell:startShellGame};

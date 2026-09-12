@@ -27,7 +27,8 @@ export default {
     "id": "legend-x1",
     "cat": "legend",
     "name": "סזאר אזפיליקוואטה",
-    "rarity": "luxury"
+    "rarity": "luxury",
+    "year": "2012–2023"
    },
    {
     "id": "cat1-x1",

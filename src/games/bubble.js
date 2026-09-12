@@ -1,6 +1,6 @@
 import { $, modal, toast } from '../core/dom.js';
 import { MUT } from '../core/mut.js';
-import { canvasPoint, drawPitch, payout, setupCanvas } from '../games/shared.js';
+import { canvasPoint, drawPitch, endTimer, payout, setupCanvas } from '../games/shared.js';
 import { drawBallArt, drawLionArt } from '../games/assets.js';
 import { sfx } from '../core/fx.js';
 
@@ -11,7 +11,7 @@ export function startBubble(){
     <h2 style="margin:2px 0 8px;font-size:21px">פיצוץ בועות</h2>
     <canvas id="cv" class="gcanvas"></canvas>
     <p style="margin:9px 0 0;font-size:12.5px">כדור = נקודה · אריה = שתיים · כרטיס אדום גוזל 5 שניות</p>
-    <button class="btn btn-ghost" data-act="quit" style="width:100%;margin-top:8px">סיום</button></div>`);
+    <button class="btn btn-ghost" data-act="quit" style="width:100%;margin-top:8px">סיום</button></div>`,{closable:false});
   const s=setupCanvas(360);if(!s)return;
   MUT.G={k:'bubble',score:0,left:45,items:[],tier:0};
   let spawnAt=0;
@@ -21,9 +21,11 @@ export function startBubble(){
     const t=Math.min(6,Math.floor((45-MUT.G.left)/7));   /* האצה כל 7 שניות */
     if(t!==MUT.G.tier){MUT.G.tier=t;const l=$('#gl');if(l)l.textContent='מהירות '+(t+1);
       if(t>0)sfx('pop');}
-    if(MUT.G.left<=0)payout(MUT.G.score,'הזמן נגמר');
+    if(MUT.G.left<=0){MUT.G.over=true;endTimer();
+      setTimeout(()=>payout(MUT.G.score,'הזמן נגמר'),2000);}
   },1000);
   s.cv.addEventListener('pointerdown',e=>{
+    if(MUT.G.over)return;
     const p=canvasPoint(s.cv,e);
     for(let i=MUT.G.items.length-1;i>=0;i--){const it=MUT.G.items[i];
       if(Math.hypot(p.x-it.x,p.y-it.y)<it.r+10){

@@ -21,7 +21,7 @@ export function startShirt(){
     <div class="numpad">${[1,2,3,4,5,6,7,8,9].map(d=>`<button data-num="${d}">${d}</button>`).join('')}
       <button data-num="del">⌫</button><button data-num="0">0</button>
       <button data-num="ok" style="background:linear-gradient(180deg,#FFD766,#E09800);color:#3A2400">✓</button></div>
-    <button class="btn btn-ghost" data-act="quit" style="width:100%;margin-top:10px">סיום</button></div>`);
+    <button class="btn btn-ghost" data-act="quit" style="width:100%;margin-top:10px">סיום</button></div>`,{closable:false});
   MUT.G.timer=setInterval(()=>{
     MUT.G.left--;const t=$('#gT');if(t)t.textContent='⏱ '+MUT.G.left+'s';
     if(MUT.G.left<=0)payout(MUT.G.coins,'נגמר הזמן!');

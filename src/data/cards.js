@@ -15,7 +15,7 @@ export const LEGENDS=_LD&&_LD.length?_LD.map(l=>[l.name,l.years,!!l.lux]):DEF_LE
 export const TROPHIES=[["ליגת האלופות","2011/12"],["ליגת האלופות","2020/21"],["גביע העולם למועדונים","2021"],["גביע העולם למועדונים","2025"],["הסופר קאפ האירופי","2021"],["הליגה האירופית","2012/13"],["הליגה האירופית","2018/19"],["ליגת הקונפרנס","2024/25"],["גביע אלופות הגביעים","1970/71"],["גביע אלופות הגביעים","1997/98"],["אליפות אנגליה","1954/55"],["פרמייר ליג","2004/05"],["פרמייר ליג","2009/10"],["פרמייר ליג","2016/17"]];
 export const STADIUM=["מבט מהדשא","היציע המערבי","יציע מת׳יו הארדינג","יציע השד","היציע המזרחי","המנהרה לכר הדשא","חדר ההלבשה","מבט אווירי","ליל אורות","מוזיאון המועדון"];
 export const KITPAL={home:["#034694","#062B63","#FFFFFF"],away:["#EEF2F8","#B9C4D6","#034694"],third:["#16232F","#2BD9A6","#EAF7F2"]};
-export const KITLBL={home:"ערכת בית",away:"ערכת חוץ",third:"ערכה שלישית"};
+export const KITLBL={home:"מדי בית",away:"מדי חוץ",third:"מדים שלישיים"};
 
 export const CARDS=[];
 export const EXTRA=(typeof window!=='undefined'&&window.ALBUM_EXTRA)||{cats:[],cards:[]};
@@ -44,17 +44,17 @@ CARDS.forEach(c=>{if(OVR.names&&OVR.names[c.id]!==undefined)c.name=OVR.names[c.i
 (()=>{const order=['squad','legend'].concat(EXTRA_CATS.map(c=>c[0])).concat(['kit','stadium']);
   const rank=c=>{const i=order.indexOf(c.cat);return i<0?order.length:i;};
   CARDS.sort((a,b)=>rank(a)-rank(b));})();
-(()=>{ /* לכל קלף ערכה: שנה וסוג לפי השם שהוגדר */
+(()=>{ /* לכל קלף מדים: שנה וסוג לפי השם שהוגדר */
   const T={'בית':'home','חוץ':'away','שלישית':'third'};
   CARDS.filter(c=>c.cat==='kit').forEach(c=>{
     const m=String(c.name||'').match(/(\d{4}\/\d{2})/);
     if(m)c.year=m[1];
-    const t=Object.keys(T).find(k=>String(c.name||'').trim().startsWith(k));
+    const t=Object.keys(T).find(k=>String(c.name||'').includes(k));
     if(t)c.kit=T[t];
   });})();
 export const seasonYear=n=>{const m=String(n||'').match(/(\d{4})\/(\d{2})/);return m?+m[1]:9999;};
 export const KIT_ORDER={home:0,away:1,third:2};
-(()=>{  /* עמוד הערכות מסודר כרונולוגית */
+(()=>{  /* עמוד המדים מסודר כרונולוגית */
   const idx=CARDS.map((c,i)=>[c,i]).filter(([c])=>c.cat==='kit');
   if(!idx.length)return;
   const slots=idx.map(([,i])=>i);
@@ -74,10 +74,10 @@ export const KIT_POOL=KIT_CARDS.map(c=>c.id);
 export const ALL_IDS=CARDS.map(c=>c.id);
 export const LEGEND_POOL=CARDS.filter(c=>c.cat==='legend').map(c=>c.id);
 export const CATS=[['squad','הסגל'],['legend','אגדות']]
-  .concat(EXTRA_CATS).concat([['kit','ערכות'],['stadium','האצטדיון']])
+  .concat(EXTRA_CATS).concat([['kit','מדים'],['stadium','האצטדיון']])
   .map(([k,l])=>[k,(OVR.cats&&OVR.cats[k])||l]);
-export const PACKS=[{t:'standard',n:'מעטפה רגילה',p:50,d:'5 מדבקות אקראיות'},{t:'legend',n:'מעטפת אגדות',p:70,d:'מובטחת לפחות אגדה אחת'},{t:'kit',n:'מעטפת ערכות',p:70,d:'מובטחות לפחות 2 ערכות'},{t:'gold',n:'מעטפת זהב',p:100,d:'מובטח קלף נדיר או לוקסוס'}];
-export const GAMES=[['מי החולצה?','👕','shirt'],['קרב שווי','💶','value'],['משחק זיכרון','🃏','memory'],['דו-קרב פנדלים','🥅','penalty'],['אבן נייר ומספריים','✊','rps'],['איקס עיגול','⭕','ttt'],['פיצוץ בועות','🫧','bubble'],['הקפצות','🤹','keepie'],['ריצת סטמפורד','🏃','run']];
+export const PACKS=[{t:'standard',n:'מעטפה רגילה',p:50,d:'5 מדבקות אקראיות'},{t:'legend',n:'מעטפת אגדות',p:70,d:'מובטחת לפחות אגדה אחת'},{t:'kit',n:'מעטפת מדים',p:70,d:'מובטחים מדי משחק'},{t:'gold',n:'מעטפת זהב',p:100,d:'מובטח קלף נדיר או לוקסוס'}];
+export const GAMES=[['מי החולצה?','👕','shirt'],['קרב שווי','💶','value'],['משחק זיכרון','🃏','memory'],['דו-קרב פנדלים','🥅','penalty'],['אבן נייר ומספריים','✊','rps'],['איקס עיגול','⭕','ttt'],['פיצוץ בועות','🫧','bubble'],['הקפצות','🤹','keepie'],['ריצת סטמפורד','🏃','run'],['ריס ג׳יימס מערבב','🦁','shell']];
 
 /* --- avatar catalogue --- */
 /* [מזהה, שם, מחיר, [צבע ראשי, פס], סמל] */
@@ -87,7 +87,7 @@ export const SCARVES=[
  ['av-scarf-il',     'צעיף ישראל',45,['#1E6BE6','#FFFFFF'],'badge'],
  ['av-scarf-white',  'צעיף לבן',  30,['#F2F5FA','#1E5BE0'],'badge'],
  ['av-scarf-2027',   'צעיף 2027', 55,['#0B45B5','#D9B14A'],'gold']];
-export const HATS=[['av-hat-beanie','כובע גרב',20,'beanie',['#1E6BE6','#0F4FB5']],['av-hat-cap','כובע מצחייה',20,'cap',['#034694','#FFC83D']],['av-hat-bucket','כובע פטרייה',30,'bucket',['#DDE7F5','#034694']],['av-hat-crown','כתר אלופים',60,'crown',['#FFC83D','#B87700']]];
+export const HATS=[['av-hat-beanie','כובע גרב',20,'beanie',['#1E6BE6','#0F4FB5']],['av-hat-cap','כובע מצחייה',20,'cap',['#034694','#FFC83D']],['av-hat-bucket','כובע פטרייה',30,'bucket',['#DDE7F5','#034694']],['av-hat-beanie2','כובע גרב שחור-כחול',40,'beanie',['#141414','#1E6BE6']],['av-hat-crown','כתר אלופים',60,'crown',['#FFC83D','#B87700']]];
 /* [מזהה, שם, מחיר, [צבע ראשי, הדגשה, סוליה ופקקים]] */
 export const BOOTS=[
  ['av-boot-white',  'אפורות',    0,['#8A9199','#FFFFFF','#4B5157']],
@@ -96,13 +96,13 @@ export const BOOTS=[
  ['av-boot-neon',   'זהב וכחול', 35,['#E8B93B','#123A9E','#9C7615']],
  ['av-boot-gold',   'שחור ותכלת',70,['#1A1A1A','#5FD4F5','#000000']]];
 export const ITEMS={};
-ITEMS['av-kit-base']={id:'av-kit-base',layer:'kit',name:'ערכת אימון',price:0,pal:['#2C6FE0','#0C3A8C','#FFFFFF']};
+ITEMS['av-kit-base']={id:'av-kit-base',layer:'kit',name:'מדי אימון',price:0,pal:['#2C6FE0','#0C3A8C','#FFFFFF']};
 KIT_CARDS.forEach(c=>{ITEMS['av-'+c.id]={id:'av-'+c.id,layer:'kit',name:c.name,price:40,pal:KITPAL[c.kit]||KITPAL.home,req:c.id};});
 SCARVES.forEach(([id,name,price,pal,emblem])=>ITEMS[id]={id,layer:'scarf',name,price,pal,emblem});
 HATS.forEach(([id,name,price,shape,pal])=>ITEMS[id]={id,layer:'hat',name,price,shape,pal});
 BOOTS.forEach(([id,name,price,pal])=>ITEMS[id]={id,layer:'boots',name,price,pal});
 export const byLayer=l=>Object.values(ITEMS).filter(i=>i.layer===l);
-export const LAYER_TABS=[['kit','ערכות'],['hat','כובעים'],['scarf','צעיפים'],['boots','נעליים']];
+export const LAYER_TABS=[['kit','מדים'],['hat','כובעים'],['scarf','צעיפים'],['boots','נעליים']];
 
 /* --- mock content (deferred data sources) --- */
 export const MOCK_MATCH={home:'צ׳לסי',away:'ארסנל',when:'שבת, 20:30'};

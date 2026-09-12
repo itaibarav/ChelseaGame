@@ -2,6 +2,7 @@ import { $, modal } from '../core/dom.js';
 import { MUT } from '../core/mut.js';
 import { canvasPoint, drawPitch, payout, setupCanvas } from '../games/shared.js';
 import { drawBallArt, drawLionArt } from '../games/assets.js';
+import { S, save } from '../core/state.js';
 import { sfx } from '../core/fx.js';
 
 /* ======================= 5. הקפצות ======================= */
@@ -10,7 +11,7 @@ export function startKeepie(){
     <h2 style="margin:2px 0 8px;font-size:21px">הקפצות</h2>
     <canvas id="cv" class="gcanvas"></canvas>
     <p id="kHint" style="margin:9px 0 0;font-size:12.5px">הקישו על הכדור שעל הקו כדי להתחיל</p>
-    <button class="btn btn-ghost" data-act="quit" style="width:100%;margin-top:8px">סיום</button></div>`);
+    <button class="btn btn-ghost" data-act="quit" style="width:100%;margin-top:8px">סיום</button></div>`,{closable:false});
   const s=setupCanvas(340);if(!s)return;
   MUT.G={k:'keepie',taps:0,coins:0,over:false,live:false};
   const B={x:s.w/2,y:0,vx:0,vy:0,r:24},line=s.h-34;
@@ -49,7 +50,9 @@ export function startKeepie(){
     if(B.x<B.r){B.x=B.r;B.vx*=-.8;}
     if(B.x>s.w-B.r){B.x=s.w-B.r;B.vx*=-.8;}
     paint();
-    if(B.y-B.r>line){MUT.G.over=true;return payout(MUT.G.taps,MUT.G.taps>25?'הקפצן של המועדון!':'הכדור נפל');}
+    if(B.y-B.r>line){MUT.G.over=true;
+      S.stats.keepieBest=Math.max(S.stats.keepieBest,MUT.G.taps);save();
+      return setTimeout(()=>payout(MUT.G.taps,MUT.G.taps>25?'הקפצן של המועדון!':'הכדור נפל'),2000);}
     MUT.RAF=requestAnimationFrame(loop);
   }
 }

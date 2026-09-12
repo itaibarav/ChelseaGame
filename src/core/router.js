@@ -6,22 +6,23 @@ import { MUT } from '../core/mut.js';
 import { NAV_ICONS } from '../art/avatar.js';
 import { PHOTO_CREDITS } from '../data/globals.js';
 import { S, esc, save, today } from '../core/state.js';
-import { albumView, animateCoins, avatarView, gamesView, homeView, matchesModal, newsView, shopView } from '../screens/index.js';
+import { albumView, animateCoins, avatarView, gamesView, homeView, matchesModal, newsView, shopView, tasksView } from '../screens/index.js';
 import { answerValue } from '../games/value.js';
-import { buyItem, cardDetail, downloadPhoto, openPack, packTap, playHighlight, recycleAll, tapItem } from '../core/actions.js';
+import { buyItem, cardDetail, claimTask, downloadPhoto, openPack, packTap, playHighlight, recycleAll, tapItem } from '../core/actions.js';
 import { coinSVG } from '../art/cards.js';
 import { confetti, sfx } from '../core/fx.js';
 import { endTimer, payout } from '../games/shared.js';
 import { flipMemory } from '../games/memory.js';
 import { online, refreshFeed } from '../net/feed.js';
 import { playRPS } from '../games/rps.js';
+import { guessCup } from '../games/shell.js';
 import { playTTT } from '../games/ttt.js';
 import { shirtKey } from '../games/shirt.js';
 import { shootPenalty } from '../games/penalty.js';
 
 /* ======================= RENDER ======================= */
 export function render(){
-  const v={home:homeView,album:albumView,shop:shopView,games:gamesView,news:newsView,avatar:avatarView}[S.screen]||homeView;
+  const v={home:homeView,album:albumView,shop:shopView,games:gamesView,news:newsView,avatar:avatarView,tasks:tasksView}[S.screen]||homeView;
   $('#view').innerHTML=`<div class="screen-in">${v()}</div>`;
   $('#view').scrollTop=0;
   $('#nav').innerHTML=['home','album','games','shop','news'].map(k=>
@@ -52,6 +53,7 @@ document.addEventListener('click',e=>{
   if(d.yt)return playHighlight(d.yt);
   if(d.dl)return downloadPhoto(d.dl);
   if(d.pack)return openPack(d.pack);
+  if(d.claim)return claimTask(d.claim);
   if(d.read){if(!S.read.includes(d.read)){S.read.push(d.read);S.coins+=10;save();sfx('coin');render();toast('+10 מטבעות');}return;}
   if(d.game&&GAME_START[d.game])return GAME_START[d.game]();
   if(d.again&&GAME_START[d.again]){closeModal();return GAME_START[d.again]();}
@@ -60,6 +62,7 @@ document.addEventListener('click',e=>{
   if(d.vs!==undefined&&MUT.G)return answerValue(+d.vs);
   if(d.rps&&MUT.G)return playRPS(d.rps);
   if(d.mem!==undefined&&MUT.G)return flipMemory(+d.mem);
+  if(d.cup!==undefined&&MUT.G)return guessCup(+d.cup);
   if(d.cell!==undefined&&MUT.G)return shootPenalty(+d.cell);
   const a=d.act;
   if(a==='snd'){MUT.SND=!MUT.SND;if(MUT.SND)sfx('pop');return render();}
@@ -69,6 +72,7 @@ document.addEventListener('click',e=>{
   if(a==='go-shop'){S.screen='shop';return render();}
   if(a==='go-games'){S.screen='games';return render();}
   if(a==='go-avatar'){S.screen='avatar';return render();}
+  if(a==='go-tasks'){S.screen='tasks';return render();}
   if(a==='matches')return matchesModal();
   if(a==='credits')return creditsModal();
   if(a==='recycle')return recycleAll();

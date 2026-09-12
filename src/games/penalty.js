@@ -3,7 +3,7 @@ import { GA } from '../games/assets.js';
 import { MUT } from '../core/mut.js';
 import { confetti, sfx } from '../core/fx.js';
 import { payout } from '../games/shared.js';
-import { pick } from '../core/state.js';
+import { pick, S, save } from '../core/state.js';
 
 /* ======================= 4. דו-קרב פנדלים =======================
    השוער נשאר בגודל קבוע. הבסיס שלו במשבצת 5 והוא נוטה כמו מחוג
@@ -47,7 +47,7 @@ export function startPenalty(){
       <div class="keeper" id="pKeeper">${keeperSVG}</div>
       <img class="pball" id="pBall" src="${GA.ball||''}" alt="">
     </div>
-    <button class="btn btn-ghost" data-act="quit" style="width:100%">סיום</button></div>`);
+    <button class="btn btn-ghost" data-act="quit" style="width:100%">סיום</button></div>`,{closable:false});
   resetPenalty();
 }
 export function poseKeeper(p){
@@ -83,7 +83,7 @@ export function shootPenalty(n){
     if(!MUT.G||MUT.G.k!=='penalty')return;
     const m=$('#pMsg');
     if(saved){sfx('err');if(m)m.innerHTML='<b style="color:#FF9A9C">השוער עצר!</b>';}
-    else{MUT.G.coins+=7;sfx('win');confetti(18);
+    else{MUT.G.coins+=7;S.stats.penaltyGoals++;save();sfx('win');confetti(18);
       if(m)m.innerHTML='<b style="color:#8FE0A0">גול! +7</b>';
       const c=$('#pC');if(c)c.textContent=MUT.G.coins+' 🪙';}
     MUT.G.round++;

@@ -19,7 +19,7 @@ W.KIT_YEAR    = kits.year;
 W.ALBUM_EXTRA = album.extra;
 W.OVERRIDES   = { photos: {}, ...album.overrides };
 
-/* תמונות סגל/אגדות/ערכות הן קבצים תחת public/assets. תמונות מדבקות
+/* תמונות סגל/אגדות/מדים הן קבצים תחת public/assets. תמונות מדבקות
    וקטגוריות מותאמות אישית (tools/sticker-studio.html) הן base64 מוטמע
    ישירות בקובץ, כפי שהכלי מייצא אותן. */
 W.PHOTOS       = media.photos;

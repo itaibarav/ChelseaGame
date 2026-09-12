@@ -3,7 +3,7 @@ import { MUT } from '../core/mut.js';
 import { SQUAD } from '../data/cards.js';
 import { art } from '../art/cards.js';
 import { cardOf } from '../games/assets.js';
-import { esc, pick, shuffle } from '../core/state.js';
+import { esc, pick, S, save, shuffle } from '../core/state.js';
 import { payout } from '../games/shared.js';
 import { sfx } from '../core/fx.js';
 
@@ -20,7 +20,7 @@ export function startTTT(){
     <h2 style="margin:2px 0 0;font-size:21px">איקס עיגול</h2>
     <p style="margin:2px 0 4px">ניצחון 10 · תיקו 3</p>
     <div class="ttt">${Array.from({length:9},(_,i)=>`<button data-ttt="${i}"></button>`).join('')}</div>
-    <button class="btn btn-ghost" data-act="quit" style="width:100%">סיום</button></div>`);
+    <button class="btn btn-ghost" data-act="quit" style="width:100%">סיום</button></div>`,{closable:false});
 }
 export function tttMark(who){
   const p=who===1?MUT.G.me:MUT.G.ai;
@@ -51,7 +51,8 @@ export function playTTT(i){
   let w=tttWinner(MUT.G.b);
   const endIt=()=>{MUT.G.over=true;setTimeout(()=>{
     if(!MUT.G||MUT.G.k!=='ttt')return;
-    if(w===1)payout(10,'ניצחת!');else if(w===3)payout(3,'תיקו');else payout(0,'הפסדת');
+    if(w===1){S.stats.tttWins++;save();payout(10,'ניצחת!');}
+    else if(w===3)payout(3,'תיקו');else payout(0,'הפסדת');
   },700);};
   if(w)return endIt();
   setTimeout(()=>{

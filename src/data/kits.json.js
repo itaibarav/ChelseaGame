@@ -392,7 +392,8 @@ export default {
    "pattern": "pins",
    "pat": "#2C68D8",
    "trim": "#D9B14A",
-   "badge": "goldLion"
+   "badge": "goldLion",
+   "sponsorColor": "#FFC83D"
   }
  },
  "year": {

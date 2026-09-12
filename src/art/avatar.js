@@ -5,7 +5,7 @@ import { S, esc } from '../core/state.js';
 import { bootSVG, clubBadge, hatSVG, kitStyleOf, scarfEmblem, scarfSVG } from '../art/cards.js';
 
 /* ======================= עיצוב חולצות לדמות =======================
-   כל ערכה מצוירת מדפוס + סימן יצרן + ספונסר, בסגנון הדמות.
+   כל מדים מצוירים מדפוס + סימן יצרן + ספונסר, בסגנון הדמות.
    מה שלא מוגדר ידנית נגזר לפי תקופה: אדידס עד 2016/17 ואז נייקי,
    סמסונג עד 2014/15, יוקוהמה עד 2019/20, ואז Three.                */
 export const KIT_DESIGN={
@@ -39,7 +39,7 @@ export function designOf(item){
     sponsor:y<=2000?'AUTOGLASS':y<=2004?'Fly Emirates':y<=2007?'SAMSUNG mobile'
            :y<=2014?'SAMSUNG':y<=2019?'YOKOHAMA':y<=2023?'3':y<=2024?'BingX':'USDC',
   }, (id&&KIT_DESIGN[id])||{}, (id&&KIT_DESIGN2[id])||{});
-  if(!id)d.sponsor='';   /* ערכת האימון היא ערכה גנרית בלי חסות משחק */
+  if(!id)d.sponsor='';   /* מדי האימון הם מדים גנריים בלי חסות משחק */
   d.ink=d.ink||(lum(K.body)>0.58?'#12233F':'#FFFFFF');
   d.pat=d.pat||(lum(K.body)>0.58?'#0B2545':'#FFFFFF');
   d.trim=d.trim||K.trim;
@@ -120,10 +120,11 @@ export function shirtCuffs(d){
 export function shirtDecor(K,d){
   const maker=d.maker==='adidas'?ADIDAS(d.ink):d.maker==='nike'?NIKE(d.ink)
              :d.maker==='umbro'?UMBRO(d.ink):'';
+  const spCol=d.sponsorColor||d.ink;
   const sp=d.sponsor?(d.sponsor==='3'
-    ? `<text x="70" y="115" font-size="13" font-family="Secular One" text-anchor="middle" fill="${d.ink}" opacity=".95">3</text>`
+    ? `<text x="70" y="115" font-size="13" font-family="Secular One" text-anchor="middle" fill="${spCol}" opacity=".95">3</text>`
     : `<text x="70" y="113" font-size="5.6" font-family="Rubik" font-weight="700" text-anchor="middle"
-         fill="${d.ink}" textLength="${Math.min(38,d.sponsor.length*3.6)}" lengthAdjust="spacingAndGlyphs">${esc(d.sponsor)}</text>`):'';
+         fill="${spCol}" textLength="${Math.min(38,d.sponsor.length*3.6)}" lengthAdjust="spacingAndGlyphs">${esc(d.sponsor)}</text>`):'';
   return maker+sp;
 }
 
