@@ -45,6 +45,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 
 .card{background:var(--paper);color:var(--ink);border-radius:var(--r-lg);margin:11px var(--pad) 0;
   padding:13px;box-shadow:0 5px 0 rgba(0,0,0,.22)}
+.card.match{margin-inline:calc(var(--pad) + 14px)}
 .match{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .match .side{display:flex;flex-direction:column;align-items:center;gap:5px;width:76px}
 .match .side small{font-size:11px;color:#5B6B85;font-weight:500;text-align:center;line-height:1.2}
@@ -173,12 +174,6 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .item svg{width:52px;height:52px}
 .lockbadge{position:absolute;top:5px;inset-inline-end:6px;font-size:12px}
 
-/* memory */
-.mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:12px 0}
-.mcard{aspect-ratio:3/4;border-radius:9px;position:relative;overflow:hidden;background:linear-gradient(160deg,#2C7DF0,#0A357F);border:1.5px solid rgba(160,205,255,.4)}
-.mcard.up{background:#fff;border-color:#fff}
-.mcard.done{opacity:.35}
-.mcard .face{position:absolute;inset:0;display:grid;place-items:center;font-size:22px}
 /* penalty */
 .goal{width:100%;max-width:280px;margin:0 auto 10px;display:block}
 .dirs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
@@ -477,11 +472,12 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .card.match{cursor:pointer}
 .post .perma{display:block;font-size:12px;color:#8FC4FF;margin:-4px 0 9px;text-decoration:none}
 .post img.ph{width:100%;height:158px;object-fit:cover;display:block}
-.mtabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.mtabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
 .mtabs button{border-radius:999px;padding:9px 0;font-size:13px;font-weight:700;
   background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.15);color:#C6D8F2}
 .mtabs button.on{background:linear-gradient(180deg,#FFD766,#E09800);color:#3A2400;border-color:#FFF0BE}
 .mlist{max-height:52dvh;overflow-y:auto}
+#mTable{margin-inline:10px}
 .mrow{display:grid;grid-template-columns:1fr auto 46px;gap:8px;align-items:center;
   padding:9px 6px;border-bottom:1px solid rgba(255,255,255,.09);font-size:13px}
 .mrow .mo{display:flex;align-items:center;gap:8px;min-width:0}
@@ -493,6 +489,20 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .mrow .sc.l{background:rgba(229,37,42,.2);color:#FF9A9C}
 .mrow .sc.d{background:rgba(255,200,61,.2);color:#FFD766}
 .mrow .mh{font-size:11px;color:#8FA3C0;text-align:end}
+.mrow.standing{display:grid;grid-template-columns:20px 1fr 32px 40px 32px;gap:6px}
+.mrow.standing .pos{color:#8FA3C0;font-size:12px;text-align:center}
+.mrow.standing .pld,.mrow.standing .gd{font-size:12px;color:#9FB8DA;text-align:center}
+.mrow.standing .pts{font-family:'Secular One';font-size:14px;text-align:center}
+.mrow.standing.own{background:rgba(255,200,61,.12);border-radius:8px}
+.mrow.standing.head{color:#8FA3C0;font-size:11px;font-weight:700;border-bottom:1.5px solid rgba(255,255,255,.18)}
+.mrow.standing.head .pts{font-family:inherit;font-size:11px}
+
+/* ---- שידור חי ---- */
+@keyframes liveDot{0%,100%{opacity:1}50%{opacity:.35}}
+.livebadge{color:#FF6B6B;font-size:13px;font-weight:700}
+.card.match.live{border:1.5px solid rgba(229,37,42,.5);box-shadow:0 5px 0 rgba(0,0,0,.22),0 0 0 3px rgba(229,37,42,.12)}
+.card.match.live .livebadge{animation:liveDot 1.4s ease-in-out infinite}
+.match .mid .sc.live{background:rgba(229,37,42,.14);color:#C81E24}
 
 .gamecard{width:136px;margin:0 auto 6px;border-radius:12px;overflow:hidden;border:3px solid #fff;
   box-shadow:0 5px 14px rgba(0,0,0,.45)}
@@ -505,18 +515,18 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .vscard{background:none;border:0;padding:0;transition:transform .1s}
 .vscard:active{transform:scale(.95)}
 .vscard .gamecard{width:100%;margin:0}
-.mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:12px 0}
-.mcard{aspect-ratio:3/4;border-radius:9px;position:relative;overflow:hidden;
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.mcard{aspect-ratio:3/4;border-radius:11px;position:relative;overflow:hidden;
   background:linear-gradient(160deg,#2C7DF0,#0A357F);border:1.5px solid rgba(160,205,255,.4);
-  transition:transform .18s}
+  transition:transform .18s,background .18s,border-color .18s}
 .mcard .back,.mcard .face{position:absolute;inset:0;display:grid;place-items:center;
-  transition:opacity .18s;padding:4px}
+  transition:opacity .18s;padding:5px}
 .mcard .back img{width:62%;height:auto;filter:brightness(2.4)}
 .mcard .face{opacity:0}
-.mcard .face svg{width:100%;height:100%;border-radius:6px}
+.mcard .face svg{width:100%;height:100%;border-radius:7px}
 .mcard.up .back{opacity:0}
 .mcard.up .face{opacity:1}
-.mcard.up{transform:scale(1.03)}
+.mcard.up{background:#fff;border-color:#fff;transform:scale(1.03)}
 .mcard.done{opacity:.4}
 .ttt{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:12px 0}
 .ttt button{aspect-ratio:1;border-radius:13px;background:rgba(255,255,255,.07);

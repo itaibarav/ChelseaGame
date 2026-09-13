@@ -1,5 +1,5 @@
 import { $, modal, stickerHTML } from '../core/dom.js';
-import { API_BASE, crestOf, lastMatch, matchDate, mediaUrl, nextMatch, online, ownCrest, teamHe } from '../net/feed.js';
+import { API_BASE, crestOf, lastMatch, liveMatch, matchDate, mediaUrl, nextMatch, online, ownCrest, teamHe } from '../net/feed.js';
 import { CARDS, CATS, GAMES, LAYER_TABS, MOCK_MATCH, MOCK_POSTS, PACKS, TOTAL, byLayer } from '../data/cards.js';
 import { TASKS } from '../data/tasks.js';
 import { MUT } from '../core/mut.js';
@@ -39,7 +39,15 @@ export function homeView(){
     <button class="btn btn-blue progress-btn" data-act="go-album">
       <div class="fill" style="width:${pct}%"></div><span>&#128214; אלבום ${c}/${TOTAL}</span></button>
   </div>
-  ${(()=>{const m=nextMatch();
+  ${(()=>{const lm=liveMatch();
+    if(!lm)return '';
+    return `<div class="card match live" data-act="matches">
+      <div class="side">${ownCrest()}<small>צ׳לסי</small></div>
+      <div class="mid"><div class="t livebadge">&#128308; חי עכשיו</div>
+        <b class="sc live">${esc(lm.score||'0-0')}</b>
+        <div class="d">${lm.status==='PAUSED'?'הפסקה':'המשחק בעיצומו'}</div></div>
+      <div class="side">${crestOf(lm)}<small>${esc(teamHe(lm.opponent))}</small></div></div>`;})()}
+  ${(()=>{if(liveMatch())return'';const m=nextMatch();
     if(!m)return `<div class="card match" data-act="matches">
       <div class="side">${crestSVG('#034694','#FFC83D','C')}<small>${MOCK_MATCH.home}</small></div>
       <div class="mid"><div class="t">המשחק הבא:</div><div class="d">${MOCK_MATCH.when}</div>
@@ -147,7 +155,8 @@ export function newsView(){
 
 export function matchesModal(){
   const M=S.matches||{past:[],upcoming:[]};
-  if(!M.past.length&&!M.upcoming.length)
+  const T=S.standings||[];
+  if(!M.past.length&&!M.upcoming.length&&!T.length)
     return modal(`<div class="sheet"><div style="font-size:42px">📅</div>
       <h2>לוח המשחקים ריק</h2>
       <p>${API_BASE?'השרת לא החזיר משחקים. בדוק שמפתח ה-API מוגדר.':'צריך לחבר את האפליקציה לשרת כדי למשוך משחקים.'}</p>
@@ -157,10 +166,20 @@ export function matchesModal(){
       <div class="mc">${m.score?`<b class="sc ${m.result==='W'?'w':m.result==='L'?'l':'d'}">${m.score}</b>`
                               :`<span class="vs">${matchDate(m.date)}</span>`}</div>
       <div class="mh">${m.homeAway==='H'?'בית':'חוץ'}</div></div>`;
+  const stRow=r=>`<div class="mrow standing ${r.own?'own':''}">
+      <span class="pos">${r.position}</span>
+      <div class="mo">${r.crest?`<img class="crest" src="${mediaUrl(r.crest)}" alt="">`:''}<span>${esc(teamHe(r.team))}</span></div>
+      <span class="pld">${r.played}</span>
+      <span class="gd">${r.goalDifference>0?'+':''}${r.goalDifference}</span>
+      <b class="pts">${r.points}</b></div>`;
   modal(`<div class="sheet game"><h2 style="margin:2px 0 8px">לוח המשחקים</h2>
-    <div class="mtabs"><button class="on" data-mt="up">המשחקים הבאים</button><button data-mt="past">תוצאות אחרונות</button></div>
+    <div class="mtabs"><button class="on" data-mt="up">הבאים</button><button data-mt="past">תוצאות</button><button data-mt="table">טבלה</button></div>
     <div class="mlist" id="mUp">${M.upcoming.map(row).join('')||'<p class="note">אין משחקים קרובים</p>'}</div>
     <div class="mlist" id="mPast" style="display:none">${M.past.map(row).join('')||'<p class="note">אין תוצאות</p>'}</div>
+    <div class="mlist" id="mTable" style="display:none">
+      ${T.length?`<div class="mrow standing head"><span class="pos">#</span><div class="mo"><span>קבוצה</span></div>
+        <span class="pld">מש'</span><span class="gd">הפרש</span><b class="pts">נק'</b></div>`:''}
+      ${T.map(stRow).join('')||'<p class="note">אין נתוני טבלה</p>'}</div>
     <button class="btn btn-ghost" data-act="close" style="width:100%;margin-top:10px">סגירה</button></div>`);
 }
 

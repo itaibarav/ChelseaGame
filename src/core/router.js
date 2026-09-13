@@ -38,10 +38,9 @@ document.addEventListener('click',e=>{
   if(d.nav){if(S.screen==='album')MUT.NEW_IDS=new Set();S.screen=d.nav;closeModal();endTimer();MUT.G=null;MUT.PK=null;return render();}
   if(d.tab){S.tab=d.tab;return render();}
   if(d.mt){
-    const up=d.mt==='up';
+    const ids={up:'mUp',past:'mPast',table:'mTable'};
     b.parentElement.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
-    $('#mUp').style.display=up?'':'none';
-    $('#mPast').style.display=up?'none':'';
+    Object.entries(ids).forEach(([k,id])=>{const el=$('#'+id);if(el)el.style.display=k===d.mt?'':'none';});
     return;
   }
   if(d.avtab){S.avTab=d.avtab;return render();}

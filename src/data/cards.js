@@ -11,7 +11,7 @@ export const _SD=(typeof window!=='undefined'&&window.SQUAD_DATA)||null;
 export const _LD=(typeof window!=='undefined'&&window.LEGEND_DATA)||null;
 export const SQUAD=_SD&&_SD.length?_SD.map(p=>[+p.num,p.name,p.pos,+p.mv]):DEF_SQUAD;
 export const LUX=_SD&&_SD.length?_SD.filter(p=>p.lux).map(p=>+p.num):DEF_LUX;
-export const LEGENDS=_LD&&_LD.length?_LD.map(l=>[l.name,l.years,!!l.lux]):DEF_LEGENDS;
+export const LEGENDS=_LD&&_LD.length?_LD.map(l=>[l.name,l.years,!!l.lux,l.bio||'']):DEF_LEGENDS;
 export const TROPHIES=[["ליגת האלופות","2011/12"],["ליגת האלופות","2020/21"],["גביע העולם למועדונים","2021"],["גביע העולם למועדונים","2025"],["הסופר קאפ האירופי","2021"],["הליגה האירופית","2012/13"],["הליגה האירופית","2018/19"],["ליגת הקונפרנס","2024/25"],["גביע אלופות הגביעים","1970/71"],["גביע אלופות הגביעים","1997/98"],["אליפות אנגליה","1954/55"],["פרמייר ליג","2004/05"],["פרמייר ליג","2009/10"],["פרמייר ליג","2016/17"]];
 export const STADIUM=["מבט מהדשא","היציע המערבי","יציע מת׳יו הארדינג","יציע השד","היציע המזרחי","המנהרה לכר הדשא","חדר ההלבשה","מבט אווירי","ליל אורות","מוזיאון המועדון"];
 export const KITPAL={home:["#034694","#062B63","#FFFFFF"],away:["#EEF2F8","#B9C4D6","#034694"],third:["#16232F","#2BD9A6","#EAF7F2"]};
@@ -23,10 +23,10 @@ export const EXTRA_CATS=(EXTRA.cats||[]).map(c=>[c.key,c.label]);
 export const extrasIn=key=>(EXTRA.cards||[]).filter(c=>c.cat===key);
 export const pushExtras=key=>extrasIn(key).forEach(c=>CARDS.push({
   id:c.id,cat:c.cat,name:c.name,rarity:c.rarity||'common',
-  num:c.num,pos:c.pos,mv:c.mv,year:c.year,kit:c.kit,titles:c.titles}));
+  num:c.num,pos:c.pos,mv:c.mv,year:c.year,kit:c.kit,titles:c.titles,bio:c.bio}));
 SQUAD.forEach(([n,name,pos,mv])=>CARDS.push({id:'squad-'+n,cat:'squad',name,rarity:LUX.includes(n)?'luxury':'common',num:n,pos,mv}));
 pushExtras('squad');
-LEGENDS.forEach(([name,yr,lx],i)=>CARDS.push({id:'legend-'+i,cat:'legend',name,rarity:lx?'luxury':'rare',year:yr}));
+LEGENDS.forEach(([name,yr,lx,bio],i)=>CARDS.push({id:'legend-'+i,cat:'legend',name,rarity:lx?'luxury':'rare',year:yr,bio}));
 pushExtras('legend');
 /* קטגוריית הגביעים המצוירת הוסרה — הוחלפה בקטגוריות שהוזנו בעורך */
 EXTRA_CATS.forEach(([k])=>pushExtras(k));

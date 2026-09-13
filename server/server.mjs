@@ -52,8 +52,9 @@ const DEFAULTS = {
     teamId: 61,                 // צ'לסי ב-football-data.org
     pastCount: 10,
     upcomingCount: 10,
+    competition: 'PL',          // לטבלת הליגה
   },
-  ttlMinutes: { news: 15, matches: 30 },
+  ttlMinutes: { news: 15, matches: 30, standings: 60, live: 1 },
 };
 
 const deepMerge = (a, b) => {
@@ -106,7 +107,7 @@ async function cacheImage(url) {
 /* מטמון: מגיש תוכן ישן כשהספק נופל, במקום להחזיר שגיאה                */
 /* ------------------------------------------------------------------ */
 
-const cache = { news: null, matches: null };
+const cache = { news: null, matches: null, standings: null };
 
 async function cached(key, ttlMin, producer) {
   const now = Date.now();
@@ -214,9 +215,10 @@ async function fetchMatches() {
     return (await r.json()).matches || [];
   };
 
-  const [finished, scheduled, teamInfo] = await Promise.all([
+  const [finished, scheduled, live, teamInfo] = await Promise.all([
     call('FINISHED', pastCount),
     call('SCHEDULED', upcomingCount),
+    call('IN_PLAY,PAUSED', 1),
     fetch(`https://api.football-data.org/v4/teams/${teamId}`, { headers: { 'X-Auth-Token': apiKey } })
       .then(r => (r.ok ? r.json() : null)).catch(() => null),
   ]);
@@ -225,13 +227,15 @@ async function fetchMatches() {
   const map = async (m) => {
     const home = m.homeTeam.id === teamId;
     const opp = home ? m.awayTeam : m.homeTeam;
-    const ft = m.score?.fullTime;
+    const ft = m.score?.fullTime, ht = m.score?.halfTime;
+    const cur = (ft && ft.home != null) ? ft : (ht && ht.home != null ? ht : null);
     return {
       id: String(m.id),
       opponent: opp.shortName || opp.name,
       opponentLogo: await cacheImage(opp.crest),
       homeAway: home ? 'H' : 'A',
-      score: ft && ft.home != null ? `${ft.home}-${ft.away}` : null,
+      status: m.status,
+      score: cur ? `${cur.home}-${cur.away}` : null,
       result: ft && ft.home != null
         ? (ft.home === ft.away ? 'D' : (ft.home > ft.away) === home ? 'W' : 'L')
         : null,
@@ -244,7 +248,35 @@ async function fetchMatches() {
     .sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, pastCount);
   const upcoming = (await Promise.all(scheduled.map(map)))
     .sort((a, b) => new Date(a.date) - new Date(b.date)).slice(0, upcomingCount);
-  return { source: 'football-data', past, upcoming, teamLogo };
+  const liveMatch = live.length ? await map(live[0]) : null;
+  return { source: 'football-data', past, upcoming, live: liveMatch, teamLogo };
+}
+
+async function fetchStandings() {
+  if (CFG.matches.provider !== 'football-data' || !CFG.matches.apiKey) {
+    return { source: 'none', table: [] };
+  }
+  const { apiKey, competition, teamId } = CFG.matches;
+  const r = await fetch(`https://api.football-data.org/v4/competitions/${competition}/standings`,
+    { headers: { 'X-Auth-Token': apiKey } });
+  if (!r.ok) throw new Error('football-data standings ' + r.status);
+  const d = await r.json();
+  const total = (d.standings || []).find(s => s.type === 'TOTAL') || d.standings?.[0];
+  const rows = total?.table || [];
+  const table = await Promise.all(rows.map(async (row) => ({
+    position: row.position,
+    team: row.team.shortName || row.team.name,
+    teamId: row.team.id,
+    own: row.team.id === teamId,
+    crest: await cacheImage(row.team.crest),
+    played: row.playedGames,
+    won: row.won,
+    draw: row.draw,
+    lost: row.lost,
+    goalDifference: row.goalDifference,
+    points: row.points,
+  })));
+  return { source: 'football-data', table };
 }
 
 /* ------------------------------------------------------------------ */
@@ -285,13 +317,17 @@ const server = http.createServer(async (req, res) => {
     if (p === '/api/matches')
       return send(res, 200, await cached('matches', CFG.ttlMinutes.matches, fetchMatches));
 
+    if (p === '/api/standings')
+      return send(res, 200, await cached('standings', CFG.ttlMinutes.standings, fetchStandings));
+
     /* קריאה אחת שמחזירה הכול — פחות סיבובים מהטלפון */
     if (p === '/api/feed') {
-      const [news, matches] = await Promise.all([
+      const [news, matches, standings] = await Promise.all([
         cached('news', CFG.ttlMinutes.news, fetchNews).catch(() => ({ posts: [] })),
         cached('matches', CFG.ttlMinutes.matches, fetchMatches).catch(() => ({ past: [], upcoming: [] })),
+        cached('standings', CFG.ttlMinutes.standings, fetchStandings).catch(() => ({ table: [] })),
       ]);
-      return send(res, 200, { updated: Date.now(), news, matches });
+      return send(res, 200, { updated: Date.now(), news, matches, standings });
     }
 
     /* תמונות שמורות */

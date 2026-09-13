@@ -130,8 +130,10 @@ export function cardDetail(id){
         ${c.titles.map(t=>`<div style="padding:4px 2px;font-size:14px">&#127942; ${esc(t)}</div>`).join('')}
       </div>`
     :'';
+  const bioHTML=c.bio?`<p style="color:#C6D8F2;font-size:13.5px;line-height:1.5;margin:-4px 0 14px">${esc(c.bio)}</p>`:'';
   modal(`<div class="sheet">${artHTML}
     <h2>${esc(c.name)}</h2>
+    ${bioHTML}
     <div style="text-align:start;margin-bottom:14px">${rows.map(r=>`<div class="kv"><span>${r[0]}</span><b>${esc(r[1])}</b></div>`).join('')}</div>
     ${titlesHTML}
     ${isWallpaper?`<button class="btn btn-blue" style="width:100%;margin-bottom:8px" data-dl="${c.id}">&#128229; הורד לטלפון</button>`:''}

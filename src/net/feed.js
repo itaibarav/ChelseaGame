@@ -17,13 +17,16 @@ export async function refreshFeed(force){
     if(!r.ok)return;
     const d=await r.json();
     if(d.news&&Array.isArray(d.news.posts))S.news=d.news.posts;
-    if(d.matches){S.matches={past:d.matches.past||[],upcoming:d.matches.upcoming||[],teamLogo:d.matches.teamLogo||null};}
+    if(d.matches){S.matches={past:d.matches.past||[],upcoming:d.matches.upcoming||[],
+      live:d.matches.live||null,teamLogo:d.matches.teamLogo||null};}
+    if(d.standings&&Array.isArray(d.standings.table))S.standings=d.standings.table;
     S.feedAt=Date.now();save();
     if(S.screen==='news'||S.screen==='home')render();
   }catch(e){}
 }
 export const nextMatch=()=>(S.matches&&S.matches.upcoming&&S.matches.upcoming[0])||null;
 export const lastMatch=()=>(S.matches&&S.matches.past&&S.matches.past[0])||null;
+export const liveMatch=()=>(S.matches&&S.matches.live)||null;
 export const matchDate=iso=>{
   const d=new Date(iso);
   if(isNaN(d))return '';
