@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>עורך מדבקות — הוספה בלבד</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=Secular+One&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#071A38;color:#fff;font-family:Rubik,system-ui,sans-serif;padding:18px 14px 70px}
+.wrap{max-width:1120px;margin:0 auto}
+h1{font-family:'Secular One';font-weight:400;font-size:27px;margin:0 0 4px}
+.sub{color:#9FB8DA;font-size:13.5px;margin:0 0 14px;line-height:1.65;max-width:840px}
+button,input,select{font-family:inherit}
+.btn{font-weight:700;font-size:13.5px;border:0;border-radius:11px;padding:10px 16px;cursor:pointer}
+.go{background:linear-gradient(180deg,#FFD766,#E09800);color:#3A2400}
+.alt{background:rgba(255,255,255,.1);color:#fff;border:1.5px solid rgba(255,255,255,.22)}
+.bar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:12px;position:sticky;top:0;
+  background:#071A38;padding:10px 0;z-index:30;border-bottom:1px solid rgba(255,255,255,.1)}
+.tally{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.pill{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.15);border-radius:999px;
+  padding:7px 14px;font-size:12.5px;font-weight:700}
+.pill b{color:#FFC83D;font-family:'Secular One';font-size:15px}
+.pill.total{background:linear-gradient(180deg,#FFD766,#E09800);color:#3A2400;border-color:#FFF0BE}
+.pill.total b{color:#3A2400}
+
+.picker{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);border-radius:16px;
+  padding:14px;margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.picker select,.picker input[type=text]{background:rgba(0,0,0,.3);color:#fff;border:1.5px solid rgba(255,255,255,.2);
+  border-radius:9px;padding:9px 11px;font-size:14px}
+.picker select{min-width:160px}
+.picker .wallchk{display:flex;align-items:center;gap:6px;font-size:12.5px;color:#9FB8DA}
+.newcat{display:none;gap:8px;align-items:center}
+.newcat.show{display:flex}
+
+.cat{background:rgba(255,255,255,.04);border:1.5px solid rgba(60,200,120,.35);border-radius:16px;
+  padding:12px 14px;margin-bottom:14px}
+.cathead{display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.cathead h3{font-family:'Secular One';font-weight:400;font-size:17px;margin:0;flex:1}
+.count{font-size:12px;color:#9FB8DA}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px}
+.tile{border-radius:12px;padding:7px;background:rgba(0,0,0,.24);border:1.5px solid rgba(60,200,120,.5);
+  display:flex;flex-direction:column;gap:5px;position:relative}
+.tile .box{aspect-ratio:3/4;border-radius:8px;overflow:hidden;background:#0D2E5E;display:grid;place-items:center}
+.tile .box img{width:100%;height:100%;object-fit:cover;display:block}
+.tile.wall .box img{object-fit:contain}
+.tile input.nm{background:rgba(0,0,0,.32);color:#fff;border:1px solid rgba(255,255,255,.22);
+  border-radius:7px;padding:5px 6px;font-size:11px;width:100%}
+.tile .row{display:flex;gap:4px}
+.tile .row>*{flex:1}
+.tile select{background:rgba(0,0,0,.3);color:#fff;border:1px solid rgba(255,255,255,.2);
+  border-radius:7px;padding:4px;font-size:10.5px}
+.x{background:rgba(229,37,42,.32);border:0;border-radius:7px;color:#fff;padding:5px;cursor:pointer;font-size:11px;flex:0 0 30px}
+.badge{position:absolute;top:5px;inset-inline-end:6px;font-size:9px;font-weight:700;border-radius:6px;
+  padding:2px 6px;z-index:2;background:#22C55E;color:#04250F}
+.id{position:absolute;top:5px;inset-inline-start:6px;background:rgba(3,20,46,.85);border-radius:6px;
+  padding:1px 6px;font-size:9px;font-family:monospace;z-index:2}
+
+.log{margin-top:16px;background:rgba(0,0,0,.32);border-radius:12px;padding:12px;font-size:12px;
+  color:#9FB8DA;max-height:160px;overflow:auto;white-space:pre-wrap;line-height:1.6}
+.empty{color:#5F7CA8;font-size:13px;padding:30px 0;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>עורך מדבקות — הוספה בלבד</h1>
+  <p class="sub">הכלי הזה <b>רק מוסיף</b> מדבקות חדשות — הוא לא טוען ולא נוגע באף מדבקה קיימת באלבום.
+  בוחרים קטגוריה קיימת (או פותחים קטגוריה חדשה), מעלים תמונות, נותנים שם ורמת נדירות.
+  בסיום לוחצים "הורד קובץ תוספת" — זה קובץ קטן שמכיל רק את החדשות. שולחים אותו ומבקשים למזג לאלבום.</p>
+
+  <div class="picker">
+    <select id="catSel"></select>
+    <label class="btn alt" style="cursor:pointer">+ הוסף תמונות<input type="file" accept="image/*" multiple id="addFiles" hidden></label>
+    <label class="wallchk"><input type="checkbox" id="wallChk"> שמירה בלי חיתוך (לתמונות רקע/טפט)</label>
+  </div>
+  <div class="picker newcat" id="newCatBox">
+    <input type="text" id="newCatName" placeholder="שם הקטגוריה החדשה בעברית">
+    <button class="btn go" id="newCatGo">צור קטגוריה</button>
+  </div>
+
+  <div class="bar">
+    <button class="btn go" id="export">הורד קובץ תוספת</button>
+    <button class="btn alt" id="reset">בטל את כל התוספות</button>
+  </div>
+
+  <div class="tally" id="tally"></div>
+  <div id="cats"></div>
+  <div class="log" id="log">מוכן. תוספות נשמרות אוטומטית במכשיר עד ההורדה.</div>
+</div>
+
+<script>
+/* ---------- מניפסט קטגוריות קיימות (בלי תמונות — רק מפתחות ומספור הבא הפנוי) ----------
+   מעודכן ידנית לפי src/data/album.json.js. אין כאן שום תוכן קיים — רק כדי לדעת
+   לאן אפשר להוסיף ומאיפה להתחיל למספר מדבקות חדשות בלי להתנגש בקיימות. */
+const EXISTING_CATS=[
+  ['squad','הסגל'],['legend','אגדות'],['cat1','סמלים'],['cat2','גביעים'],
+  ['cat3','חגיגות'],['cat4','מאמני עבר'],['cat5','רקעים'],
+  ['kit','מדים'],['stadium','האצטדיון']
+];
+const NEXT_NUM={squad:2,legend:2,cat1:10,cat2:25,cat3:13,cat4:7,cat5:10,kit:8,stadium:8};
+const RARITY=[['common','רגילה'],['rare','נדירה'],['luxury','לוקסוס']];
+const CW=300,CH=400,Q=.82;
+const WALL_MAX=1920,WALL_Q=.92;
+
+let NEW_CATS=[];   // {key,label}
+let NEW_CARDS=[];  // {id,cat,name,rarity,img}
+
+const $=s=>document.querySelector(s);
+const log=m=>{const l=$('#log');l.textContent+='\n'+m;l.scrollTop=l.scrollHeight;};
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- אחסון מקומי (רק התוספות של המושב הזה) ---------- */
+const db=()=>new Promise((res,rej)=>{const r=indexedDB.open('sticker-additions',1);
+  r.onupgradeneeded=()=>r.result.createObjectStore('kv');
+  r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});
+async function save(){try{const d=await db();
+  await new Promise((res,rej)=>{const t=d.transaction('kv','readwrite');
+    t.objectStore('kv').put(JSON.stringify({NEW_CATS,NEW_CARDS}),'state');t.oncomplete=res;t.onerror=()=>rej(t.error);});
+}catch(e){log('שמירה נכשלה: '+e.message);}}
+async function load(){
+  try{const d=await db();
+    const v=await new Promise((res,rej)=>{const t=d.transaction('kv','readonly'),q=t.objectStore('kv').get('state');
+      q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error);});
+    if(v){const st=JSON.parse(v);NEW_CATS=st.NEW_CATS||[];NEW_CARDS=st.NEW_CARDS||[];
+      if(NEW_CARDS.length)log('נטענו '+NEW_CARDS.length+' תוספות שנשמרו קודם במכשיר');}
+  }catch(e){}
+}
+
+/* ---------- תמונות ---------- */
+async function toCard(file,w=CW,h=CH,q=Q,vBias=0.55){
+  const bmp=await createImageBitmap(file);
+  const c=document.createElement('canvas');c.width=w;c.height=h;
+  const x=c.getContext('2d');
+  const s=Math.max(w/bmp.width,h/bmp.height);
+  x.drawImage(bmp,(w-bmp.width*s)/2,(h-bmp.height*s)/2*vBias,bmp.width*s,bmp.height*s);
+  return c.toDataURL('image/jpeg',q);
+}
+async function toWallImage(file,maxSide=WALL_MAX,q=WALL_Q){
+  const bmp=await createImageBitmap(file);
+  const scale=Math.min(1,maxSide/Math.max(bmp.width,bmp.height));
+  const w=Math.round(bmp.width*scale),h=Math.round(bmp.height*scale);
+  const c=document.createElement('canvas');c.width=w;c.height=h;
+  c.getContext('2d').drawImage(bmp,0,0,w,h);
+  return c.toDataURL('image/jpeg',q);
+}
+const toPhoto=(file,isWall)=>isWall?toWallImage(file):toCard(file);
+
+/* ---------- עזר ---------- */
+const allCatKeys=()=>[...EXISTING_CATS.map(c=>c[0]),...NEW_CATS.map(c=>c.key)];
+const catLabel=k=>{const b=EXISTING_CATS.find(c=>c[0]===k);if(b)return b[1];
+  const n=NEW_CATS.find(c=>c.key===k);return n?n.label:k;};
+function newId(cat){
+  const used=new Set(NEW_CARDS.filter(c=>c.cat===cat).map(c=>c.id));
+  let n=NEXT_NUM[cat]||1;
+  while(used.has(cat+'-x'+n))n++;
+  return cat+'-x'+n;
+}
+const cardsIn=k=>NEW_CARDS.filter(c=>c.cat===k);
+
+/* ---------- render ---------- */
+function renderCatSelect(){
+  const cur=$('#catSel').value;
+  $('#catSel').innerHTML=allCatKeys().map(k=>`<option value="${k}">${esc(catLabel(k))}</option>`).join('')
+    +`<option value="__new__">+ קטגוריה חדשה…</option>`;
+  if(cur&&allCatKeys().includes(cur))$('#catSel').value=cur;
+  $('#wallChk').checked=$('#catSel').value==='cat5';
+}
+function render(){
+  renderCatSelect();
+  const catsUsed=[...new Set(NEW_CARDS.map(c=>c.cat))];
+  $('#tally').innerHTML=`<span class="pill total">מדבקות חדשות <b>${NEW_CARDS.length}</b></span>`+
+    catsUsed.map(k=>`<span class="pill">${esc(catLabel(k))} <b>${cardsIn(k).length}</b></span>`).join('');
+  if(!catsUsed.length){$('#cats').innerHTML=`<div class="empty">עדיין לא נוספו מדבקות. בחרו קטגוריה למעלה והעלו תמונות.</div>`;return;}
+  $('#cats').innerHTML=catsUsed.map(k=>`<div class="cat">
+      <div class="cathead"><h3>${esc(catLabel(k))}</h3><span class="count">${cardsIn(k).length} חדשות</span></div>
+      <div class="tiles">${cardsIn(k).map(tile).join('')}</div>
+    </div>`).join('');
+}
+function tile(s){
+  const isWall=s.cat==='cat5';
+  return `<div class="tile ${isWall?'wall':''}">
+    <span class="id">${s.id}</span><span class="badge">חדש</span>
+    <div class="box">${s.img?`<img src="${s.img}">`:'<span style="opacity:.28;font-size:20px">—</span>'}</div>
+    <input class="nm" value="${esc(s.name)}" data-nm="${s.id}" placeholder="שם המדבקה">
+    <div class="row">
+      <select data-rar="${s.id}">${RARITY.map(([k,l])=>`<option value="${k}" ${s.rarity===k?'selected':''}>${l}</option>`).join('')}</select>
+      <button class="x" data-del="${s.id}">✕</button>
+    </div>
+  </div>`;
+}
+
+/* ---------- אירועים ---------- */
+$('#catSel').addEventListener('change',()=>{
+  const v=$('#catSel').value;
+  $('#newCatBox').classList.toggle('show',v==='__new__');
+  $('#wallChk').checked=v==='cat5';
+});
+$('#newCatGo').addEventListener('click',()=>{
+  const label=$('#newCatName').value.trim();if(!label)return;
+  const used=new Set(allCatKeys());
+  let n=1,key='newcat1';while(used.has(key)){n++;key='newcat'+n;}
+  NEW_CATS.push({key,label});NEXT_NUM[key]=1;
+  $('#newCatName').value='';save();render();
+  $('#catSel').value=key;$('#newCatBox').classList.remove('show');
+  log('נוספה קטגוריה חדשה: '+label);
+});
+$('#addFiles').addEventListener('change',async e=>{
+  const files=[...e.target.files];if(!files.length)return;
+  let cat=$('#catSel').value;
+  if(cat==='__new__'){alert('קודם צריך ליצור את הקטגוריה החדשה (שם + כפתור "צור קטגוריה")');e.target.value='';return;}
+  const isWall=$('#wallChk').checked;
+  for(const f of files){
+    const img=await toPhoto(f,isWall);
+    NEW_CARDS.push({id:newId(cat),cat,name:f.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').trim(),
+      rarity:'common',img});
+  }
+  e.target.value='';await save();render();
+  log('נוספו '+files.length+' מדבקות ל"'+catLabel(cat)+'"'+(isWall?' (רזולוציה גבוהה, בלי חיתוך)':''));
+});
+document.addEventListener('input',e=>{
+  const t=e.target;
+  if(t.dataset.nm!==undefined){const c=NEW_CARDS.find(x=>x.id===t.dataset.nm);if(c)c.name=t.value;save();}
+});
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.dataset.rar!==undefined){const c=NEW_CARDS.find(x=>x.id===t.dataset.rar);if(c)c.rarity=t.value;save();}
+});
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-del]');if(!b)return;
+  NEW_CARDS=NEW_CARDS.filter(c=>c.id!==b.dataset.del);save();render();
+});
+$('#export').addEventListener('click',()=>{
+  if(!NEW_CARDS.length){alert('עדיין אין מדבקות חדשות להוריד');return;}
+  const photos={};NEW_CARDS.forEach(c=>{if(c.img)photos[c.id]=c.img;});
+  const cards=NEW_CARDS.map(({img,...rest})=>rest);
+  const data={cats:NEW_CATS,cards,photos};
+  const txt='export default '+JSON.stringify(data,null,1)+';\n';
+  const a=document.createElement('a');
+  const stamp=new Date().toISOString().slice(0,16).replace(/[:T]/g,'-');
+  a.href=URL.createObjectURL(new Blob([txt],{type:'text/javascript'}));
+  a.download='album-additions-'+stamp+'.json.js';a.click();
+  log('הורד קובץ תוספת: '+cards.length+' מדבקות חדשות, '+NEW_CATS.length+' קטגוריות חדשות, '+
+      (txt.length/1048576).toFixed(2)+'MB. את הקובץ הזה צריך למזג לתוך src/data/album.json.js.');
+});
+$('#reset').addEventListener('click',async()=>{
+  if(!confirm('לבטל את כל התוספות שעדיין לא הורדו?'))return;
+  NEW_CATS=[];NEW_CARDS=[];await save();render();
+});
+
+load().then(render);
+</script>
+</body>
+</html>

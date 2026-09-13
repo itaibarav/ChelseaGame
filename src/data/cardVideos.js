@@ -25,6 +25,9 @@ export default {
   'legend-18':'dgGbY3u4tU8', /* פיטר אוסגוד — ארכיון */
   'legend-19':'AGvR5I5jGP4', /* רון האריס — ארכיון */
   'legend-x1':'JxbrTGz8qWY', /* סזאר אזפיליקוואטה */
+  'legend-x2':'V4Gubq46GOQ', /* גארי קייהיל — Sky Sports */
+  'legend-x3':'ftz3W8x9pnw', /* ססק פברגאס */
+  'legend-x4':'U6b1fZXnCm0', /* דייגו קוסטה */
 
   /* --- גביעים (cat2) --- */
   'cat2-x1':'LgJXstjEl_c',  /* אליפות העולם 2021 */

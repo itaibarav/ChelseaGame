@@ -108,6 +108,7 @@ export function cardDetail(id){
   const c=BY_ID[id];
   if(!got(id))return toast('המדבקה עדיין חסרה');
   const rows=[];
+  if(c.nation)rows.push(['נבחרת',c.nation]);
   if(c.pos)rows.push(['עמדה',c.pos]);
   if(c.num)rows.push(['מספר חולצה',c.num]);
   if(c.mv)rows.push(['שווי שוק','€'+c.mv+'M']);

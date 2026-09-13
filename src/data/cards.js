@@ -23,7 +23,7 @@ export const EXTRA_CATS=(EXTRA.cats||[]).map(c=>[c.key,c.label]);
 export const extrasIn=key=>(EXTRA.cards||[]).filter(c=>c.cat===key);
 export const pushExtras=key=>extrasIn(key).forEach(c=>CARDS.push({
   id:c.id,cat:c.cat,name:c.name,rarity:c.rarity||'common',
-  num:c.num,pos:c.pos,mv:c.mv,year:c.year,kit:c.kit,titles:c.titles,bio:c.bio}));
+  num:c.num,pos:c.pos,mv:c.mv,year:c.year,kit:c.kit,titles:c.titles,bio:c.bio,nation:c.nation}));
 SQUAD.forEach(([n,name,pos,mv])=>CARDS.push({id:'squad-'+n,cat:'squad',name,rarity:LUX.includes(n)?'luxury':'common',num:n,pos,mv}));
 pushExtras('squad');
 LEGENDS.forEach(([name,yr,lx,bio],i)=>CARDS.push({id:'legend-'+i,cat:'legend',name,rarity:lx?'luxury':'rare',year:yr,bio}));
@@ -70,7 +70,10 @@ export const COMMON_POOL=CARDS.filter(c=>c.rarity==='common').map(c=>c.id);
 export const RARE_ONLY=CARDS.filter(c=>c.rarity==='rare').map(c=>c.id);
 export const LUX_ONLY=CARDS.filter(c=>c.rarity==='luxury').map(c=>c.id);
 export const KIT_CARDS=CARDS.filter(c=>c.cat==='kit');
-export const KIT_POOL=KIT_CARDS.map(c=>c.id);
+/* קטגוריות שנחשבות "מדים" לצורך הבטחת מעטפת המדים, גם אם יש להן טאב נפרד באלבום
+   (למשל "חולצות 2026/27" — קטגוריה שנוספה בעורך אך אמורה להיכלל בהגרלת המעטפה) */
+export const KIT_POOL_CATS=['kit','newcat2'];
+export const KIT_POOL=CARDS.filter(c=>KIT_POOL_CATS.includes(c.cat)).map(c=>c.id);
 export const ALL_IDS=CARDS.map(c=>c.id);
 export const LEGEND_POOL=CARDS.filter(c=>c.cat==='legend').map(c=>c.id);
 export const CATS=[['squad','הסגל'],['legend','אגדות']]
