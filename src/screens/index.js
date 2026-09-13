@@ -53,19 +53,19 @@ export function homeView(){
   </div>
   ${(()=>{
     const matchesHTML=(()=>{const lm=liveMatch();
-      const liveHTML=lm?`<div class="card match live" data-act="matches">
+      const liveHTML=lm?`<div class="card match live" data-act="matches" data-mtab="up">
         <div class="side">${ownCrest()}<small>צ׳לסי</small></div>
         <div class="mid"><div class="t livebadge">&#128308; חי עכשיו</div>
           <b class="sc live">${esc(lm.score||'0-0')}</b>
           <div class="d">${lm.status==='PAUSED'?'הפסקה':'המשחק בעיצומו'}</div></div>
         <div class="side">${crestOf(lm)}<small>${esc(teamHe(lm.opponent))}</small></div></div>`:'';
       const nextHTML=lm?'':(()=>{const m=nextMatch();
-        if(!m)return `<div class="card match" data-act="matches">
+        if(!m)return `<div class="card match" data-act="matches" data-mtab="up">
           <div class="side">${crestSVG('#034694','#FFC83D','C')}<small>${MOCK_MATCH.home}</small></div>
           <div class="mid"><div class="t">המשחק הבא:</div><div class="d">${MOCK_MATCH.when}</div>
             <span class="chip">${API_BASE?'ממתין לשרת':'נתוני דוגמה'}</span></div>
           <div class="side">${crestSVG('#C8102E','#FFFFFF','A')}<small>${MOCK_MATCH.away}</small></div></div>`;
-        return `<div class="card match" data-act="matches">
+        return `<div class="card match" data-act="matches" data-mtab="up">
           <div class="side">${ownCrest()}<small>צ׳לסי</small></div>
           <div class="mid"><div class="t">המשחק הבא:</div>
             <div class="d">${matchDate(m.date)}</div>
@@ -73,7 +73,7 @@ export function homeView(){
           <div class="side">${crestOf(m)}<small>${esc(teamHe(m.opponent))}</small></div></div>`;})();
       const lastHTML=(()=>{const m=lastMatch();
         if(!m)return '';
-        return `<div class="card match" data-act="matches">
+        return `<div class="card match" data-act="matches" data-mtab="past">
           <div class="side">${ownCrest()}<small>צ׳לסי</small></div>
           <div class="mid"><div class="t">התוצאה האחרונה:</div>
             <b class="sc ${m.result==='W'?'w':m.result==='L'?'l':'d'}">${esc(m.score||'')}</b>
@@ -83,14 +83,14 @@ export function homeView(){
     })();
     const tableHTML=(()=>{const rows=chelseaNeighbors(S.standings||[]);
       if(!rows.length)return'';
-      return `<div class="card table">
+      return `<div class="card table" data-act="matches" data-mtab="table">
         <div class="tblHead">טבלה</div>
         <div class="mrow standing mini head"><span class="pos">מקום</span><div class="mo"><span>קבוצה</span></div><b class="pts">נק'</b></div>
         ${rows.map(r=>`<div class="mrow standing mini ${r.own?'own':''}">
           <span class="pos">${r.position}</span>
           <div class="mo">${r.crest?`<img class="crest" src="${mediaUrl(r.crest)}" alt="">`:''}<span>${esc(teamHe(r.team))}</span></div>
           <b class="pts">${r.points}</b></div>`).join('')}
-        <button class="tblMore" data-act="matches">לטבלה המלאה &laquo;</button>
+        <button class="tblMore" data-act="matches" data-mtab="table">לטבלה המלאה &laquo;</button>
       </div>`;})();
     if(!tableHTML)return matchesHTML;
     return `<div class="homeCarousel" id="homeCar">
@@ -133,25 +133,15 @@ export function tasksView(){
     <div class="packs">${completed.map(t=>row(t,true)).join('')}</div>`:''}`;
 }
 
-const albumRow=c=>`<button class="albumRow ${got(c.id)?'':'missing'}" data-card="${c.id}">
-  <span class="no">#${c.no}</span><span class="nm">${esc(c.name)}</span>
-  ${got(c.id)?(S.inv[c.id]>1?`<span class="dupe">x${S.inv[c.id]}</span>`:'<span class="chk">&#10003;</span>'):'<span class="lock">&#128274;</span>'}</button>`;
-
 export function albumView(){
   const list=CARDS.filter(c=>c.cat===S.tab);
   return hud()+`<div class="head"><h1>האלבום שלי</h1><p>${collected()} מתוך ${TOTAL} מדבקות נאספו</p></div>
     <div class="tabs">${CATS.map(([k,l])=>{const n=CARDS.filter(c=>c.cat===k),o=n.filter(c=>got(c.id)).length;
       return `<button class="tab ${S.tab===k?'on':''}" data-tab="${k}">${l} ${o}/${n.length}</button>`;}).join('')}</div>
-    <div class="hero-row">
-      <button class="btn btn-ghost" style="width:100%" data-act="album-mode">
-        ${S.albumMode==='list'?'&#128444;&#65039; תצוגת תמונות':'&#128203; תצוגת רשימה (שם ומספר)'}</button>
-    </div>
     ${S.tab==='cat5'?'<p class="note">ניתן להוריד את התמונות ולהשתמש בהן כרקע לטלפון</p>'
       :(S.tab==='legend'||S.tab==='cat2')?'<p class="note">אפשר ללחוץ על קלף כדי לצפות בסרטון ההיילייטס שלו &#127909;</p>'
       :''}
-    ${S.albumMode==='list'
-      ?`<div class="albumList">${list.map(albumRow).join('')}</div>`
-      :`<div class="grid">${list.map(stickerHTML).join('')}</div>`}
+    <div class="grid">${list.map(stickerHTML).join('')}</div>
     ${list.every(c=>!got(c.id))?'<p class="note">אין עדיין מדבקות בעמוד הזה. פתחו מעטפה בחנות.</p>':''}
     <div style="padding:0 var(--pad) 26px"><button class="btn btn-ghost" style="width:100%" data-act="credits">
       &#128247; קרדיטים לתמונות</button></div>`;
@@ -195,7 +185,8 @@ export function newsView(){
     <p class="note">כל פוסט מזכה פעם אחת בלבד, לפי מזהה הפוסט.</p>`;
 }
 
-export function matchesModal(){
+export function matchesModal(initial){
+  const tab=['up','past','table'].includes(initial)?initial:'up';
   const M=S.matches||{past:[],upcoming:[]};
   const T=S.standings||[];
   if(!M.past.length&&!M.upcoming.length&&!T.length)
@@ -215,10 +206,13 @@ export function matchesModal(){
       <span class="gd">${r.goalDifference>0?'+':''}${r.goalDifference}</span>
       <b class="pts">${r.points}</b></div>`;
   modal(`<div class="sheet game"><h2 style="margin:2px 0 8px">לוח המשחקים</h2>
-    <div class="mtabs"><button class="on" data-mt="up">הבאים</button><button data-mt="past">תוצאות</button><button data-mt="table">טבלה</button></div>
-    <div class="mlist" id="mUp">${M.upcoming.map(row).join('')||'<p class="note">אין משחקים קרובים</p>'}</div>
-    <div class="mlist" id="mPast" style="display:none">${M.past.map(row).join('')||'<p class="note">אין תוצאות</p>'}</div>
-    <div class="mlist" id="mTable" style="display:none">
+    <div class="mtabs">
+      <button class="${tab==='up'?'on':''}" data-mt="up">הבאים</button>
+      <button class="${tab==='past'?'on':''}" data-mt="past">תוצאות</button>
+      <button class="${tab==='table'?'on':''}" data-mt="table">טבלה</button></div>
+    <div class="mlist" id="mUp" style="display:${tab==='up'?'':'none'}">${M.upcoming.map(row).join('')||'<p class="note">אין משחקים קרובים</p>'}</div>
+    <div class="mlist" id="mPast" style="display:${tab==='past'?'':'none'}">${M.past.map(row).join('')||'<p class="note">אין תוצאות</p>'}</div>
+    <div class="mlist" id="mTable" style="display:${tab==='table'?'':'none'}">
       ${T.length?`<div class="mrow standing head"><span class="pos">#</span><div class="mo"><span>קבוצה</span></div>
         <span class="pld">מש'</span><span class="gd">הפרש</span><b class="pts">נק'</b></div>`:''}
       ${T.map(stRow).join('')||'<p class="note">אין נתוני טבלה</p>'}</div>

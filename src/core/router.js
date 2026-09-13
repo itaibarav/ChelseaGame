@@ -22,18 +22,35 @@ import { shootPenalty } from '../games/penalty.js';
 import { mountReels, reelsView, toggleReelMute } from '../screens/reels.js';
 
 /* ======================= RENDER ======================= */
-/* בעמוד הבית: אם יש גם קלפי משחקים וגם טבלה, הם מוצגים לסירוגין (החלפה כל 10 שניות)
-   במקום זה לצד זה — בגלל שקלף משחק (עם שני סמלים וטקסט) צריך רוחב מלא כדי לא להיחתך */
+/* בעמוד הבית: אם יש גם קלפי משחקים וגם טבלה, הם מוצגים לסירוגין —
+   מתחלפים אוטומטית כל 10 שניות, ואפשר גם לגלול ימינה/שמאלה בין השתיים
+   בכל רגע (מחזורי — גלילה מהאחרון חוזרת לראשון) */
+function homeCarouselGoto(car,i){
+  const pages=[...car.querySelectorAll('.hcPage')],dots=[...car.querySelectorAll('.hcDots span')];
+  const n=pages.length;if(!n)return;
+  const idx=((i%n)+n)%n;
+  pages.forEach((p,k)=>p.classList.toggle('on',k===idx));
+  dots.forEach((d,k)=>d.classList.toggle('on',k===idx));
+  car.dataset.i=idx;
+}
 function startHomeCarousel(){
   const car=$('#homeCar');if(!car)return;
-  const pages=[...car.querySelectorAll('.hcPage')],dots=[...car.querySelectorAll('.hcDots span')];
-  if(pages.length<2)return;
-  let i=0;
-  MUT.homeTimer=setInterval(()=>{
-    i=(i+1)%pages.length;
-    pages.forEach((p,k)=>p.classList.toggle('on',k===i));
-    dots.forEach((d,k)=>d.classList.toggle('on',k===i));
-  },10000);
+  if(car.querySelectorAll('.hcPage').length<2)return;
+  car.dataset.i='0';
+  const restart=()=>{
+    if(MUT.homeTimer)clearInterval(MUT.homeTimer);
+    MUT.homeTimer=setInterval(()=>homeCarouselGoto(car,(+car.dataset.i||0)+1),10000);
+  };
+  restart();
+  let x0=null;
+  car.addEventListener('pointerdown',e=>{x0=e.clientX;});
+  car.addEventListener('pointerup',e=>{
+    if(x0==null)return;
+    const dx=e.clientX-x0;x0=null;
+    if(Math.abs(dx)<40)return;
+    homeCarouselGoto(car,(+car.dataset.i||0)+(dx<0?1:-1));
+    restart();
+  });
 }
 export function render(){
   if(MUT.homeTimer){clearInterval(MUT.homeTimer);MUT.homeTimer=null;}
@@ -90,11 +107,10 @@ document.addEventListener('click',e=>{
   if(a==='go-games'){S.screen='games';return render();}
   if(a==='go-avatar'){S.screen='avatar';return render();}
   if(a==='go-tasks'){S.screen='tasks';return render();}
-  if(a==='matches')return matchesModal();
+  if(a==='matches')return matchesModal(d.mtab);
   if(a==='credits')return creditsModal();
   if(a==='recycle')return recycleAll();
   if(a==='shuffle-avatar')return shuffleAvatar();
-  if(a==='album-mode'){S.albumMode=S.albumMode==='list'?'grid':'list';return render();}
   if(d.reelmute!==undefined)return toggleReelMute(b);
   if(a==='daily')return dailyModal();
   if(a==='shell-start')return shellStart();

@@ -86,19 +86,11 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .tab.on{background:linear-gradient(180deg,#FFD766,#E09800);color:#3A2400;border-color:#FFF0BE}
 
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:4px var(--pad) 20px}
-.albumList{display:flex;flex-direction:column;gap:6px;padding:4px var(--pad) 20px}
-.albumRow{display:flex;align-items:center;gap:10px;width:100%;text-align:start;
-  background:var(--paper);color:var(--ink);border:0;border-radius:12px;padding:10px 13px;font-size:14px}
-.albumRow .no{font-family:'Secular One';color:#9FB8DA;font-size:13px;flex:0 0 auto;min-width:32px}
-.albumRow .nm{flex:1;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.albumRow.missing{opacity:.55}
-.albumRow .lock{flex:0 0 auto;font-size:13px}
-.albumRow .chk{flex:0 0 auto;color:#22C55E;font-weight:700}
-.albumRow .dupe{flex:0 0 auto;font-size:11px;color:#FFD766;font-weight:700}
 .sticker{position:relative;aspect-ratio:3/4;border-radius:var(--r-sm);overflow:hidden;display:block}
 .sticker.missing{background:rgba(255,255,255,.035);border:2px dashed rgba(150,190,255,.3);
   display:grid;place-items:center;color:rgba(160,195,240,.5)}
-.sticker.missing .q{font-family:'Secular One';font-size:26px}
+.sticker.missing .nm{position:absolute;inset:5px;display:flex;align-items:center;justify-content:center;
+  text-align:center;font-size:10.5px;font-weight:700;line-height:1.3;color:rgba(160,195,240,.32)}
 .sticker.missing .n{font-size:10px;position:absolute;bottom:5px;inset-inline-end:6px}
 .sticker.got{border:2.5px solid #fff;box-shadow:0 3px 0 rgba(0,0,0,.3)}
 .sticker.rare{border-color:#F0D48A}
@@ -518,18 +510,22 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .hcDots span.on{background:#FFD766;width:16px;border-radius:4px;transition:width .25s ease}
 
 /* ---- היילייטס: פיד גלילה ---- */
-.reelStack{position:fixed;inset:0;z-index:10;overflow-y:auto;scroll-snap-type:y mandatory;
+/* בכוונה בלי position:fixed: העמוד הזה מוזרק בתוך .screen-in, שיש לה
+   אנימציית transform בכניסה — ואלמנט אב עם transform הופך להיות ה-containing
+   block של צאצאים עם position:fixed, מה שהיה שובר את המיקום לגמרי (מסך ריק).
+   height מדויק במקום זה ממלא בדיוק את השטח הפנוי מתחת ל-hud ומעל סרגל הניווט */
+.reelStack{height:calc(100dvh - 98px);overflow-y:auto;scroll-snap-type:y mandatory;
   scrollbar-width:none;background:var(--navy)}
 .reelStack::-webkit-scrollbar{display:none}
-.reelCard{position:relative;height:100dvh;scroll-snap-align:start;display:flex;flex-direction:column;
+.reelCard{position:relative;height:100%;scroll-snap-align:start;display:flex;flex-direction:column;
   justify-content:flex-end;overflow:hidden;background:radial-gradient(120% 70% at 50% 20%,#0B3A78 0%,#03142E 60%)}
 .reelVideoSlot{position:absolute;inset:0;z-index:0}
 .reelVideoSlot iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .reelVign{position:absolute;inset:0;z-index:1;pointer-events:none;
   background:linear-gradient(0deg,rgba(3,20,46,.92) 0%,rgba(3,20,46,.25) 40%,transparent 62%)}
-.reelMuteBtn{position:absolute;z-index:5;top:calc(env(safe-area-inset-top) + 16px);inset-inline-end:14px;
+.reelMuteBtn{position:absolute;z-index:5;top:14px;inset-inline-end:14px;
   width:38px;height:38px;border-radius:50%;background:rgba(3,20,46,.5);display:grid;place-items:center;font-size:16px}
-.reelMeta{position:relative;z-index:5;padding:0 16px calc(env(safe-area-inset-bottom) + 84px);max-width:82%}
+.reelMeta{position:relative;z-index:5;padding:0 16px 16px;max-width:82%}
 .reelWho{display:flex;align-items:center;gap:8px;font-family:'Secular One';font-size:15px;margin-bottom:5px}
 .reelInfo{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.12);font-size:13px;display:grid;place-items:center}
 .reelCap{font-size:13.5px;line-height:1.55;color:#EAF1FD}

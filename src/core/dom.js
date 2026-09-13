@@ -1,5 +1,5 @@
 import { MUT } from '../core/mut.js';
-import { S, got } from '../core/state.js';
+import { S, esc, got } from '../core/state.js';
 import { art } from '../art/cards.js';
 
 /* ======================= HELPERS ======================= */
@@ -12,7 +12,7 @@ export const closeModal=()=>$('#modal').innerHTML='';
 $('#modal').addEventListener('click',e=>{if(e.target.hasAttribute('data-close'))closeModal();});
 
 export function stickerHTML(c,stage){
-  if(!got(c.id))return `<button class="sticker missing" data-card="${c.id}"><span class="q">?</span><span class="n">${c.no}</span></button>`;
+  if(!got(c.id))return `<button class="sticker missing" data-card="${c.id}"><span class="nm">${esc(c.name)}</span><span class="n">${c.no}</span></button>`;
   const q=S.inv[c.id],dupe=q>1?`<span class="dupe">x${q}</span>`:'';
   const fresh=!stage&&MUT.NEW_IDS.has(c.id)?' snap':'';
   if(c.rarity==='luxury')return `<button class="sticker got luxury${fresh}" data-card="${c.id}">${dupe}<span class="badge-lux">לוקסוס</span><span class="inner">${art(c)}</span></button>`;

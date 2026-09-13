@@ -5,7 +5,7 @@ export const today=()=>new Date().toISOString().slice(0,10);
 export const DEFAULT_STATS={keepieBest:0,runBest:0,penaltyGoals:0,rpsWins:0,memoryWins:0,tttWins:0,shellWins:0,
   packsOpened:0,goldPacksOpened:0,legendPacksOpened:0,kitPacksOpened:0,recycled:0,
   shirtBestStreak:0,bgDownloaded:false,legendVideoWatched:false,trophyVideoWatched:false};
-export let S={name:'',coins:0,inv:{},claim:null,streak:0,tab:'squad',screen:'home',avTab:'kit',albumMode:'grid',
+export let S={name:'',coins:0,inv:{},claim:null,streak:0,tab:'squad',screen:'home',avTab:'kit',
   news:[],matches:{past:[],upcoming:[],live:null},standings:[],feedAt:0,
   owned:['av-kit-base','av-boot-white'],
   eq:{kit:'av-kit-base',hat:null,scarf:null,boots:'av-boot-white'},read:[],
