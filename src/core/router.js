@@ -19,6 +19,7 @@ import { guessCup, shellStart } from '../games/shell.js';
 import { playTTT } from '../games/ttt.js';
 import { shirtKey } from '../games/shirt.js';
 import { shootPenalty } from '../games/penalty.js';
+import { mountReels, reelsView, toggleReelMute } from '../screens/reels.js';
 
 /* ======================= RENDER ======================= */
 /* בעמוד הבית: אם יש גם קלפי משחקים וגם טבלה, הם מוצגים לסירוגין (החלפה כל 10 שניות)
@@ -36,13 +37,15 @@ function startHomeCarousel(){
 }
 export function render(){
   if(MUT.homeTimer){clearInterval(MUT.homeTimer);MUT.homeTimer=null;}
-  const v={home:homeView,album:albumView,shop:shopView,games:gamesView,news:newsView,avatar:avatarView,tasks:tasksView}[S.screen]||homeView;
+  if(MUT.reelObserver){MUT.reelObserver.disconnect();MUT.reelObserver=null;}
+  const v={home:homeView,album:albumView,shop:shopView,games:gamesView,news:newsView,avatar:avatarView,tasks:tasksView,reels:reelsView}[S.screen]||homeView;
   $('#view').innerHTML=`<div class="screen-in">${v()}</div>`;
   $('#view').scrollTop=0;
-  $('#nav').innerHTML=['home','album','games','shop','news'].map(k=>
+  $('#nav').innerHTML=['home','album','games','shop','news','reels'].map(k=>
     `<button data-nav="${k}" class="${S.screen===k?'on':''}">${NAV_ICONS[k]}</button>`).join('');
   animateCoins();
   if(S.screen==='home')startHomeCarousel();
+  if(S.screen==='reels')mountReels();
 }
 
 document.addEventListener('click',e=>{
@@ -92,6 +95,7 @@ document.addEventListener('click',e=>{
   if(a==='recycle')return recycleAll();
   if(a==='shuffle-avatar')return shuffleAvatar();
   if(a==='album-mode'){S.albumMode=S.albumMode==='list'?'grid':'list';return render();}
+  if(d.reelmute!==undefined)return toggleReelMute(b);
   if(a==='daily')return dailyModal();
   if(a==='shell-start')return shellStart();
 });

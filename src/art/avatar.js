@@ -215,5 +215,6 @@ export const NAV_ICONS={
   album:'<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3h13a2 2 0 0 1 2 2v16H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm2 4v6h9V7z"/></svg>',
   games:'<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M7 8h10a5 5 0 0 1 0 10 4 4 0 0 1-3-1.4h-4A4 4 0 0 1 7 18a5 5 0 0 1 0-10zm-1 3v2H4v2h2v2h2v-2h2v-2H8v-2zm10 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>',
   shop:'<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6 7V6a6 6 0 0 1 12 0v1h3v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7zm2 0h8V6a4 4 0 0 0-8 0z"/></svg>',
-  news:'<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h13v16H5a1 1 0 0 1-1-1zm3 3v4h7V7zm0 6v2h7v-2zM19 8h2v10a2 2 0 0 1-2 2z"/></svg>'
+  news:'<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h13v16H5a1 1 0 0 1-1-1zm3 3v4h7V7zm0 6v2h7v-2zM19 8h2v10a2 2 0 0 1-2 2z"/></svg>',
+  reels:'<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-2.2 5.6 7 4.4-7 4.4z"/></svg>'
 };

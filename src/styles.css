@@ -517,6 +517,23 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .hcDots span{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.25)}
 .hcDots span.on{background:#FFD766;width:16px;border-radius:4px;transition:width .25s ease}
 
+/* ---- היילייטס: פיד גלילה ---- */
+.reelStack{position:fixed;inset:0;z-index:10;overflow-y:auto;scroll-snap-type:y mandatory;
+  scrollbar-width:none;background:var(--navy)}
+.reelStack::-webkit-scrollbar{display:none}
+.reelCard{position:relative;height:100dvh;scroll-snap-align:start;display:flex;flex-direction:column;
+  justify-content:flex-end;overflow:hidden;background:radial-gradient(120% 70% at 50% 20%,#0B3A78 0%,#03142E 60%)}
+.reelVideoSlot{position:absolute;inset:0;z-index:0}
+.reelVideoSlot iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.reelVign{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(0deg,rgba(3,20,46,.92) 0%,rgba(3,20,46,.25) 40%,transparent 62%)}
+.reelMuteBtn{position:absolute;z-index:5;top:calc(env(safe-area-inset-top) + 16px);inset-inline-end:14px;
+  width:38px;height:38px;border-radius:50%;background:rgba(3,20,46,.5);display:grid;place-items:center;font-size:16px}
+.reelMeta{position:relative;z-index:5;padding:0 16px calc(env(safe-area-inset-bottom) + 84px);max-width:82%}
+.reelWho{display:flex;align-items:center;gap:8px;font-family:'Secular One';font-size:15px;margin-bottom:5px}
+.reelInfo{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.12);font-size:13px;display:grid;place-items:center}
+.reelCap{font-size:13.5px;line-height:1.55;color:#EAF1FD}
+
 /* ---- שידור חי ---- */
 @keyframes liveDot{0%,100%{opacity:1}50%{opacity:.35}}
 .livebadge{color:#FF6B6B;font-size:13px;font-weight:700}

@@ -6,5 +6,6 @@ export const MUT = {
   SND: true,
   PK: null,
   homeTimer: null,
+  reelObserver: null,
 };
 
