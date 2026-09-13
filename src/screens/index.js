@@ -51,45 +51,54 @@ export function homeView(){
     <button class="btn btn-blue progress-btn" data-act="go-album">
       <div class="fill" style="width:${pct}%"></div><span>&#128214; אלבום ${c}/${TOTAL}</span></button>
   </div>
-  ${(()=>{const lm=liveMatch();
-    if(!lm)return '';
-    return `<div class="card match live" data-act="matches">
-      <div class="side">${ownCrest()}<small>צ׳לסי</small></div>
-      <div class="mid"><div class="t livebadge">&#128308; חי עכשיו</div>
-        <b class="sc live">${esc(lm.score||'0-0')}</b>
-        <div class="d">${lm.status==='PAUSED'?'הפסקה':'המשחק בעיצומו'}</div></div>
-      <div class="side">${crestOf(lm)}<small>${esc(teamHe(lm.opponent))}</small></div></div>`;})()}
-  ${(()=>{if(liveMatch())return'';const m=nextMatch();
-    if(!m)return `<div class="card match" data-act="matches">
-      <div class="side">${crestSVG('#034694','#FFC83D','C')}<small>${MOCK_MATCH.home}</small></div>
-      <div class="mid"><div class="t">המשחק הבא:</div><div class="d">${MOCK_MATCH.when}</div>
-        <span class="chip">${API_BASE?'ממתין לשרת':'נתוני דוגמה'}</span></div>
-      <div class="side">${crestSVG('#C8102E','#FFFFFF','A')}<small>${MOCK_MATCH.away}</small></div></div>`;
-    return `<div class="card match" data-act="matches">
-      <div class="side">${ownCrest()}<small>צ׳לסי</small></div>
-      <div class="mid"><div class="t">המשחק הבא:</div>
-        <div class="d">${matchDate(m.date)}</div>
-        <span class="chip">${m.homeAway==='H'?'בבית':'בחוץ'}</span></div>
-      <div class="side">${crestOf(m)}<small>${esc(teamHe(m.opponent))}</small></div></div>`;})()}
-  ${(()=>{const m=lastMatch();
-    if(!m)return '';
-    return `<div class="card match" data-act="matches">
-      <div class="side">${ownCrest()}<small>צ׳לסי</small></div>
-      <div class="mid"><div class="t">התוצאה האחרונה:</div>
-        <b class="sc ${m.result==='W'?'w':m.result==='L'?'l':'d'}">${esc(m.score||'')}</b>
-        <div class="d">${matchDate(m.date)}</div></div>
-      <div class="side">${crestOf(m)}<small>${esc(teamHe(m.opponent))}</small></div></div>`;})()}
-  ${(()=>{const rows=chelseaNeighbors(S.standings||[]);
-    if(!rows.length)return'';
-    return `<div class="card table">
-      <div class="tblHead">טבלה</div>
-      <div class="mrow standing mini head"><span class="pos">מקום</span><div class="mo"><span>קבוצה</span></div><b class="pts">נק'</b></div>
-      ${rows.map(r=>`<div class="mrow standing mini ${r.own?'own':''}">
-        <span class="pos">${r.position}</span>
-        <div class="mo">${r.crest?`<img class="crest" src="${mediaUrl(r.crest)}" alt="">`:''}<span>${esc(teamHe(r.team))}</span></div>
-        <b class="pts">${r.points}</b></div>`).join('')}
-      <button class="tblMore" data-act="matches">לטבלה המלאה &laquo;</button>
-    </div>`;})()}
+  ${(()=>{
+    const matchesHTML=(()=>{const lm=liveMatch();
+      const liveHTML=lm?`<div class="card match live" data-act="matches">
+        <div class="side">${ownCrest()}<small>צ׳לסי</small></div>
+        <div class="mid"><div class="t livebadge">&#128308; חי עכשיו</div>
+          <b class="sc live">${esc(lm.score||'0-0')}</b>
+          <div class="d">${lm.status==='PAUSED'?'הפסקה':'המשחק בעיצומו'}</div></div>
+        <div class="side">${crestOf(lm)}<small>${esc(teamHe(lm.opponent))}</small></div></div>`:'';
+      const nextHTML=lm?'':(()=>{const m=nextMatch();
+        if(!m)return `<div class="card match" data-act="matches">
+          <div class="side">${crestSVG('#034694','#FFC83D','C')}<small>${MOCK_MATCH.home}</small></div>
+          <div class="mid"><div class="t">המשחק הבא:</div><div class="d">${MOCK_MATCH.when}</div>
+            <span class="chip">${API_BASE?'ממתין לשרת':'נתוני דוגמה'}</span></div>
+          <div class="side">${crestSVG('#C8102E','#FFFFFF','A')}<small>${MOCK_MATCH.away}</small></div></div>`;
+        return `<div class="card match" data-act="matches">
+          <div class="side">${ownCrest()}<small>צ׳לסי</small></div>
+          <div class="mid"><div class="t">המשחק הבא:</div>
+            <div class="d">${matchDate(m.date)}</div>
+            <span class="chip">${m.homeAway==='H'?'בבית':'בחוץ'}</span></div>
+          <div class="side">${crestOf(m)}<small>${esc(teamHe(m.opponent))}</small></div></div>`;})();
+      const lastHTML=(()=>{const m=lastMatch();
+        if(!m)return '';
+        return `<div class="card match" data-act="matches">
+          <div class="side">${ownCrest()}<small>צ׳לסי</small></div>
+          <div class="mid"><div class="t">התוצאה האחרונה:</div>
+            <b class="sc ${m.result==='W'?'w':m.result==='L'?'l':'d'}">${esc(m.score||'')}</b>
+            <div class="d">${matchDate(m.date)}</div></div>
+          <div class="side">${crestOf(m)}<small>${esc(teamHe(m.opponent))}</small></div></div>`;})();
+      return liveHTML+nextHTML+lastHTML;
+    })();
+    const tableHTML=(()=>{const rows=chelseaNeighbors(S.standings||[]);
+      if(!rows.length)return'';
+      return `<div class="card table">
+        <div class="tblHead">טבלה</div>
+        <div class="mrow standing mini head"><span class="pos">מקום</span><div class="mo"><span>קבוצה</span></div><b class="pts">נק'</b></div>
+        ${rows.map(r=>`<div class="mrow standing mini ${r.own?'own':''}">
+          <span class="pos">${r.position}</span>
+          <div class="mo">${r.crest?`<img class="crest" src="${mediaUrl(r.crest)}" alt="">`:''}<span>${esc(teamHe(r.team))}</span></div>
+          <b class="pts">${r.points}</b></div>`).join('')}
+        <button class="tblMore" data-act="matches">לטבלה המלאה &laquo;</button>
+      </div>`;})();
+    if(!tableHTML)return matchesHTML;
+    return `<div class="homeCarousel" id="homeCar">
+      <div class="hcPage on" data-hc="0">${matchesHTML}</div>
+      <div class="hcPage" data-hc="1">${tableHTML}</div>
+      <div class="hcDots"><span class="on"></span><span></span></div>
+    </div>`;
+  })()}
   <div class="tiles">
     <button class="tile tile-gold" data-act="go-shop"><div style="font-size:34px">&#127873;</div><div class="lbl">חנות מעטפות</div></button>
     <button class="tile tile-blue" data-act="go-games"><div style="font-size:34px">&#127918;</div><div class="lbl">הרוויחו מטבעות<br>10 משחקים</div></button>
@@ -124,15 +133,25 @@ export function tasksView(){
     <div class="packs">${completed.map(t=>row(t,true)).join('')}</div>`:''}`;
 }
 
+const albumRow=c=>`<button class="albumRow ${got(c.id)?'':'missing'}" data-card="${c.id}">
+  <span class="no">#${c.no}</span><span class="nm">${esc(c.name)}</span>
+  ${got(c.id)?(S.inv[c.id]>1?`<span class="dupe">x${S.inv[c.id]}</span>`:'<span class="chk">&#10003;</span>'):'<span class="lock">&#128274;</span>'}</button>`;
+
 export function albumView(){
   const list=CARDS.filter(c=>c.cat===S.tab);
   return hud()+`<div class="head"><h1>האלבום שלי</h1><p>${collected()} מתוך ${TOTAL} מדבקות נאספו</p></div>
     <div class="tabs">${CATS.map(([k,l])=>{const n=CARDS.filter(c=>c.cat===k),o=n.filter(c=>got(c.id)).length;
       return `<button class="tab ${S.tab===k?'on':''}" data-tab="${k}">${l} ${o}/${n.length}</button>`;}).join('')}</div>
-    ${S.tab==='cat5'?'<p class="note">ניתן להוריד את התמונה &#128229;</p>'
+    <div class="hero-row">
+      <button class="btn btn-ghost" style="width:100%" data-act="album-mode">
+        ${S.albumMode==='list'?'&#128444;&#65039; תצוגת תמונות':'&#128203; תצוגת רשימה (שם ומספר)'}</button>
+    </div>
+    ${S.tab==='cat5'?'<p class="note">ניתן להוריד את התמונות ולהשתמש בהן כרקע לטלפון</p>'
       :(S.tab==='legend'||S.tab==='cat2')?'<p class="note">אפשר ללחוץ על קלף כדי לצפות בסרטון ההיילייטס שלו &#127909;</p>'
       :''}
-    <div class="grid">${list.map(stickerHTML).join('')}</div>
+    ${S.albumMode==='list'
+      ?`<div class="albumList">${list.map(albumRow).join('')}</div>`
+      :`<div class="grid">${list.map(stickerHTML).join('')}</div>`}
     ${list.every(c=>!got(c.id))?'<p class="note">אין עדיין מדבקות בעמוד הזה. פתחו מעטפה בחנות.</p>':''}
     <div style="padding:0 var(--pad) 26px"><button class="btn btn-ghost" style="width:100%" data-act="credits">
       &#128247; קרדיטים לתמונות</button></div>`;

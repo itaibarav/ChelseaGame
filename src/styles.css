@@ -86,6 +86,15 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .tab.on{background:linear-gradient(180deg,#FFD766,#E09800);color:#3A2400;border-color:#FFF0BE}
 
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:4px var(--pad) 20px}
+.albumList{display:flex;flex-direction:column;gap:6px;padding:4px var(--pad) 20px}
+.albumRow{display:flex;align-items:center;gap:10px;width:100%;text-align:start;
+  background:var(--paper);color:var(--ink);border:0;border-radius:12px;padding:10px 13px;font-size:14px}
+.albumRow .no{font-family:'Secular One';color:#9FB8DA;font-size:13px;flex:0 0 auto;min-width:32px}
+.albumRow .nm{flex:1;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.albumRow.missing{opacity:.55}
+.albumRow .lock{flex:0 0 auto;font-size:13px}
+.albumRow .chk{flex:0 0 auto;color:#22C55E;font-weight:700}
+.albumRow .dupe{flex:0 0 auto;font-size:11px;color:#FFD766;font-weight:700}
 .sticker{position:relative;aspect-ratio:3/4;border-radius:var(--r-sm);overflow:hidden;display:block}
 .sticker.missing{background:rgba(255,255,255,.035);border:2px dashed rgba(150,190,255,.3);
   display:grid;place-items:center;color:rgba(160,195,240,.5)}
@@ -500,6 +509,13 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .tblHead{font-family:'Secular One';font-size:19px;text-align:center;margin-bottom:8px}
 .tblMore{display:block;width:100%;text-align:center;font-size:12px;color:#9FB8DA;
   background:none;border:0;padding:9px 0 1px;cursor:pointer}
+
+.hcPage{display:none}
+.hcPage.on{display:block;animation:hcFade .35s ease}
+@keyframes hcFade{from{opacity:0}to{opacity:1}}
+.hcDots{display:flex;justify-content:center;gap:6px;margin:8px 0 -2px}
+.hcDots span{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.25)}
+.hcDots span.on{background:#FFD766;width:16px;border-radius:4px;transition:width .25s ease}
 
 /* ---- שידור חי ---- */
 @keyframes liveDot{0%,100%{opacity:1}50%{opacity:.35}}

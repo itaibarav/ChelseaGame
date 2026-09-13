@@ -21,13 +21,28 @@ import { shirtKey } from '../games/shirt.js';
 import { shootPenalty } from '../games/penalty.js';
 
 /* ======================= RENDER ======================= */
+/* בעמוד הבית: אם יש גם קלפי משחקים וגם טבלה, הם מוצגים לסירוגין (החלפה כל 10 שניות)
+   במקום זה לצד זה — בגלל שקלף משחק (עם שני סמלים וטקסט) צריך רוחב מלא כדי לא להיחתך */
+function startHomeCarousel(){
+  const car=$('#homeCar');if(!car)return;
+  const pages=[...car.querySelectorAll('.hcPage')],dots=[...car.querySelectorAll('.hcDots span')];
+  if(pages.length<2)return;
+  let i=0;
+  MUT.homeTimer=setInterval(()=>{
+    i=(i+1)%pages.length;
+    pages.forEach((p,k)=>p.classList.toggle('on',k===i));
+    dots.forEach((d,k)=>d.classList.toggle('on',k===i));
+  },10000);
+}
 export function render(){
+  if(MUT.homeTimer){clearInterval(MUT.homeTimer);MUT.homeTimer=null;}
   const v={home:homeView,album:albumView,shop:shopView,games:gamesView,news:newsView,avatar:avatarView,tasks:tasksView}[S.screen]||homeView;
   $('#view').innerHTML=`<div class="screen-in">${v()}</div>`;
   $('#view').scrollTop=0;
   $('#nav').innerHTML=['home','album','games','shop','news'].map(k=>
     `<button data-nav="${k}" class="${S.screen===k?'on':''}">${NAV_ICONS[k]}</button>`).join('');
   animateCoins();
+  if(S.screen==='home')startHomeCarousel();
 }
 
 document.addEventListener('click',e=>{
@@ -76,6 +91,7 @@ document.addEventListener('click',e=>{
   if(a==='credits')return creditsModal();
   if(a==='recycle')return recycleAll();
   if(a==='shuffle-avatar')return shuffleAvatar();
+  if(a==='album-mode'){S.albumMode=S.albumMode==='list'?'grid':'list';return render();}
   if(a==='daily')return dailyModal();
   if(a==='shell-start')return shellStart();
 });

@@ -62,11 +62,12 @@ export function startRun(){
     obsBox.appendChild(el);
     MUT.G.obs.push({el,x:-CW-10-offset,scored:false});
   };
-  /* ממהירות 5 (tier 4) ואילך: לפעמים קונוסים מגיעים בזוג קרוב, שדורש שתי קפיצות ברצף */
+  /* ממהירות 5 (tier 4) ואילך: לפעמים שני קונוסים מגיעים צמודים זה לזה,
+     כזוג שקופצים מעליו בקפיצה אחת (לא שתי קפיצות נפרדות) */
   const spawn=()=>{
     spawnOne();
     if(MUT.G.tier>=4&&Math.random()<0.35){
-      const gapPx=MUT.G.v*(0.38+Math.random()*0.22);
+      const gapPx=CW*(0.35+Math.random()*0.35);
       spawnOne(gapPx);
     }
   };

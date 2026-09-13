@@ -161,14 +161,6 @@ export default {
    "wiki": "Pep Chavarría"
   },
   {
-   "num": 39,
-   "name": "מייק פנדרס",
-   "pos": "שוער",
-   "mv": 25,
-   "lux": false,
-   "wiki": "Mike Pendres"
-  },
-  {
    "num": 31,
    "name": "רג'י ווטסון",
    "pos": "קשר",
@@ -183,6 +175,14 @@ export default {
    "mv": 25,
    "lux": false,
    "wiki": "Josh Acheampong"
+  },
+  {
+   "num": 39,
+   "name": "מייק פנדרס",
+   "pos": "שוער",
+   "mv": 25,
+   "lux": false,
+   "wiki": "Mike Pendres"
   },
   {
    "num": 41,

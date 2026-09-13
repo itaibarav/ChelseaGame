@@ -5,5 +5,6 @@ export const MUT = {
   RAF: null,
   SND: true,
   PK: null,
+  homeTimer: null,
 };
 
