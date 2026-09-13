@@ -265,6 +265,19 @@ export function claimTask(id){
   sfx('coin');confetti(20);render();toast(`המשימה הושלמה! +${t.reward} מטבעות`);
 }
 
+/* הרכבה אקראית: לכל שכבה בוחרים פריט אקראי מבין הפריטים שכבר ברשותכם —
+   לכובע ולצעיף גם "בלי" הוא אפשרות חוקית, כי אפשר להסיר אותם */
+export function shuffleAvatar(){
+  ['kit','hat','scarf','boots'].forEach(layer=>{
+    const ownedItems=S.owned.filter(id=>ITEMS[id]&&ITEMS[id].layer===layer);
+    const optional=layer==='hat'||layer==='scarf';
+    const pool=optional?[...ownedItems,null]:ownedItems;
+    if(!pool.length)return;
+    S.eq[layer]=pick(pool);
+  });
+  save();sfx('pop');render();toast('הרכבה אקראית! 🎲');
+}
+
 export function buyItem(id){
   const it=ITEMS[id];
   if(!it||S.owned.includes(id))return;

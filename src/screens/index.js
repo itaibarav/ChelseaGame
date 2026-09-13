@@ -28,6 +28,18 @@ export function animateCoins(){
     if(k<1)requestAnimationFrame(step);})(t0);
 }
 
+/* שלוש שורות מהטבלה סביב צ'לסי: קבוצה לפני + צ'לסי + קבוצה אחרי.
+   אם צ'לסי ראשונה או אחרונה בטבלה — שתי קבוצות מהצד הפנוי במקום אחת */
+export function chelseaNeighbors(T){
+  const idx=T.findIndex(r=>r.own);
+  if(idx<0)return[];
+  let start,end;
+  if(idx===0){start=0;end=Math.min(T.length,3);}
+  else if(idx===T.length-1){start=Math.max(0,T.length-3);end=T.length;}
+  else{start=idx-1;end=idx+2;}
+  return T.slice(start,end);
+}
+
 export function homeView(){
   const c=collected(),pct=Math.round(c/TOTAL*100);
   return hud()+`
@@ -67,6 +79,17 @@ export function homeView(){
         <b class="sc ${m.result==='W'?'w':m.result==='L'?'l':'d'}">${esc(m.score||'')}</b>
         <div class="d">${matchDate(m.date)}</div></div>
       <div class="side">${crestOf(m)}<small>${esc(teamHe(m.opponent))}</small></div></div>`;})()}
+  ${(()=>{const rows=chelseaNeighbors(S.standings||[]);
+    if(!rows.length)return'';
+    return `<div class="card table">
+      <div class="tblHead">טבלה</div>
+      <div class="mrow standing mini head"><span class="pos">מקום</span><div class="mo"><span>קבוצה</span></div><b class="pts">נק'</b></div>
+      ${rows.map(r=>`<div class="mrow standing mini ${r.own?'own':''}">
+        <span class="pos">${r.position}</span>
+        <div class="mo">${r.crest?`<img class="crest" src="${mediaUrl(r.crest)}" alt="">`:''}<span>${esc(teamHe(r.team))}</span></div>
+        <b class="pts">${r.points}</b></div>`).join('')}
+      <button class="tblMore" data-act="matches">לטבלה המלאה &laquo;</button>
+    </div>`;})()}
   <div class="tiles">
     <button class="tile tile-gold" data-act="go-shop"><div style="font-size:34px">&#127873;</div><div class="lbl">חנות מעטפות</div></button>
     <button class="tile tile-blue" data-act="go-games"><div style="font-size:34px">&#127918;</div><div class="lbl">הרוויחו מטבעות<br>10 משחקים</div></button>
@@ -189,6 +212,7 @@ export function avatarView(){
     <div class="studio">${stadiumBG(true)}${avatarSVG('avatar')}</div>
     <div class="tabs">${LAYER_TABS.map(([k,l])=>`<button class="tab ${S.avTab===k?'on':''}" data-avtab="${k}">${l}</button>`).join('')}
       ${S.avTab!=='kit'&&S.avTab!=='boots'?`<button class="tab" data-equip="none">הסרה</button>`:''}</div>
+    <button class="btn btn-ghost" data-act="shuffle-avatar" style="width:100%;margin:2px 0 10px">🎲 הרכבה אקראית</button>
     <div class="items">${items.map(it=>{
       const owned=S.owned.includes(it.id), on=S.eq[it.layer]===it.id;
       const locked=it.req&&!got(it.req);

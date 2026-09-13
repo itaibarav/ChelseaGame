@@ -54,13 +54,21 @@ export function startRun(){
   const V0=H*1.65, GRAV=H*4.0;         /* שיא ~0.34H, ריחוף ~0.82 שניות */
 
   const CW=H*0.11, CH=H*0.13;
-  const spawn=()=>{
+  const spawnOne=(offset=0)=>{
     const el=document.createElement('div');
     el.className='ob cone';
     el.style.width=CW+'px';el.style.height=CH+'px';el.style.top=(GROUND-CH)+'px';
     el.innerHTML=CONE_SVG;
     obsBox.appendChild(el);
-    MUT.G.obs.push({el,x:-CW-10,scored:false});
+    MUT.G.obs.push({el,x:-CW-10-offset,scored:false});
+  };
+  /* ממהירות 5 (tier 4) ואילך: לפעמים קונוסים מגיעים בזוג קרוב, שדורש שתי קפיצות ברצף */
+  const spawn=()=>{
+    spawnOne();
+    if(MUT.G.tier>=4&&Math.random()<0.35){
+      const gapPx=MUT.G.v*(0.38+Math.random()*0.22);
+      spawnOne(gapPx);
+    }
   };
 
   const jump=()=>{if(!MUT.G.live||MUT.G.over||MUT.G.air)return;MUT.G.vy=-V0;MUT.G.air=true;run.classList.add('air');sfx('pop');};

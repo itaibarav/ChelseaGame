@@ -493,9 +493,13 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .mrow.standing .pos{color:#8FA3C0;font-size:12px;text-align:center}
 .mrow.standing .pld,.mrow.standing .gd{font-size:12px;color:#9FB8DA;text-align:center}
 .mrow.standing .pts{font-family:'Secular One';font-size:14px;text-align:center}
-.mrow.standing.own{background:rgba(255,200,61,.12);border-radius:8px}
+.mrow.standing.own{background:rgba(255,200,61,.12);border-radius:8px;font-weight:700}
 .mrow.standing.head{color:#8FA3C0;font-size:11px;font-weight:700;border-bottom:1.5px solid rgba(255,255,255,.18)}
 .mrow.standing.head .pts{font-family:inherit;font-size:11px}
+.mrow.standing.mini{grid-template-columns:22px 1fr 32px}
+.tblHead{font-family:'Secular One';font-size:19px;text-align:center;margin-bottom:8px}
+.tblMore{display:block;width:100%;text-align:center;font-size:12px;color:#9FB8DA;
+  background:none;border:0;padding:9px 0 1px;cursor:pointer}
 
 /* ---- שידור חי ---- */
 @keyframes liveDot{0%,100%{opacity:1}50%{opacity:.35}}

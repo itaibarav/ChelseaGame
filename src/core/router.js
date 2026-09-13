@@ -8,7 +8,7 @@ import { PHOTO_CREDITS } from '../data/globals.js';
 import { S, esc, save, today } from '../core/state.js';
 import { albumView, animateCoins, avatarView, gamesView, homeView, matchesModal, newsView, shopView, tasksView } from '../screens/index.js';
 import { answerValue } from '../games/value.js';
-import { buyItem, cardDetail, claimTask, downloadPhoto, openPack, packTap, playHighlight, recycleAll, tapItem } from '../core/actions.js';
+import { buyItem, cardDetail, claimTask, downloadPhoto, openPack, packTap, playHighlight, recycleAll, shuffleAvatar, tapItem } from '../core/actions.js';
 import { coinSVG } from '../art/cards.js';
 import { confetti, sfx } from '../core/fx.js';
 import { endTimer, payout } from '../games/shared.js';
@@ -75,6 +75,7 @@ document.addEventListener('click',e=>{
   if(a==='matches')return matchesModal();
   if(a==='credits')return creditsModal();
   if(a==='recycle')return recycleAll();
+  if(a==='shuffle-avatar')return shuffleAvatar();
   if(a==='daily')return dailyModal();
   if(a==='shell-start')return shellStart();
 });

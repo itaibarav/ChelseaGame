@@ -161,7 +161,7 @@ export default {
    "wiki": "Pep Chavarría"
   },
   {
-   "num": 30,
+   "num": 39,
    "name": "מייק פנדרס",
    "pos": "שוער",
    "mv": 25,

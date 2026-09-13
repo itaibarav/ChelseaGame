@@ -8,7 +8,7 @@ import { S, save, shuffle } from '../core/state.js';
 
 /* ======================= 1. מי החולצה ======================= */
 /* תור מעורבב — שחקן לא חוזר עד שכל הסגל עבר */
-export const STREAK=[0,0,3,3,5,7,10];
+export const STREAK=[0,0,3,3,5,7,7];
 export function startShirt(){
   MUT.G={k:'shirt',coins:0,streak:0,left:60,input:'',cur:null,
      queue:shuffle(SQUAD.map((_,i)=>i)),qi:0,seen:0};
@@ -43,7 +43,7 @@ export function shirtKey(k){
   if(k==='ok'){
     if(!MUT.G.input)return;
     if(+MUT.G.input===MUT.G.cur[0]){
-      MUT.G.streak++;const b=MUT.G.streak<STREAK.length?STREAK[MUT.G.streak]:10;
+      MUT.G.streak++;const b=MUT.G.streak<STREAK.length?STREAK[MUT.G.streak]:7;
       MUT.G.coins+=3+b;sfx('coin');toast('נכון! +'+(3+b));
       S.stats.shirtBestStreak=Math.max(S.stats.shirtBestStreak,MUT.G.streak);save();
     }else{MUT.G.streak=0;sfx('err');toast('לא מדויק — '+MUT.G.cur[0]);}
