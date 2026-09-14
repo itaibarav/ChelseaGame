@@ -22,7 +22,7 @@ export default {
   "squad-34": "/assets/players/squad-34.jpg",
   "squad-41": "/assets/players/squad-41.jpg",
   "squad-29": "/assets/players/squad-29.jpg",
-  "squad-30": "/assets/players/squad-30.jpg",
+  "squad-39": "/assets/players/squad-39.jpg",
   "squad-45": "/assets/players/squad-45.jpg",
   "legend-0": "/assets/players/legend-0.jpg",
   "legend-1": "/assets/players/legend-1.jpg",
