@@ -3,6 +3,7 @@ import { GA } from '../games/assets.js';
 import { MUT } from '../core/mut.js';
 import { confetti, sfx } from '../core/fx.js';
 import { pick, S, save } from '../core/state.js';
+import { streakCelebration } from '../games/shared.js';
 
 /* ======================= 4. דו-קרב פנדלים =======================
    השוער נשאר בגודל קבוע. הבסיס שלו במשבצת 5 והוא נוטה כמו מחוג
@@ -87,6 +88,7 @@ export function shootPenalty(n){
   setTimeout(()=>{
     if(!MUT.G||MUT.G.k!=='penalty')return;
     const m=$('#pMsg');
+    let celebrate=false;
     if(saved){
       MUT.G.streak=0;sfx('err');
       if(m)m.innerHTML='<b style="color:#FF9A9C">השוער עצר! הרצף התאפס</b>';
@@ -96,13 +98,16 @@ export function shootPenalty(n){
       if(m)m.innerHTML=`<b style="color:#8FE0A0">גול! +${gain} · רצף ${MUT.G.streak}</b>`;
       const c=$('#pC');if(c)c.textContent=MUT.G.coins+' 🪙';
       const s=$('#pS');if(s)s.textContent='רצף '+MUT.G.streak;
+      celebrate=MUT.G.streak%3===0;
     }
     MUT.G.shots++;
-    setTimeout(()=>{
+    const next=()=>{
       if(!MUT.G||MUT.G.k!=='penalty')return;
       const r=$('#pR');if(r)r.textContent='בעיטה '+(MUT.G.shots+1);
       if(m)m.textContent='בחרו משבצת — השוער מכסה שתיים';
       resetPenalty();MUT.G.busy=false;
-    },1200);
+    };
+    if(celebrate)streakCelebration(MUT.G.streak,3,next);
+    else setTimeout(next,1200);
   },700);
 }

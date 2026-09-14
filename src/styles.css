@@ -31,6 +31,16 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .hero .who{position:absolute;top:12px;inset-inline-start:14px;font-size:14px;font-weight:700;
   color:#034694;text-shadow:0 1px 2px rgba(255,255,255,.9),0 0 8px rgba(255,255,255,.75)}
 .avatar{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);height:228px}
+.ballKick{position:absolute;bottom:16px;left:50%;width:30px;height:30px;object-fit:contain;
+  transform:translateX(-50%);opacity:0;pointer-events:none;z-index:3}
+.ballKick.kick{animation:ballKickFly 1.6s ease}
+@keyframes ballKickFly{
+  0%{opacity:1;transform:translateX(calc(-50% + var(--dir,1) * 150px)) scale(.7)}
+  40%{opacity:1;transform:translateX(-50%) scale(1)}
+  48%{transform:translateX(-50%) scale(1)}
+  58%{transform:translateX(calc(-50% + var(--dir,1) * -8px)) scale(1.05)}
+  100%{opacity:1;transform:translateX(calc(-50% + var(--dir,1) * 160px)) scale(.7)}
+}
 
 .hero-row{display:flex;gap:9px;margin:10px var(--pad) 0}
 .btn{border-radius:var(--r-md);padding:11px 14px;font-weight:700;font-size:14px;
@@ -335,8 +345,20 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .avatar.cel-3 .head{animation:celColdHead 2s ease-in-out both}
 .avatar.celebrating{animation:none}
 
+/* בעיטת כדור אקראית כל 15 שניות בעמוד הבית — ראו startBallFX ב-router.js */
+@keyframes legKickSwing{0%,44%{transform:none}52%{transform:rotate(-36deg)}62%{transform:rotate(8deg)}72%,100%{transform:none}}
+.avatar.kicking .leg.r{animation:legKickSwing 1.6s ease}
 
-.sheet.game{padding:16px 13px}
+
+.sheet.game{padding:16px 13px;position:relative}
+.streakCel{position:absolute;inset:0;z-index:20;border-radius:24px;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  background:rgba(4,16,40,.88);backdrop-filter:blur(2px);animation:scPop .25s cubic-bezier(.2,1.3,.4,1) both}
+@keyframes scPop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+.streakCel .scAv{position:relative;height:180px;width:100%;pointer-events:none}
+.streakCel .scAv .avatar{height:176px}
+.streakCel .scMsg{font-family:'Secular One';font-size:18px;color:#FFD766;text-align:center;
+  padding:0 20px;line-height:1.4;text-shadow:0 2px 6px rgba(0,0,0,.5)}
 .countdown{position:absolute;inset:0;display:grid;place-items:center;font-family:'Secular One';
   font-size:64px;color:#fff;text-shadow:0 4px 18px rgba(0,0,0,.7);pointer-events:none;z-index:3}
 @keyframes cdPulse{0%{transform:scale(.5);opacity:0}40%{transform:scale(1.15);opacity:1}100%{transform:scale(1);opacity:.9}}
@@ -502,8 +524,11 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .tblMore{display:block;width:100%;text-align:center;font-size:12px;color:#9FB8DA;
   background:none;border:0;padding:9px 0 1px;cursor:pointer}
 
-.hcPage{display:none}
-.hcPage.on{display:block;animation:hcFade .35s ease}
+/* שני הדפים תופסים את אותה תא גריד, כך שגובה הקרוסלה תמיד נקבע לפי
+   הגבוה מביניהם — ולא "קופץ" בגובה כשגוללים בין המשחקים לטבלה */
+.homeCarousel{display:grid}
+.hcPage{grid-area:1/1;visibility:hidden;pointer-events:none}
+.hcPage.on{visibility:visible;pointer-events:auto;animation:hcFade .35s ease}
 @keyframes hcFade{from{opacity:0}to{opacity:1}}
 .hcDots{display:flex;justify-content:center;gap:6px;margin:8px 0 -2px}
 .hcDots span{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.25)}

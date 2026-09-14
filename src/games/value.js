@@ -4,10 +4,11 @@ import { SQUAD } from '../data/cards.js';
 import { cardOf, gameCard } from '../games/assets.js';
 import { pick } from '../core/state.js';
 import { sfx } from '../core/fx.js';
+import { streakCelebration } from '../games/shared.js';
 
 /* ======================= 2. קרב שווי (ללא הגבלה) ======================= */
 export function startValue(){
-  MUT.G={k:'value',coins:0,q:0,right:0,pair:null,busy:false};
+  MUT.G={k:'value',coins:0,q:0,right:0,streak:0,pair:null,busy:false};
   modal(`<div class="sheet game">
     <div class="ghud"><span id="vQ">שאלה 1</span><span id="vR">0 נכונות</span><span id="vC">0 🪙</span></div>
     <h2 style="margin:2px 0 8px;font-size:21px">למי שווי שוק גבוה יותר?</h2>
@@ -34,12 +35,16 @@ export function answerValue(i){
   MUT.G.busy=true;
   const [a,b]=MUT.G.pair,win=a[3]>b[3]?0:1;
   const m=$('#vMsg');
-  if(i===win){MUT.G.coins+=5;MUT.G.right++;sfx('coin');
-    if(m)m.innerHTML=`<b style="color:#8FE0A0">נכון! ${MUT.G.pair[win][1]} — €${MUT.G.pair[win][3]}M</b>`;}
-  else{sfx('err');
+  let celebrate=false;
+  if(i===win){MUT.G.coins+=5;MUT.G.right++;MUT.G.streak++;sfx('coin');
+    if(m)m.innerHTML=`<b style="color:#8FE0A0">נכון! ${MUT.G.pair[win][1]} — €${MUT.G.pair[win][3]}M</b>`;
+    celebrate=MUT.G.streak%5===0;
+  }else{MUT.G.streak=0;sfx('err');
     if(m)m.innerHTML=`<b style="color:#FF9A9C">${MUT.G.pair[win][1]} שווה יותר — €${MUT.G.pair[win][3]}M</b>`;}
   const c=$('#vC'),r=$('#vR');
   if(c)c.textContent=MUT.G.coins+' 🪙';
   if(r)r.textContent=MUT.G.right+' נכונות';
-  setTimeout(()=>{if(MUT.G&&MUT.G.k==='value')nextValue();},1000);
+  const next=()=>{if(MUT.G&&MUT.G.k==='value')nextValue();};
+  if(celebrate)streakCelebration(MUT.G.streak,5,next);
+  else setTimeout(next,1000);
 }

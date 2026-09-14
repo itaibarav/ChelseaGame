@@ -52,8 +52,27 @@ function startHomeCarousel(){
     restart();
   });
 }
+/* כל 15 שניות בעמוד הבית: מעבירים לדמות כדור מצד אקראי, והיא בועטת אותו
+   בחזרה לאותו כיוון שממנו הגיע */
+function kickBallFX(){
+  const ball=$('#ballKick'), av=document.querySelector('.hero .avatar');
+  if(!ball||!av)return;
+  const dir=Math.random()<0.5?1:-1;
+  ball.style.setProperty('--dir',dir);
+  ball.classList.remove('kick');av.classList.remove('kicking');
+  void ball.offsetWidth;
+  ball.classList.add('kick');av.classList.add('kicking');
+  sfx('pop');
+  setTimeout(()=>{ball.classList.remove('kick');av.classList.remove('kicking');},1650);
+}
+function startBallFX(){
+  if(!$('#ballKick'))return;
+  if(MUT.ballTimer)clearInterval(MUT.ballTimer);
+  MUT.ballTimer=setInterval(kickBallFX,15000);
+}
 export function render(){
   if(MUT.homeTimer){clearInterval(MUT.homeTimer);MUT.homeTimer=null;}
+  if(MUT.ballTimer){clearInterval(MUT.ballTimer);MUT.ballTimer=null;}
   if(MUT.reelObserver){MUT.reelObserver.disconnect();MUT.reelObserver=null;}
   const v={home:homeView,album:albumView,shop:shopView,games:gamesView,news:newsView,avatar:avatarView,tasks:tasksView,reels:reelsView}[S.screen]||homeView;
   $('#view').innerHTML=`<div class="screen-in">${v()}</div>`;
@@ -61,7 +80,7 @@ export function render(){
   $('#nav').innerHTML=['home','album','games','shop','news','reels'].map(k=>
     `<button data-nav="${k}" class="${S.screen===k?'on':''}">${NAV_ICONS[k]}</button>`).join('');
   animateCoins();
-  if(S.screen==='home')startHomeCarousel();
+  if(S.screen==='home'){startHomeCarousel();startBallFX();}
   if(S.screen==='reels')mountReels();
 }
 
@@ -202,6 +221,7 @@ export function onboarding(){
 
 render();
 if(!S.name)onboarding();
+else if(!dailyState().claimed)setTimeout(dailyModal,500);
 refreshFeed();
 if(typeof window!=='undefined'){window.addEventListener('online',()=>{refreshFeed(true);render();});
   window.addEventListener('offline',render);}

@@ -40,11 +40,13 @@ export function chelseaNeighbors(T){
   return T.slice(start,end);
 }
 
+const BALL_ART=(typeof window!=='undefined'&&window.GAME_ART&&window.GAME_ART.ball)||'';
 export function homeView(){
   const c=collected(),pct=Math.round(c/TOTAL*100);
   return hud()+`
   <div class="hero">${stadiumBG(false)}
     <div class="who">היי ${esc(S.name||'אלוף')} &#128075;</div>${avatarSVG()}
+    ${BALL_ART?`<img class="ballKick" id="ballKick" src="${BALL_ART}" alt="">`:''}
   </div>
   <div class="hero-row">
     <button class="btn btn-ghost" data-act="go-avatar">&#128085; התאם אוואטר</button>
