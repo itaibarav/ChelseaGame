@@ -526,7 +526,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 
 /* שני הדפים תופסים את אותה תא גריד, כך שגובה הקרוסלה תמיד נקבע לפי
    הגבוה מביניהם — ולא "קופץ" בגובה כשגוללים בין המשחקים לטבלה */
-.homeCarousel{display:grid}
+.homeCarousel{display:grid;touch-action:pan-y}
 .hcPage{grid-area:1/1;visibility:hidden;pointer-events:none}
 .hcPage.on{visibility:visible;pointer-events:auto;animation:hcFade .35s ease}
 @keyframes hcFade{from{opacity:0}to{opacity:1}}

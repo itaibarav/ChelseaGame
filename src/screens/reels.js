@@ -1,7 +1,11 @@
 import { BY_ID } from '../data/cards.js';
-import { esc } from '../core/state.js';
+import { esc, shuffle } from '../core/state.js';
 import { MUT } from '../core/mut.js';
-import REELS from '../data/reels.js';
+import REELS_DATA from '../data/reels.js';
+
+/* הסדר מתערבב פעם אחת בכל הפעלה של האפליקציה (לא בכל פעם שנכנסים ללשונית
+   בתוך אותו מושב) — כדי שלא תמיד יופיע אותו סדר קבוע */
+const REELS=shuffle(REELS_DATA);
 
 /* ======================= היילייטס: פיד גלילה ======================= */
 export function reelsView(){

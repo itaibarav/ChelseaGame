@@ -42,15 +42,20 @@ function startHomeCarousel(){
     MUT.homeTimer=setInterval(()=>homeCarouselGoto(car,(+car.dataset.i||0)+1),10000);
   };
   restart();
+  /* setPointerCapture מבטיח שה-pointerup יגיע לאלמנט הזה גם אם האצבע
+     סטתה מעט אנכית באמצע הגלילה — בלעדיו מגע אמיתי (בניגוד לעכבר) לרוב
+     "מאבד" את היעד באמצע גרירה, וה-swipe פשוט לא קורה */
   let x0=null;
-  car.addEventListener('pointerdown',e=>{x0=e.clientX;});
-  car.addEventListener('pointerup',e=>{
+  car.addEventListener('pointerdown',e=>{x0=e.clientX;try{car.setPointerCapture(e.pointerId);}catch(err){}});
+  const end=e=>{
     if(x0==null)return;
     const dx=e.clientX-x0;x0=null;
     if(Math.abs(dx)<40)return;
     homeCarouselGoto(car,(+car.dataset.i||0)+(dx<0?1:-1));
     restart();
-  });
+  };
+  car.addEventListener('pointerup',end);
+  car.addEventListener('pointercancel',()=>{x0=null;});
 }
 /* כל 15 שניות בעמוד הבית: מעבירים לדמות כדור מצד אקראי, והיא בועטת אותו
    בחזרה לאותו כיוון שממנו הגיע */
