@@ -95,6 +95,14 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
   background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.15);color:#C6D8F2}
 .tab.on{background:linear-gradient(180deg,#FFD766,#E09800);color:#3A2400;border-color:#FFF0BE}
 
+/* באלבום: הצ'יפים נדבקים למעלה בגלילה, וכל הקטגוריות רצות ברצף אחד מתחתיהם —
+   scroll-margin-top כדי שכותרת הקטגוריה לא תיעלם מתחת לפס הדביק בקפיצה לצ'יפ */
+.tabs.alltabs{position:sticky;top:0;z-index:6;background:var(--navy);
+  box-shadow:0 8px 14px -6px rgba(0,0,0,.35)}
+.albumCat{scroll-margin-top:58px}
+.catHead{font-family:'Secular One';font-weight:400;font-size:19px;color:#FFD766;
+  margin:16px var(--pad) 2px;padding-top:2px}
+
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:4px var(--pad) 20px}
 .sticker{position:relative;aspect-ratio:3/4;border-radius:var(--r-sm);overflow:hidden;display:block}
 .sticker.missing{background:rgba(255,255,255,.035);border:2px dashed rgba(150,190,255,.3);
@@ -523,6 +531,13 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .tblHead{font-family:'Secular One';font-size:19px;text-align:center;margin-bottom:8px}
 .tblMore{display:block;width:100%;text-align:center;font-size:12px;color:#9FB8DA;
   background:none;border:0;padding:9px 0 1px;cursor:pointer}
+
+/* תצוגת הטבלה המקוצרת בעמוד הבית — נמוכה יותר מהגרסה המלאה כדי שכפתורי
+   "חנות"/"משחקים" יישארו גלויים גם במסכי טלפון קטנים בלי גלילה */
+.card.table{padding:9px 13px 4px}
+.card.table .tblHead{font-size:16px;margin-bottom:3px}
+.card.table .mrow.standing.mini{padding:5px 4px;font-size:12px}
+.card.table .tblMore{padding:4px 0 0}
 
 /* שני הדפים תופסים את אותה תא גריד, כך שגובה הקרוסלה תמיד נקבע לפי
    הגבוה מביניהם — ולא "קופץ" בגובה כשגוללים בין המשחקים לטבלה */

@@ -136,17 +136,44 @@ export function tasksView(){
 }
 
 export function albumView(){
-  const list=CARDS.filter(c=>c.cat===S.tab);
   return hud()+`<div class="head"><h1>האלבום שלי</h1><p>${collected()} מתוך ${TOTAL} מדבקות נאספו</p></div>
-    <div class="tabs">${CATS.map(([k,l])=>{const n=CARDS.filter(c=>c.cat===k),o=n.filter(c=>got(c.id)).length;
+    <div class="tabs alltabs" id="albumTabs">${CATS.map(([k,l])=>{const n=CARDS.filter(c=>c.cat===k),o=n.filter(c=>got(c.id)).length;
       return `<button class="tab ${S.tab===k?'on':''}" data-tab="${k}">${l} ${o}/${n.length}</button>`;}).join('')}</div>
-    ${S.tab==='cat5'?'<p class="note">ניתן להוריד את התמונות ולהשתמש בהן כרקע לטלפון</p>'
-      :(S.tab==='legend'||S.tab==='cat2')?'<p class="note">אפשר ללחוץ על קלף כדי לצפות בסרטון ההיילייטס שלו &#127909;</p>'
-      :''}
-    <div class="grid">${list.map(stickerHTML).join('')}</div>
-    ${list.every(c=>!got(c.id))?'<p class="note">אין עדיין מדבקות בעמוד הזה. פתחו מעטפה בחנות.</p>':''}
+    ${CATS.map(([k,l])=>{
+      const list=CARDS.filter(c=>c.cat===k);
+      const note=k==='cat5'?'<p class="note">ניתן להוריד את התמונות ולהשתמש בהן כרקע לטלפון</p>'
+        :(k==='legend'||k==='cat2')?'<p class="note">אפשר ללחוץ על קלף כדי לצפות בסרטון ההיילייטס שלו &#127909;</p>'
+        :'';
+      return `<div class="albumCat" data-cat="${k}">
+        <h2 class="catHead">${l}</h2>
+        ${note}
+        <div class="grid">${list.map(stickerHTML).join('')}</div>
+        ${list.every(c=>!got(c.id))?'<p class="note">אין עדיין מדבקות בעמוד הזה. פתחו מעטפה בחנות.</p>':''}
+      </div>`;
+    }).join('')}
     <div style="padding:0 var(--pad) 26px"><button class="btn btn-ghost" style="width:100%" data-act="credits">
       &#128247; קרדיטים לתמונות</button></div>`;
+}
+/* עוקבים אחר הקטגוריה שגלושה כרגע לתוך התצוגה, כדי שהצ'יפ הדביק למעלה
+   יראה איפה נמצאים — עם סף/שוליים רחבים כך שהעדכון לא "מרצד" מהר מדי */
+export function mountAlbumTabs(){
+  const wrap=$('#albumTabs');
+  if(MUT.albumObserver){MUT.albumObserver.disconnect();MUT.albumObserver=null;}
+  if(!wrap)return;
+  const sections=[...document.querySelectorAll('.albumCat')];
+  if(!sections.length)return;
+  const setActive=k=>{
+    if(S.tab===k)return;
+    S.tab=k;
+    wrap.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===k));
+  };
+  const io=new IntersectionObserver(entries=>{
+    let best=null;
+    entries.forEach(en=>{if(en.isIntersecting&&(!best||en.intersectionRatio>best.intersectionRatio))best=en;});
+    if(best)setActive(best.target.dataset.cat);
+  },{root:$('#view'),threshold:[0.25,0.5,0.75],rootMargin:'-110px 0px -55% 0px'});
+  sections.forEach(s=>io.observe(s));
+  MUT.albumObserver=io;
 }
 
 export function shopView(){

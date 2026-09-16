@@ -6,7 +6,7 @@ import { MUT } from '../core/mut.js';
 import { NAV_ICONS } from '../art/avatar.js';
 import { PHOTO_CREDITS } from '../data/globals.js';
 import { S, esc, save, today } from '../core/state.js';
-import { albumView, animateCoins, avatarView, gamesView, homeView, matchesModal, newsView, shopView, tasksView } from '../screens/index.js';
+import { albumView, animateCoins, avatarView, gamesView, homeView, matchesModal, mountAlbumTabs, newsView, shopView, tasksView } from '../screens/index.js';
 import { answerValue } from '../games/value.js';
 import { buyItem, cardDetail, claimTask, downloadPhoto, openPack, packTap, playHighlight, recycleAll, shuffleAvatar, tapItem } from '../core/actions.js';
 import { coinSVG } from '../art/cards.js';
@@ -79,6 +79,7 @@ export function render(){
   if(MUT.homeTimer){clearInterval(MUT.homeTimer);MUT.homeTimer=null;}
   if(MUT.ballTimer){clearInterval(MUT.ballTimer);MUT.ballTimer=null;}
   if(MUT.reelObserver){MUT.reelObserver.disconnect();MUT.reelObserver=null;}
+  if(MUT.albumObserver){MUT.albumObserver.disconnect();MUT.albumObserver=null;}
   const v={home:homeView,album:albumView,shop:shopView,games:gamesView,news:newsView,avatar:avatarView,tasks:tasksView,reels:reelsView}[S.screen]||homeView;
   $('#view').innerHTML=`<div class="screen-in">${v()}</div>`;
   $('#view').scrollTop=0;
@@ -87,6 +88,7 @@ export function render(){
   animateCoins();
   if(S.screen==='home'){startHomeCarousel();startBallFX();}
   if(S.screen==='reels')mountReels();
+  if(S.screen==='album')mountAlbumTabs();
 }
 
 document.addEventListener('click',e=>{
@@ -95,7 +97,18 @@ document.addEventListener('click',e=>{
   const b=e.target.closest('button,[data-pk],[data-act]');if(!b)return;
   const d=b.dataset;
   if(d.nav){if(S.screen==='album')MUT.NEW_IDS=new Set();S.screen=d.nav;closeModal();endTimer();MUT.G=null;MUT.PK=null;return render();}
-  if(d.tab){S.tab=d.tab;return render();}
+  if(d.tab){
+    if(S.screen==='album'){
+      const sec=document.querySelector(`.albumCat[data-cat="${d.tab}"]`);
+      if(sec){
+        S.tab=d.tab;
+        document.querySelectorAll('#albumTabs .tab').forEach(x=>x.classList.toggle('on',x===b));
+        sec.scrollIntoView({behavior:'smooth',block:'start'});
+        return;
+      }
+    }
+    S.tab=d.tab;return render();
+  }
   if(d.mt){
     const ids={up:'mUp',past:'mPast',table:'mTable'};
     b.parentElement.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
