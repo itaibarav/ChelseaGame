@@ -2,11 +2,11 @@ task explain | hebrew | reward
 the player hit 5 right answers in "guess the shirt number" in one match | נחש 5 מספרי נכונים במשחק אחד ב"מי החולצה?" | 20
 the player hit 10 right answers in "guess the shirt number" in one match | נחש 10 מספרי נכונים במשחק אחד ב"מי החולצה?" | 50
 the player hit 20 right answers in "guess the shirt number" in one match | נחש 20 מספרי נכונים במשחק אחד ב"מי החולצה?" | 100
-the player hit 20 score in הקפצות | הקפץ 20 פעמים במשחק הקפצות | 20
-the player hit 40 score in הקפצות | הקפץ 40 פעמים במשחק הקפצות | 40
+the player hit 15 score in הקפצות | הקפץ 15 פעמים במשחק הקפצות | 15
+the player hit 30 score in הקפצות | הקפץ 30 פעמים במשחק הקפצות | 30
+the player hit 45 score in הקפצות | הקפץ 45 פעמים במשחק הקפצות | 45
 the player hit 60 score in הקפצות | הקפץ 60 פעמים במשחק הקפצות | 60
 the player hit 80 score in הקפצות | הקפץ 80 פעמים במשחק הקפצות | 80
-the player hit 100 score in הקפצות | הקפץ 100 פעמים במשחק הקפצות | 100
 the player hit 1000 distance in stamford run | עבור 1,000 מטר במשחק ריצת סטמפורד | 25
 the player hit 2000 distance in stamford run | עבור 2,000 מטר במשחק ריצת סטמפורד | 50
 the player hit 3000 distance in stamford run | עבור 3,000 מטר במשחק ריצת סטמפורד | 100
@@ -48,5 +48,8 @@ the player watched cup winning video | צפה בסרטון של זכייה בג�
 the player recycle 25 card | מחזר 25 קלפים כפולים | 10
 the player recycle 50 card | מחזר 50 קלפים כפולים | 30
 the player recycle 100 card | מחזר 100 קלפים כפולים | 50
-the player recycle 100 card | מחזר 200 קלפים כפולים | 100
+the player recycle 200 card | מחזר 200 קלפים כפולים | 100
+the player recycle 800 card | מחזר 800 קלפים כפולים | 200
+the player collected the 7 days in a row connection reward | אסוף את הפרס היומי 7 ימים ברצף | 50
+
 
