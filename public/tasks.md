@@ -28,7 +28,7 @@ the player win 20 times in X/O games | נצח 20 פעמים באיקס עיגו�
 the player win 35 times in X/O games | נצח 35 פעמים באיקס עיגול | 100
 the player win 20 times in "Reece Mix it" | נצח 20 פעמים בריס ג'יימס מערבב | 20
 the player win 40 times in "Reece Mix it" | נצח 40 פעמים בריס ג'יימס מערבב | 40
-the player win 80 times in "Reece Mix it" | נצח 80 פעמים בריס ג'יימס מערבב | 80
+the player win 60 times in "Reece Mix it" | נצח 60 פעמים בריס ג'יימס מערבב | 60
 the player purchase 4 kits in the locker | רכוש 4 מדים לאווטאר שלך | 40
 the player purchase 8 kits in the locker | רכוש 8 מדים לאווטאר שלך | 60
 the player purchase 10 kits in the locker | רכוש 10 מדים לאווטאר שלך | 75
@@ -39,11 +39,14 @@ the player complete the full legends page in the album | השלם את מדבק�
 the player purchase 20 packs | קנה 20 מעטפות בחנות | 50
 the player purchase 40 packs | קנה 40 מעטפות בחנות | 100
 the player purchase 100 packs | קנה 100 מעטפות בחנות | 150
+the player purchase 200 packs | קנה 200 מעטפות בחנות | 200
 the player purchase 15 Legend packs | קנה 15 מעטפות אגדה בחנות | 100
-the player purchase 15 Kits packs | קנה 15 מעטפות זהב בחנות | 100
+the player purchase 15 Kits packs | קנה 15 מעטפות מדים בחנות | 100
 the player purchase 10 gold packs | קנה 10 מעטפות זהב בחנות | 200
+the player purchase 30 gold packs | קנה 30 מעטפות זהב בחנות | 300
+the player purchase 50 gold packs | קנה 50 מעטפות זהב בחנות | 400
 the player download bacground to his device | הורד לטלפון רקע מתוך קלפי "רקע" באלבום | 25
-the player watched legend video | צפה בסרטון הייליטס של אגדה | 40
+the player watched legend video | צפה בסרטון הייליטס של שחקן אגדה | 40
 the player watched cup winning video | צפה בסרטון של זכייה בגביע | 50
 the player recycle 25 card | מחזר 25 קלפים כפולים | 10
 the player recycle 50 card | מחזר 50 קלפים כפולים | 30
