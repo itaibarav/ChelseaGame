@@ -133,6 +133,9 @@ export default {
   "lion": "/assets/art/lion.png",
   "stadium": "/assets/art/stadium.png",
   "lionGold": "/assets/art/lionGold.png",
+  "lionYellow": "/assets/art/lionYellow.png",
+  "lionBlack": "/assets/art/lionBlack.png",
+  "lionOrange": "/assets/art/lionOrange.png",
   "reece": "/assets/art/reece.png",
   "palmer": "/assets/art/palmer.png"
  }

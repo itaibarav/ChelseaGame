@@ -106,7 +106,8 @@ export function homeView(){
     <button class="tile tile-blue" data-act="go-games"><div style="font-size:34px">&#127918;</div><div class="lbl">הרוויחו מטבעות<br>10 משחקים</div></button>
   </div>
   <div class="hero-row">
-    <button class="btn btn-gold" style="width:100%" data-act="go-tasks">&#127942; משימות · ${S.claimedTasks.length}/${TASKS.length}</button>
+    <button class="btn btn-gold" style="width:100%;position:relative" data-act="go-tasks">&#127942; משימות · ${S.claimedTasks.length}/${TASKS.length}
+      ${TASKS.some(t=>!S.claimedTasks.includes(t.id)&&t.check())?'<span class="dot">!</span>':''}</button>
   </div>
   <p class="note">כל האיורים נוצרים בקוד (SVG). לוח המשחקים מציג נתוני דוגמה עד שנחבר מקור נתונים.</p>`;
 }
@@ -136,9 +137,12 @@ export function tasksView(){
 }
 
 export function albumView(){
-  return hud()+`<div class="head"><h1>האלבום שלי</h1><p>${collected()} מתוך ${TOTAL} מדבקות נאספו</p></div>
+  return `<div class="albumSticky">
+    ${hud()}
+    <div class="head"><h1>האלבום שלי</h1><p>${collected()} מתוך ${TOTAL} מדבקות נאספו</p></div>
     <div class="tabs alltabs" id="albumTabs">${CATS.map(([k,l])=>{const n=CARDS.filter(c=>c.cat===k),o=n.filter(c=>got(c.id)).length;
       return `<button class="tab ${S.tab===k?'on':''}" data-tab="${k}">${l} ${o}/${n.length}</button>`;}).join('')}</div>
+    </div>
     ${CATS.map(([k,l])=>{
       const list=CARDS.filter(c=>c.cat===k);
       const note=k==='cat5'?'<p class="note">ניתן להוריד את התמונות ולהשתמש בהן כרקע לטלפון</p>'
@@ -157,11 +161,15 @@ export function albumView(){
 /* עוקבים אחר הקטגוריה שגלושה כרגע לתוך התצוגה, כדי שהצ'יפ הדביק למעלה
    יראה איפה נמצאים — עם סף/שוליים רחבים כך שהעדכון לא "מרצד" מהר מדי */
 export function mountAlbumTabs(){
-  const wrap=$('#albumTabs');
+  const wrap=$('#albumTabs'),sticky=$('.albumSticky');
   if(MUT.albumObserver){MUT.albumObserver.disconnect();MUT.albumObserver=null;}
-  if(!wrap)return;
+  if(!wrap||!sticky)return;
   const sections=[...document.querySelectorAll('.albumCat')];
   if(!sections.length)return;
+  /* גובה הפס הדביק (hud+כותרת+צ'יפים) נמדד בפועל, כדי שקפיצה לצ'יפ ומעקב
+     הקטגוריה הנוכחית יתחשבו בו במדויק בכל גודל מסך */
+  const stickyH=sticky.getBoundingClientRect().height;
+  sections.forEach(s=>{s.style.scrollMarginTop=stickyH+'px';});
   const setActive=k=>{
     if(S.tab===k)return;
     S.tab=k;
@@ -171,7 +179,7 @@ export function mountAlbumTabs(){
     let best=null;
     entries.forEach(en=>{if(en.isIntersecting&&(!best||en.intersectionRatio>best.intersectionRatio))best=en;});
     if(best)setActive(best.target.dataset.cat);
-  },{root:$('#view'),threshold:[0.25,0.5,0.75],rootMargin:'-110px 0px -55% 0px'});
+  },{root:$('#view'),threshold:[0.25,0.5,0.75],rootMargin:`-${Math.round(stickyH+8)}px 0px -55% 0px`});
   sections.forEach(s=>io.observe(s));
   MUT.albumObserver=io;
 }
@@ -251,6 +259,8 @@ export function matchesModal(initial){
 export function avatarView(){
   const items=byLayer(S.avTab);
   return hud()+`<div class="head"><h1>הלוקר שלי</h1><p>הרכיבו את הדמות — מדים נפתחים לפי האלבום</p></div>
+    <div style="padding:0 var(--pad)"><button class="btn btn-ghost" style="width:100%" data-act="edit-name">
+      &#9997;&#65039; ${esc(S.name||'אלוף')} <span style="opacity:.6;font-size:12px">(שינוי שם)</span></button></div>
     <div class="studio">${stadiumBG(true)}${avatarSVG('avatar')}</div>
     <div class="tabs">${LAYER_TABS.map(([k,l])=>`<button class="tab ${S.avTab===k?'on':''}" data-avtab="${k}">${l}</button>`).join('')}
       ${S.avTab!=='kit'&&S.avTab!=='boots'?`<button class="tab" data-equip="none">הסרה</button>`:''}</div>

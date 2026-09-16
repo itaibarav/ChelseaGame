@@ -9,7 +9,9 @@ import { bootSVG, clubBadge, hatSVG, kitStyleOf, scarfEmblem, scarfSVG } from '.
    מה שלא מוגדר ידנית נגזר לפי תקופה: אדידס עד 2016/17 ואז נייקי,
    סמסונג עד 2014/15, יוקוהמה עד 2019/20, ואז Three.                */
 export const KIT_DESIGN={
-  'kit-2007-away':  {pattern:'solid', ink:'#141414'},
+  'kit-2007-away':  {pattern:'solid', ink:'#141414', badge:'blackLion'},
+  'kit-x8':         {pattern:'solid', badge:'yellowLion'},
+  'kit-x1':         {pattern:'solid', badge:'orangeLion'},
   'kit-2008-home':  {pattern:'pins',  pat:'#9CC2EE'},
   'kit-2009-home':  {pattern:'pins',  pat:'#8FB6E8'},
   'kit-2010-home':  {pattern:'pins',  pat:'#8FB6E8', trim:'#E03A3A'},
@@ -102,10 +104,12 @@ export const NIKE=(ink)=>`<path transform="translate(53 89) scale(0.9)" fill="${
   d="M0 3.6 C1.2 4.5 2.6 4.1 4.4 3.0 L10.5 0 C9 2 6.8 3.4 4.1 4.4 C2.2 5.1 0.6 4.8 0 3.6z"/>`;
 export const UMBRO=(ink)=>`<g fill="none" stroke="${ink}" stroke-width="1.7">
   <path d="M55 91 l4 -4 4 4 -4 4z"/><path d="M60.5 91 l4 -4 4 4 -4 4z"/></g>`;
+const BADGE_ART={goldLion:'lionGold', yellowLion:'lionYellow', blackLion:'lionBlack', orangeLion:'lionOrange'};
 export function kitBadge(d){
-  const gold=(typeof window!=='undefined'&&window.GAME_ART&&window.GAME_ART.lionGold)||'';
-  if(d.badge==='goldLion'&&gold)
-    return `<image href="${gold}" x="75" y="86" width="11" height="14"/>`;
+  const art=BADGE_ART[d.badge];
+  const src=art&&(typeof window!=='undefined'&&window.GAME_ART&&window.GAME_ART[art])||'';
+  if(src)
+    return `<image href="${src}" x="75" y="86" width="11" height="14"/>`;
   return clubBadge(81,92,6.6);
 }
 export function shirtCuffs(d){

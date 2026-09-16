@@ -63,12 +63,17 @@ export function startRun(){
     MUT.G.obs.push({el,x:-CW-10-offset,scored:false});
   };
   /* ממהירות 5 (tier 4) ואילך: לפעמים שני קונוסים מגיעים צמודים זה לזה,
-     כזוג שקופצים מעליו בקפיצה אחת (לא שתי קפיצות נפרדות) */
+     כזוג שקופצים מעליו בקפיצה אחת (לא שתי קפיצות נפרדות). ממהירות 6
+     (tier 5) ואילך, לפעמים הזוג הזה מתארך לשלישייה צמודה באותו האופן */
   const spawn=()=>{
     spawnOne();
     if(MUT.G.tier>=4&&Math.random()<0.35){
       const gapPx=CW*(0.35+Math.random()*0.35);
       spawnOne(gapPx);
+      if(MUT.G.tier>=5&&Math.random()<0.4){
+        const gap2Px=CW*(0.35+Math.random()*0.35);
+        spawnOne(gapPx+gap2Px);
+      }
     }
   };
 

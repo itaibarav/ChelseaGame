@@ -151,6 +151,7 @@ document.addEventListener('click',e=>{
   if(d.reelmute!==undefined)return toggleReelMute(b);
   if(a==='daily')return dailyModal();
   if(a==='shell-start')return shellStart();
+  if(a==='edit-name')return editNameModal();
 });
 
 export function creditsModal(){
@@ -225,6 +226,17 @@ export function dailyModal(){
   });
 }
 
+export function editNameModal(){
+  modal(`<div class="sheet"><div style="font-size:44px">&#9997;&#65039;</div>
+    <h2>שינוי שם</h2><p>איך תרצו שנקרא לכם?</p>
+    <input class="input" id="nm2" maxlength="20" value="${esc(S.name||'')}" placeholder="השם שלך" autocomplete="off">
+    <button class="btn btn-gold" id="go2" style="width:100%">שמירה</button></div>`);
+  const go=()=>{const v=$('#nm2').value.trim();if(!v)return $('#nm2').focus();
+    S.name=v;save();closeModal();render();toast('השם עודכן');};
+  $('#go2').addEventListener('click',go);
+  $('#nm2').addEventListener('keydown',e=>{if(e.key==='Enter')go();});
+  setTimeout(()=>{const el=$('#nm2');el.focus();el.select();},250);
+}
 export function onboarding(){
   modal(`<div class="sheet"><div style="font-size:50px">⚽</div>
     <h2>ברוכים הבאים לסטמפורד ברידג׳</h2><p>איך קוראים לך?</p>
