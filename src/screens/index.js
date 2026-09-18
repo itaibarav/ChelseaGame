@@ -1,5 +1,5 @@
 import { $, modal, stickerHTML } from '../core/dom.js';
-import { API_BASE, crestOf, lastMatch, liveMatch, matchDate, mediaUrl, nextMatch, online, ownCrest, teamHe } from '../net/feed.js';
+import { API_BASE, crestOf, lastMatch, liveMatch, matchDate, mediaUrl, nextMatch, online, ownCrest, standingsCrest, teamHe } from '../net/feed.js';
 import { CARDS, CATS, GAMES, LAYER_TABS, MOCK_MATCH, MOCK_POSTS, PACKS, TOTAL, byLayer } from '../data/cards.js';
 import { TASKS } from '../data/tasks.js';
 import { MUT } from '../core/mut.js';
@@ -90,7 +90,7 @@ export function homeView(){
         <div class="mrow standing mini head"><span class="pos">מקום</span><div class="mo"><span>קבוצה</span></div><b class="pts">נק'</b></div>
         ${rows.map(r=>`<div class="mrow standing mini ${r.own?'own':''}">
           <span class="pos">${r.position}</span>
-          <div class="mo">${r.crest?`<img class="crest" src="${mediaUrl(r.crest)}" alt="">`:''}<span>${esc(teamHe(r.team))}</span></div>
+          <div class="mo">${standingsCrest(r)}<span>${esc(teamHe(r.team))}</span></div>
           <b class="pts">${r.points}</b></div>`).join('')}
         <button class="tblMore" data-act="matches" data-mtab="table">לטבלה המלאה &laquo;</button>
       </div>`;})();
@@ -238,7 +238,7 @@ export function matchesModal(initial){
       <div class="mh">${m.homeAway==='H'?'בית':'חוץ'}</div></div>`;
   const stRow=r=>`<div class="mrow standing ${r.own?'own':''}">
       <span class="pos">${r.position}</span>
-      <div class="mo">${r.crest?`<img class="crest" src="${mediaUrl(r.crest)}" alt="">`:''}<span>${esc(teamHe(r.team))}</span></div>
+      <div class="mo">${standingsCrest(r)}<span>${esc(teamHe(r.team))}</span></div>
       <span class="pld">${r.played}</span>
       <span class="gd">${r.goalDifference>0?'+':''}${r.goalDifference}</span>
       <b class="pts">${r.points}</b></div>`;

@@ -1,5 +1,5 @@
 import { $ } from '../core/dom.js';
-import { S, save } from '../core/state.js';
+import { S, esc, save } from '../core/state.js';
 import { crestSVG } from '../art/cards.js';
 import { render } from '../core/router.js';
 
@@ -39,6 +39,15 @@ export const crestOf=m=>m.opponentLogo
 export const ownCrest=()=>(S.matches&&S.matches.teamLogo)
   ? `<img class="crest" src="${mediaUrl(S.matches.teamLogo)}" alt="" onerror="this.style.visibility='hidden'">`
   : crestSVG('#034694','#FFC83D','C');
+/* סמל קבוצה בטבלת הליגה — אם התמונה מהשרת נכשלת בטעינה (הפעלה קרה של
+   Render, תקלת רשת חולפת וכו') מוחלפת באות ראשונה של שם הקבוצה במקום
+   אייקון "תמונה שבורה" */
+export const standingsCrest=r=>{
+  const initial=esc(teamHe(r.team||'?').slice(0,1));
+  return r.crest
+    ? `<img class="crest" src="${mediaUrl(r.crest)}" alt="" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'crest crestFallback',textContent:'${initial}'}))">`
+    : `<span class="crest crestFallback">${initial}</span>`;
+};
 
 /* שמות הקבוצות כפי שה-API (football-data.org, shortName) מחזיר → עברית.
    עשרים קבוצות הפרמייר ליג של העונה הנוכחית, כולל העולות. */
