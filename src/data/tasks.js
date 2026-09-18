@@ -9,6 +9,8 @@ import { S, got } from '../core/state.js';
    הקיים — אין צורך במונה נפרד. */
 const kitsOwned=()=>S.owned.filter(id=>id!=='av-kit-base'&&ITEMS[id]&&ITEMS[id].layer==='kit').length;
 const scarvesOwned=()=>S.owned.filter(id=>SCARVES.some(([sid])=>sid===id)).length;
+const bootsOwned=()=>S.owned.filter(id=>id!=='av-boot-white'&&ITEMS[id]&&ITEMS[id].layer==='boots').length;
+const ballsOwned=()=>S.owned.filter(id=>id!=='av-ball-basic'&&ITEMS[id]&&ITEMS[id].layer==='ball').length;
 const allHatsOwned=()=>HATS.every(([id])=>S.owned.includes(id));
 const catComplete=cat=>{const list=CARDS.filter(c=>c.cat===cat);return list.length>0&&list.every(c=>got(c.id));};
 
@@ -46,8 +48,10 @@ export const TASKS=[
  {id:'kits-4',    label:'רכוש 4 מדים לאווטאר שלך',            reward:40,  check:()=>kitsOwned()>=4},
  {id:'kits-8',    label:'רכוש 8 מדים לאווטאר שלך',            reward:60,  check:()=>kitsOwned()>=8},
  {id:'kits-10',   label:'רכוש 10 מדים לאווטאר שלך',           reward:75,  check:()=>kitsOwned()>=10},
+ {id:'kits-15',   label:'רכוש 15 מדים לאווטאר שלך',           reward:200, check:()=>kitsOwned()>=15},
  {id:'hats-all',  label:'רכוש את כל הכובעים האפשריים',        reward:80,  check:allHatsOwned},
  {id:'scarves-2', label:'רכוש 2 צעיפים לאווטאר שלך',          reward:30,  check:()=>scarvesOwned()>=2},
+ {id:'boots-2',   label:'רכוש 2 נעליים לאווטאר שלך',          reward:50,  check:()=>bootsOwned()>=2},
  {id:'squad-full',label:'השלם את מדבקות כל הסגל באלבום',      reward:100, check:()=>catComplete('squad')},
  {id:'legend-full',label:'השלם את מדבקות כל האגדות באלבום',   reward:200, check:()=>catComplete('legend')},
  {id:'bg-download',label:'הורד לטלפון רקע מתוך קלפי "רקע" באלבום', reward:25, check:()=>!!S.stats.bgDownloaded},
@@ -68,4 +72,7 @@ export const TASKS=[
  {id:'recycle-200',label:'מחזר 200 קלפים כפולים',             reward:100, check:()=>S.stats.recycled>=200},
  {id:'recycle-800',label:'מחזר 800 קלפים כפולים',             reward:200, check:()=>S.stats.recycled>=800},
  {id:'daily-streak-7',label:'אסוף את הפרס היומי 7 ימים ברצף', reward:50,  check:()=>S.streak>=7},
+ {id:'ball-new',  label:'קנה לעצמך כדור חדש',                 reward:25,  check:()=>ballsOwned()>=1},
+ {id:'games-all', label:'שחק בכל 10 המשחקים הזמינים',          reward:70,  check:()=>S.stats.playedGames.length>=10},
+ {id:'shuffle-1', label:'בחר "הרכבה אקראית" בלבוש של האווטר שלך', reward:50, check:()=>!!S.stats.shuffledAvatar},
 ];

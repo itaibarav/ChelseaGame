@@ -278,6 +278,7 @@ export function shuffleAvatar(){
     if(!pool.length)return;
     S.eq[layer]=pick(pool);
   });
+  S.stats.shuffledAvatar=true;
   save();sfx('pop');render();toast('הרכבה אקראית! 🎲');
 }
 

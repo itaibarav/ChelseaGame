@@ -4,7 +4,8 @@ export const today=()=>new Date().toISOString().slice(0,10);
 /* סטטיסטיקות לכל החיים, למשימות — לא ניתנות לגזירה ממצב אחר */
 export const DEFAULT_STATS={keepieBest:0,runBest:0,bubbleBest:0,penaltyGoals:0,rpsWins:0,memoryWins:0,tttWins:0,shellWins:0,
   packsOpened:0,goldPacksOpened:0,legendPacksOpened:0,kitPacksOpened:0,recycled:0,
-  shirtBestStreak:0,bgDownloaded:false,legendVideoWatched:false,trophyVideoWatched:false};
+  shirtBestStreak:0,bgDownloaded:false,legendVideoWatched:false,trophyVideoWatched:false,
+  playedGames:[],shuffledAvatar:false};
 export let S={name:'',coins:0,inv:{},claim:null,streak:0,tab:'squad',screen:'home',avTab:'kit',
   news:[],matches:{past:[],upcoming:[],live:null},standings:[],feedAt:0,
   owned:['av-kit-base','av-boot-white','av-ball-basic'],

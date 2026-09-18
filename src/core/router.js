@@ -137,7 +137,10 @@ document.addEventListener('click',e=>{
   if(d.pack)return openPack(d.pack);
   if(d.claim)return claimTask(d.claim);
   if(d.read){if(!S.read.includes(d.read)){S.read.push(d.read);S.coins+=10;save();sfx('coin');render();toast('+10 מטבעות');}return;}
-  if(d.game&&GAME_START[d.game])return GAME_START[d.game]();
+  if(d.game&&GAME_START[d.game]){
+    if(!S.stats.playedGames.includes(d.game)){S.stats.playedGames.push(d.game);save();}
+    return GAME_START[d.game]();
+  }
   if(d.again&&GAME_START[d.again]){closeModal();return GAME_START[d.again]();}
   if(d.ttt!==undefined&&MUT.G)return playTTT(+d.ttt);
   if(d.num!==undefined&&MUT.G)return shirtKey(d.num);
