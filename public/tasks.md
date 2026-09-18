@@ -32,8 +32,10 @@ the player win 60 times in "Reece Mix it" | נצח 60 פעמים בריס ג'י�
 the player purchase 4 kits in the locker | רכוש 4 מדים לאווטאר שלך | 40
 the player purchase 8 kits in the locker | רכוש 8 מדים לאווטאר שלך | 60
 the player purchase 10 kits in the locker | רכוש 10 מדים לאווטאר שלך | 75
+the player purchase 10 kits in the locker | רכוש 15 מדים לאווטאר שלך | 200
 the player purchase all hats in the locker | רכוש את כל הכובעים האפשריים | 80
 the player purchase 2 scarfs in the locker | רכוש 2 צעיפים לאווטאר שלך | 30
+the player purchase 2 shoes in the locker | רכוש 2 נעליים לאווטאר שלך | 50
 the player complete the full squad page in the album | השלם את מדבקות כל הסגל באלבום | 100
 the player complete the full legends page in the album | השלם את מדבקות כל האגדות באלבום | 200
 the player purchase 20 packs | קנה 20 מעטפות בחנות | 50
@@ -54,5 +56,9 @@ the player recycle 100 card | מחזר 100 קלפים כפולים | 50
 the player recycle 200 card | מחזר 200 קלפים כפולים | 100
 the player recycle 800 card | מחזר 800 קלפים כפולים | 200
 the player collected the 7 days in a row connection reward | אסוף את הפרס היומי 7 ימים ברצף | 50
+the player purchase a new ball | קנה לעצמך כדור חדש | 25
+the player played all 10 games | שחק בכל 10 המשחקים הזמינים | 70
+the player press "random" on the locker | בחר "הרכבה אקראית" בלבוש של האווטר שלך | 50
+
 
 
