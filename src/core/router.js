@@ -13,7 +13,7 @@ import { coinSVG } from '../art/cards.js';
 import { confetti, sfx } from '../core/fx.js';
 import { endTimer, payout } from '../games/shared.js';
 import { flipMemory } from '../games/memory.js';
-import { online, refreshFeed } from '../net/feed.js';
+import { liveMatch, online, refreshFeed } from '../net/feed.js';
 import { playRPS } from '../games/rps.js';
 import { guessCup, shellStart } from '../games/shell.js';
 import { playTTT } from '../games/ttt.js';
@@ -121,7 +121,7 @@ document.addEventListener('click',e=>{
     S.tab=d.tab;return render();
   }
   if(d.mt){
-    const ids={up:'mUp',past:'mPast',table:'mTable'};
+    const ids={up:'mUp',past:'mPast',table:'mTable',live:'mLive'};
     b.parentElement.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
     Object.entries(ids).forEach(([k,id])=>{const el=$('#'+id);if(el)el.style.display=k===d.mt?'':'none';});
     return;
@@ -158,7 +158,22 @@ document.addEventListener('click',e=>{
   if(a==='go-games'){S.screen='games';return render();}
   if(a==='go-avatar'){S.screen='avatar';return render();}
   if(a==='go-tasks'){S.screen='tasks';return render();}
-  if(a==='matches')return matchesModal(d.mtab);
+  if(a==='matches'){
+    matchesModal(d.mtab);
+    if(MUT.liveTimer){clearInterval(MUT.liveTimer);MUT.liveTimer=null;}
+    /* כדי שדקה/תוצאה יתעדכנו בזמן אמת בזמן שהמשתמש עוקב במודל: רענון
+       מייד עם פתיחה, ואם יש משחק חי — פולינג קל כל עוד המודל פתוח
+       (נעצר מרכזית ב-closeModal) */
+    const refreshOpenModal=()=>{
+      const box=$('#modal').querySelector('.mtabs');
+      if(!box)return;
+      const on=box.querySelector('button.on');
+      matchesModal(on?on.dataset.mt:d.mtab);
+      if(liveMatch()&&!MUT.liveTimer)MUT.liveTimer=setInterval(()=>refreshFeed(true).then(refreshOpenModal),20000);
+    };
+    refreshFeed(true).then(refreshOpenModal);
+    return;
+  }
   if(a==='credits')return creditsModal();
   if(a==='recycle')return recycleAll();
   if(a==='shuffle-avatar')return shuffleAvatar();

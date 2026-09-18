@@ -109,6 +109,20 @@ async function cacheImage(url) {
 
 const cache = { news: null, matches: null, standings: null };
 
+/* טי-טי-אל קצר (ttlMinutes.live) כשיש משחק חי, או כשמשחק קרוב כבר היה
+   אמור להתחיל — כדי שדקה/תוצאה יתעדכנו מהר בזמן שהמשתמש עוקב בפועל,
+   ולא ימתינו למחזור הרגיל של 30 דקות */
+function matchesTtl() {
+  const m = cache.matches;
+  if (!m) return CFG.ttlMinutes.matches;
+  if (m.live) return CFG.ttlMinutes.live;
+  const kickedOffRecently = (m.upcoming || []).some((x) => {
+    const t = new Date(x.date).getTime();
+    return t <= Date.now() && Date.now() - t < 3 * 60 * 60 * 1000;
+  });
+  return kickedOffRecently ? CFG.ttlMinutes.live : CFG.ttlMinutes.matches;
+}
+
 async function cached(key, ttlMin, producer) {
   const now = Date.now();
   if (cache[key] && now - cache[key].updated < ttlMin * 60000) return cache[key];
@@ -315,7 +329,7 @@ const server = http.createServer(async (req, res) => {
       return send(res, 200, await cached('news', CFG.ttlMinutes.news, fetchNews));
 
     if (p === '/api/matches')
-      return send(res, 200, await cached('matches', CFG.ttlMinutes.matches, fetchMatches));
+      return send(res, 200, await cached('matches', matchesTtl(), fetchMatches));
 
     if (p === '/api/standings')
       return send(res, 200, await cached('standings', CFG.ttlMinutes.standings, fetchStandings));
@@ -324,7 +338,7 @@ const server = http.createServer(async (req, res) => {
     if (p === '/api/feed') {
       const [news, matches, standings] = await Promise.all([
         cached('news', CFG.ttlMinutes.news, fetchNews).catch(() => ({ posts: [] })),
-        cached('matches', CFG.ttlMinutes.matches, fetchMatches).catch(() => ({ past: [], upcoming: [] })),
+        cached('matches', matchesTtl(), fetchMatches).catch(() => ({ past: [], upcoming: [] })),
         cached('standings', CFG.ttlMinutes.standings, fetchStandings).catch(() => ({ table: [] })),
       ]);
       return send(res, 200, { updated: Date.now(), news, matches, standings });

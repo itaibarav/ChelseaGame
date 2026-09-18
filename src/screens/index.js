@@ -1,5 +1,5 @@
 import { $, modal, stickerHTML } from '../core/dom.js';
-import { API_BASE, crestOf, lastMatch, liveMatch, matchDate, mediaUrl, nextMatch, online, ownCrest, standingsCrest, teamHe } from '../net/feed.js';
+import { API_BASE, crestOf, lastMatch, liveMatch, liveMinute, matchDate, mediaUrl, nextMatch, online, ownCrest, standingsCrest, teamHe } from '../net/feed.js';
 import { CARDS, CATS, GAMES, LAYER_TABS, MOCK_MATCH, MOCK_POSTS, PACKS, TOTAL, byLayer } from '../data/cards.js';
 import { TASKS } from '../data/tasks.js';
 import { MUT } from '../core/mut.js';
@@ -55,9 +55,9 @@ export function homeView(){
   </div>
   ${(()=>{
     const matchesHTML=(()=>{const lm=liveMatch();
-      const liveHTML=lm?`<div class="card match live" data-act="matches" data-mtab="up">
+      const liveHTML=lm?`<div class="card match live" data-act="matches" data-mtab="live">
         <div class="side">${ownCrest()}<small>צ׳לסי</small></div>
-        <div class="mid"><div class="t livebadge">&#128308; חי עכשיו</div>
+        <div class="mid"><div class="t livebadge">&#128308; ${lm.status==='PAUSED'?'הפסקה':liveMinute(lm)+"'"}</div>
           <b class="sc live">${esc(lm.score||'0-0')}</b>
           <div class="d">${lm.status==='PAUSED'?'הפסקה':'המשחק בעיצומו'}</div></div>
         <div class="side">${crestOf(lm)}<small>${esc(teamHe(lm.opponent))}</small></div></div>`:'';
@@ -223,10 +223,11 @@ export function newsView(){
 }
 
 export function matchesModal(initial){
-  const tab=['up','past','table'].includes(initial)?initial:'up';
+  const lm=liveMatch();
+  const tab=['up','past','table','live'].includes(initial)?initial:(lm?'live':'up');
   const M=S.matches||{past:[],upcoming:[]};
   const T=S.standings||[];
-  if(!M.past.length&&!M.upcoming.length&&!T.length)
+  if(!lm&&!M.past.length&&!M.upcoming.length&&!T.length)
     return modal(`<div class="sheet"><div style="font-size:42px">📅</div>
       <h2>לוח המשחקים ריק</h2>
       <p>${API_BASE?'השרת לא החזיר משחקים. בדוק שמפתח ה-API מוגדר.':'צריך לחבר את האפליקציה לשרת כדי למשוך משחקים.'}</p>
@@ -242,11 +243,25 @@ export function matchesModal(initial){
       <span class="pld">${r.played}</span>
       <span class="gd">${r.goalDifference>0?'+':''}${r.goalDifference}</span>
       <b class="pts">${r.points}</b></div>`;
+  /* אין ב-API (בשכבה החינמית) שמות כובשים או דקת משחק אמיתית — מציגים
+     דקה משוערת (liveMinute) ומבהירים שכובשים לא זמינים, במקום להמציא נתון */
+  const liveBox=lm=>`<div class="liveBox">
+      <div class="liveClock">${lm.status==='PAUSED'?'&#9208; הפסקה':'&#9917; '+(liveMinute(lm)>=90?"90'+":liveMinute(lm)+"'")}</div>
+      <div class="liveScoreRow">
+        <div class="side">${ownCrest()}<span>צ׳לסי</span></div>
+        <b class="sc live big">${esc(lm.score||'0-0')}</b>
+        <div class="side">${crestOf(lm)}<span>${esc(teamHe(lm.opponent))}</span></div>
+      </div>
+      <div class="d" style="text-align:center">${lm.homeAway==='H'?'משחק בית':'משחק חוץ'}${lm.competition?' · '+esc(lm.competition):''}</div>
+      <p class="note">הדקה משוערת לפי שעת ההתחלה. שמות הכובשים לא זמינים דרך מקור הנתונים הנוכחי. הציון מתעדכן אוטומטית כל כמה שניות.</p>
+    </div>`;
   modal(`<div class="sheet game"><h2 style="margin:2px 0 8px">לוח המשחקים</h2>
-    <div class="mtabs">
+    <div class="mtabs${lm?' live4':''}">
+      ${lm?`<button class="${tab==='live'?'on':''}" data-mt="live">&#128308; חי</button>`:''}
       <button class="${tab==='up'?'on':''}" data-mt="up">הבאים</button>
       <button class="${tab==='past'?'on':''}" data-mt="past">תוצאות</button>
       <button class="${tab==='table'?'on':''}" data-mt="table">טבלה</button></div>
+    ${lm?`<div class="mlist" id="mLive" style="display:${tab==='live'?'':'none'}">${liveBox(lm)}</div>`:''}
     <div class="mlist" id="mUp" style="display:${tab==='up'?'':'none'}">${M.upcoming.map(row).join('')||'<p class="note">אין משחקים קרובים</p>'}</div>
     <div class="mlist" id="mPast" style="display:${tab==='past'?'':'none'}">${M.past.map(row).join('')||'<p class="note">אין תוצאות</p>'}</div>
     <div class="mlist" id="mTable" style="display:${tab==='table'?'':'none'}">

@@ -8,7 +8,10 @@ export function toast(msg){const t=document.createElement('div');t.className='to
   setTimeout(()=>{t.style.transition='opacity .3s';t.style.opacity='0';setTimeout(()=>t.remove(),320);},1500);}
 export const modal=(h,opts)=>{const closable=!opts||opts.closable!==false;
   $('#modal').innerHTML=`<div class="ov"${closable?' data-close':''}>${h}</div>`;};
-export const closeModal=()=>$('#modal').innerHTML='';
+export const closeModal=()=>{
+  if(MUT.liveTimer){clearInterval(MUT.liveTimer);MUT.liveTimer=null;}
+  $('#modal').innerHTML='';
+};
 $('#modal').addEventListener('click',e=>{if(e.target.hasAttribute('data-close'))closeModal();});
 
 export function stickerHTML(c,stage){

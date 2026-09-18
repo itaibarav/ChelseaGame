@@ -7,6 +7,7 @@ export const MUT = {
   PK: null,
   homeTimer: null,
   ballTimer: null,
+  liveTimer: null,
   reelObserver: null,
   albumObserver: null,
 };

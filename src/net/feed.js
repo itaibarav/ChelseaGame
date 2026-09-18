@@ -27,6 +27,16 @@ export async function refreshFeed(force){
 export const nextMatch=()=>(S.matches&&S.matches.upcoming&&S.matches.upcoming[0])||null;
 export const lastMatch=()=>(S.matches&&S.matches.past&&S.matches.past[0])||null;
 export const liveMatch=()=>(S.matches&&S.matches.live)||null;
+/* football-data.org לא חושף דקת משחק בפועל (בשכבת ה-API הנוכחית) —
+   מעריכים אותה לפי שעת ההתחלה, בהפחתת כ-15 דק' הפסקה משוערת אחרי
+   המחצית הראשונה. לא מדויק, אבל מספיק כדי לעקוב בזמן אמת */
+export function liveMinute(lm){
+  if(!lm)return 0;
+  const mins=Math.floor((Date.now()-new Date(lm.date).getTime())/60000);
+  if(mins<=0)return 0;
+  const est=mins<=45?mins:Math.max(46,mins-15);
+  return Math.min(est,90);
+}
 export const matchDate=iso=>{
   const d=new Date(iso);
   if(isNaN(d))return '';

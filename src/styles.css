@@ -511,6 +511,8 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .post .perma{display:block;font-size:12px;color:#8FC4FF;margin:-4px 0 9px;text-decoration:none}
 .post img.ph{width:100%;height:158px;object-fit:cover;display:block}
 .mtabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.mtabs.live4{grid-template-columns:repeat(4,1fr);gap:6px}
+.mtabs.live4 button{padding:9px 0;font-size:12px}
 .mtabs button{border-radius:999px;padding:9px 0;font-size:13px;font-weight:700;
   background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.15);color:#C6D8F2}
 .mtabs button.on{background:linear-gradient(180deg,#FFD766,#E09800);color:#3A2400;border-color:#FFF0BE}
@@ -586,6 +588,14 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .card.match.live{border:1.5px solid rgba(229,37,42,.5);box-shadow:0 5px 0 rgba(0,0,0,.22),0 0 0 3px rgba(229,37,42,.12)}
 .card.match.live .livebadge{animation:liveDot 1.4s ease-in-out infinite}
 .match .mid .sc.live{background:rgba(229,37,42,.14);color:#C81E24}
+.liveBox{padding:6px 2px 2px}
+.liveClock{text-align:center;font-family:'Secular One';font-size:15px;color:#FF6B6B;margin-bottom:10px;animation:liveDot 1.4s ease-in-out infinite}
+.liveScoreRow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 4px}
+.liveScoreRow .side{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;min-width:0}
+.liveScoreRow .side span{font-size:12px;color:#CBD9EE;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.liveScoreRow .side img,.liveScoreRow .side svg{width:38px;height:38px}
+.liveBox .d{font-size:12px;color:#9FB8DA;margin-top:8px}
+.liveScoreRow .sc.big{font-family:'Secular One';font-size:26px;padding:4px 14px;background:rgba(229,37,42,.14);color:#C81E24;border-radius:10px}
 
 .gamecard{width:136px;margin:0 auto 6px;border-radius:12px;overflow:hidden;border:3px solid #fff;
   box-shadow:0 5px 14px rgba(0,0,0,.45)}
