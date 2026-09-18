@@ -8,6 +8,7 @@ import { sfx } from '../core/fx.js';
 /* ======================= 5. הקפצות ======================= */
 export function startKeepie(){
   modal(`<div class="sheet game"><div class="ghud"><span id="gs">0 הקפצות</span><span>🤹</span></div>
+    <div class="grecord">שיא: ${S.stats.keepieBest} הקפצות</div>
     <h2 style="margin:2px 0 8px;font-size:21px">הקפצות</h2>
     <canvas id="cv" class="gcanvas"></canvas>
     <p id="kHint" style="margin:9px 0 0;font-size:12.5px">הקישו על הכדור שעל הקו כדי להתחיל</p>

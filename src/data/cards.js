@@ -90,22 +90,31 @@ export const SCARVES=[
  ['av-scarf-il',     'צעיף ישראל',45,['#1E6BE6','#FFFFFF'],'badge'],
  ['av-scarf-white',  'צעיף לבן',  30,['#F2F5FA','#1E5BE0'],'badge'],
  ['av-scarf-2027',   'צעיף 2027', 55,['#0B45B5','#D9B14A'],'gold']];
-export const HATS=[['av-hat-beanie','כובע גרב',20,'beanie',['#1E6BE6','#0F4FB5']],['av-hat-cap','כובע מצחייה',20,'cap',['#034694','#FFC83D']],['av-hat-bucket','כובע פטרייה',30,'bucket',['#DDE7F5','#034694']],['av-hat-beanie2','כובע גרב שחור-כחול',40,'beanie',['#141414','#1E6BE6']],['av-hat-crown','כתר אלופים',60,'crown',['#FFC83D','#B87700']]];
+export const HATS=[['av-hat-beanie','כובע גרב',20,'beanie',['#1E6BE6','#0F4FB5']],['av-hat-cap','כובע מצחייה',20,'cap',['#034694','#FFC83D']],['av-hat-bucket','כובע פטרייה',30,'bucket',['#DDE7F5','#034694']],['av-hat-beanie2','כובע גרב שחור-כחול',40,'beanie',['#141414','#1E6BE6']],['av-hat-cap2','כובע מצחייה לבן',25,'cap',['#F2F5FA','#12305C']],['av-hat-crown','כתר אלופים',60,'crown',['#FFC83D','#B87700']]];
 /* [מזהה, שם, מחיר, [צבע ראשי, הדגשה, סוליה ופקקים]] */
 export const BOOTS=[
  ['av-boot-white',  'אפורות',    0,['#8A9199','#FFFFFF','#4B5157']],
  ['av-boot-classic','כחול ולבן', 20,['#1E5BE0','#FFFFFF','#0B2E7A']],
  ['av-boot-blue',   'ניאון ושחור',25,['#C6F51D','#141414','#7E9E12']],
  ['av-boot-neon',   'זהב וכחול', 35,['#E8B93B','#123A9E','#9C7615']],
+ ['av-boot-wb',     'לבנות וכחולות',45,['#F2F5FA','#1E6BE6','#0B2E7A']],
  ['av-boot-gold',   'שחור ותכלת',70,['#1A1A1A','#5FD4F5','#000000']]];
+/* [מזהה, שם, מחיר, מפתח GAME_ART] — כל הכדורים מצוירים מתמונה אמיתית */
+export const BALLS=[
+ ['av-ball-basic',  'כדור בסיסי',        0, 'ballBasic'],
+ ['av-ball-chelsea','כדור צ׳לסי',       50, 'ball'],
+ ['av-ball-navy',   'כדור פסים כחולים', 50, 'ballStripe'],
+ ['av-ball-royal',  'כדור לבן וכחול',   50, 'ballRoyal'],
+ ['av-ball-black',  'כדור שחור וזהב',   75, 'ballBlack']];
 export const ITEMS={};
 ITEMS['av-kit-base']={id:'av-kit-base',layer:'kit',name:'מדי אימון',price:0,pal:['#2C6FE0','#0C3A8C','#FFFFFF']};
-KIT_CARDS.forEach(c=>{ITEMS['av-'+c.id]={id:'av-'+c.id,layer:'kit',name:c.name,price:40,pal:KITPAL[c.kit]||KITPAL.home,req:c.id};});
+KIT_CARDS.forEach(c=>{ITEMS['av-'+c.id]={id:'av-'+c.id,layer:'kit',name:c.name,price:50,pal:KITPAL[c.kit]||KITPAL.home,req:c.id};});
 SCARVES.forEach(([id,name,price,pal,emblem])=>ITEMS[id]={id,layer:'scarf',name,price,pal,emblem});
 HATS.forEach(([id,name,price,shape,pal])=>ITEMS[id]={id,layer:'hat',name,price,shape,pal});
 BOOTS.forEach(([id,name,price,pal])=>ITEMS[id]={id,layer:'boots',name,price,pal});
+BALLS.forEach(([id,name,price,art])=>ITEMS[id]={id,layer:'ball',name,price,art});
 export const byLayer=l=>Object.values(ITEMS).filter(i=>i.layer===l);
-export const LAYER_TABS=[['kit','מדים'],['hat','כובעים'],['scarf','צעיפים'],['boots','נעליים']];
+export const LAYER_TABS=[['kit','מדים'],['hat','כובעים'],['scarf','צעיפים'],['boots','נעליים'],['ball','כדורים']];
 
 /* --- mock content (deferred data sources) --- */
 export const MOCK_MATCH={home:'צ׳לסי',away:'ארסנל',when:'שבת, 20:30'};

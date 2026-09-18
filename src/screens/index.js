@@ -5,6 +5,7 @@ import { TASKS } from '../data/tasks.js';
 import { MUT } from '../core/mut.js';
 import { S, collected, esc, got, today } from '../core/state.js';
 import { avatarSVG, itemThumb } from '../art/avatar.js';
+import { ballImgSrc } from '../art/ball.js';
 import { coinSVG, crestSVG } from '../art/cards.js';
 import { stadiumBG } from '../art/stadium.js';
 
@@ -40,13 +41,12 @@ export function chelseaNeighbors(T){
   return T.slice(start,end);
 }
 
-const BALL_ART=(typeof window!=='undefined'&&window.GAME_ART&&window.GAME_ART.ball)||'';
 export function homeView(){
   const c=collected(),pct=Math.round(c/TOTAL*100);
   return hud()+`
   <div class="hero">${stadiumBG(false)}
     <div class="who">היי ${esc(S.name||'אלוף')} &#128075;</div>${avatarSVG()}
-    ${BALL_ART?`<img class="ballKick" id="ballKick" src="${BALL_ART}" alt="">`:''}
+    <img class="ballKick" id="ballKick" src="${ballImgSrc()}" alt="">
   </div>
   <div class="hero-row">
     <button class="btn btn-ghost" data-act="go-avatar">&#128085; התאם אוואטר</button>
@@ -136,14 +136,16 @@ export function tasksView(){
     <div class="packs">${completed.map(t=>row(t,true)).join('')}</div>`:''}`;
 }
 
-export function albumView(){
+export function albumHeader(){
   return `<div class="albumSticky">
     ${hud()}
     <div class="head"><h1>האלבום שלי</h1><p>${collected()} מתוך ${TOTAL} מדבקות נאספו</p></div>
     <div class="tabs alltabs" id="albumTabs">${CATS.map(([k,l])=>{const n=CARDS.filter(c=>c.cat===k),o=n.filter(c=>got(c.id)).length;
       return `<button class="tab ${S.tab===k?'on':''}" data-tab="${k}">${l} ${o}/${n.length}</button>`;}).join('')}</div>
-    </div>
-    ${CATS.map(([k,l])=>{
+    </div>`;
+}
+export function albumBody(){
+  return `${CATS.map(([k,l])=>{
       const list=CARDS.filter(c=>c.cat===k);
       const note=k==='cat5'?'<p class="note">ניתן להוריד את התמונות ולהשתמש בהן כרקע לטלפון</p>'
         :(k==='legend'||k==='cat2')?'<p class="note">אפשר ללחוץ על קלף כדי לצפות בסרטון ההיילייטס שלו &#127909;</p>'
@@ -263,7 +265,7 @@ export function avatarView(){
       &#9997;&#65039; ${esc(S.name||'אלוף')} <span style="opacity:.6;font-size:12px">(שינוי שם)</span></button></div>
     <div class="studio">${stadiumBG(true)}${avatarSVG('avatar')}</div>
     <div class="tabs">${LAYER_TABS.map(([k,l])=>`<button class="tab ${S.avTab===k?'on':''}" data-avtab="${k}">${l}</button>`).join('')}
-      ${S.avTab!=='kit'&&S.avTab!=='boots'?`<button class="tab" data-equip="none">הסרה</button>`:''}</div>
+      ${S.avTab!=='kit'&&S.avTab!=='boots'&&S.avTab!=='ball'?`<button class="tab" data-equip="none">הסרה</button>`:''}</div>
     <button class="btn btn-ghost" data-act="shuffle-avatar" style="width:100%;margin:2px 0 10px">🎲 הרכבה אקראית</button>
     <div class="items">${items.map(it=>{
       const owned=S.owned.includes(it.id), on=S.eq[it.layer]===it.id;

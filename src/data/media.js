@@ -130,6 +130,10 @@ export default {
  },
  "art": {
   "ball": "/assets/art/ball.png",
+  "ballBasic": "/assets/art/ballBasic.png",
+  "ballStripe": "/assets/art/ballStripe.png",
+  "ballRoyal": "/assets/art/ballRoyal.png",
+  "ballBlack": "/assets/art/ballBlack.png",
   "lion": "/assets/art/lion.png",
   "stadium": "/assets/art/stadium.png",
   "lionGold": "/assets/art/lionGold.png",

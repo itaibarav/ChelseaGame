@@ -27,6 +27,7 @@ export function startRun(){
   const bg=(typeof window!=='undefined'&&window.GAME_ART&&window.GAME_ART.stadium)||'';
   modal(`<div class="sheet game">
     <div class="ghud"><span id="uD">0 מ׳</span><span id="uS">מהירות 1</span><span id="uC">0 🪙</span></div>
+    <div class="grecord">שיא: ${S.stats.runBest} מ׳</div>
     <h2 style="margin:2px 0 6px;font-size:21px">ריצת סטמפורד</h2>
     <div class="runScene" id="rScene">
       ${bg?`<img class="bg" src="${bg}" alt="">`:''}

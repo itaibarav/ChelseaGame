@@ -1,5 +1,5 @@
 import { $, modal } from '../core/dom.js';
-import { GA } from '../games/assets.js';
+import { ballImgSrc } from '../art/ball.js';
 import { MUT } from '../core/mut.js';
 import { confetti, sfx } from '../core/fx.js';
 import { pick, S, save } from '../core/state.js';
@@ -51,7 +51,7 @@ export function startPenalty(){
       <div class="net"></div>
       ${cells}
       <div class="keeper" id="pKeeper">${keeperSVG}</div>
-      <img class="pball" id="pBall" src="${GA.ball||''}" alt="">
+      <img class="pball" id="pBall" src="${ballImgSrc()}" alt="">
     </div>
     <button class="btn btn-ghost" data-act="quit" style="width:100%">סיום</button></div>`,{closable:false});
   resetPenalty();

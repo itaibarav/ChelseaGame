@@ -633,6 +633,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 
 /* realtime games */
 .ghud{display:flex;justify-content:space-between;font-size:13px;color:#B9CEEC;margin-bottom:4px}
+.grecord{font-size:11px;color:#FFD766;text-align:center;margin:-2px 0 6px}
 .gcanvas{width:100%;display:block;border-radius:14px;touch-action:none;border:1.5px solid rgba(120,180,255,.3)}
 .ttt{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:12px 0}
 .ttt button{aspect-ratio:1;border-radius:13px;background:rgba(255,255,255,.07);

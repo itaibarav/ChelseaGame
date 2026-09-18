@@ -2,12 +2,14 @@ import { $, modal, toast } from '../core/dom.js';
 import { MUT } from '../core/mut.js';
 import { canvasPoint, drawPitch, endTimer, payout, setupCanvas } from '../games/shared.js';
 import { drawBallArt, drawLionArt } from '../games/assets.js';
+import { S, save } from '../core/state.js';
 import { sfx } from '../core/fx.js';
 
 /* ======================= 6. פיצוץ בועות ======================= */
 export function startBubble(){
   modal(`<div class="sheet game"><div class="ghud"><span id="gt">⏱ 45s</span>
       <span id="gl">מהירות 1</span><span id="gs">0 נקודות</span></div>
+    <div class="grecord">שיא: ${S.stats.bubbleBest} נקודות</div>
     <h2 style="margin:2px 0 8px;font-size:21px">פיצוץ בועות</h2>
     <canvas id="cv" class="gcanvas"></canvas>
     <p style="margin:9px 0 0;font-size:12.5px">כדור = נקודה · אריה = שתיים · כרטיס אדום גוזל 5 שניות</p>
@@ -22,6 +24,7 @@ export function startBubble(){
     if(t!==MUT.G.tier){MUT.G.tier=t;const l=$('#gl');if(l)l.textContent='מהירות '+(t+1);
       if(t>0)sfx('pop');}
     if(MUT.G.left<=0){MUT.G.over=true;endTimer();
+      S.stats.bubbleBest=Math.max(S.stats.bubbleBest,MUT.G.score);save();
       setTimeout(()=>payout(MUT.G.score,'הזמן נגמר'),1000);}
   },1000);
   s.cv.addEventListener('pointerdown',e=>{

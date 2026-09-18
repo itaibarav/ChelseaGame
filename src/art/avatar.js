@@ -2,6 +2,7 @@ import { $ } from '../core/dom.js';
 import { ITEMS } from '../data/cards.js';
 import { KIT_DESIGN2, KIT_YEAR } from '../data/globals.js';
 import { S, esc } from '../core/state.js';
+import { ballImgSrc } from '../art/ball.js';
 import { bootSVG, clubBadge, hatSVG, kitStyleOf, scarfEmblem, scarfSVG } from '../art/cards.js';
 
 /* ======================= עיצוב חולצות לדמות =======================
@@ -104,12 +105,13 @@ export const NIKE=(ink)=>`<path transform="translate(53 89) scale(0.9)" fill="${
   d="M0 3.6 C1.2 4.5 2.6 4.1 4.4 3.0 L10.5 0 C9 2 6.8 3.4 4.1 4.4 C2.2 5.1 0.6 4.8 0 3.6z"/>`;
 export const UMBRO=(ink)=>`<g fill="none" stroke="${ink}" stroke-width="1.7">
   <path d="M55 91 l4 -4 4 4 -4 4z"/><path d="M60.5 91 l4 -4 4 4 -4 4z"/></g>`;
-const BADGE_ART={goldLion:'lionGold', yellowLion:'lionYellow', blackLion:'lionBlack', orangeLion:'lionOrange'};
+const BADGE_ART={goldLion:['lionGold','#D9B14A'], yellowLion:['lionYellow','#FFD400'], blackLion:['lionBlack','#141414'], orangeLion:['lionOrange','#EF7B10']};
 export function kitBadge(d){
-  const art=BADGE_ART[d.badge];
-  const src=art&&(typeof window!=='undefined'&&window.GAME_ART&&window.GAME_ART[art])||'';
+  const b=BADGE_ART[d.badge];
+  const src=b&&(typeof window!=='undefined'&&window.GAME_ART&&window.GAME_ART[b[0]])||'';
   if(src)
-    return `<image href="${src}" x="75" y="86" width="11" height="14"/>`;
+    return `<circle cx="80.5" cy="93" r="7.4" fill="#F5F8FD" stroke="${b[1]}" stroke-width="1.5"/>
+      <image href="${src}" x="75" y="86" width="11" height="14"/>`;
   return clubBadge(81,92,6.6);
 }
 export function shirtCuffs(d){
@@ -200,6 +202,7 @@ export function itemThumb(it){
       <path d="M27 14 a4 4 0 0 0 6 0" fill="none" stroke="${D.trim}" stroke-width="1.8"/>
       <rect x="24" y="46" width="12" height="9" rx="2" fill="${K.shorts}" stroke="${K.line}" stroke-width="1"/></svg>`;}
   if(it.layer==='hat')return `<svg viewBox="0 0 140 60"><g transform="translate(0,4)">${hatSVG(it.shape,p)}</g></svg>`;
+  if(it.layer==='ball')return `<svg viewBox="0 0 60 60"><image href="${ballImgSrc(it)}" x="6" y="6" width="48" height="48"/></svg>`;
   if(it.layer==='scarf')return `<svg viewBox="0 0 60 60">
     <path d="M8 18 q22 13 44 0 l3 9 q-25 14 -50 0z" fill="${p[0]}"/>
     <rect x="9" y="20.5" width="42" height="3.6" fill="${p[1]}"/>

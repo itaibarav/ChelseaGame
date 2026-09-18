@@ -2,15 +2,23 @@ import { $ } from '../core/dom.js';
 import { BY_ID } from '../data/cards.js';
 import { art } from '../art/cards.js';
 import { drawBall } from '../games/shared.js';
+import { equippedBall } from '../art/ball.js';
 
 /* ======================= נכסי משחק ======================= */
 export const GA=(typeof window!=='undefined'&&window.GAME_ART)||{};
 export const IMG={};
 ['ball','lion'].forEach(k=>{if(GA[k]){const i=new Image();i.src=GA[k];IMG[k]=i;}});
 export const ready=k=>IMG[k]&&IMG[k].complete&&IMG[k].naturalWidth>0;
+/* כל כדור נטען לפי הצורך (כדי לא לטעון מראש 5 תמונות), ונשמר במטמון לפי מפתח GAME_ART */
+function ballImage(key){
+  if(!IMG[key]&&GA[key]){const i=new Image();i.src=GA[key];IMG[key]=i;}
+  return IMG[key];
+}
 export function drawBallArt(x,cx,cy,r){
-  if(ready('ball'))x.drawImage(IMG.ball,cx-r,cy-r,r*2,r*2);
-  else drawBall(x,cx,cy,r);
+  const key=equippedBall().art;
+  ballImage(key);
+  if(ready(key))return x.drawImage(IMG[key],cx-r,cy-r,r*2,r*2);
+  drawBall(x,cx,cy,r);
 }
 export function drawLionArt(x,cx,cy,r){
   if(ready('lion')){const im=IMG.lion,h=r*2,w=h*im.naturalWidth/im.naturalHeight;

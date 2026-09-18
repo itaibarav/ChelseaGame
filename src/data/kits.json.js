@@ -283,6 +283,30 @@ export default {
    "socks": "#FFFFFF",
    "trim": "#D9B14A",
    "line": "#06296C"
+  },
+  "kit-x8": {
+   "body": "#0E2A57",
+   "sleeve": "#0E2A57",
+   "shorts": "#0E2A57",
+   "socks": "#0E2A57",
+   "trim": "#E4FF4D",
+   "line": "#081A38"
+  },
+  "kit-x9": {
+   "body": "#FFFFFF",
+   "sleeve": "#FFFFFF",
+   "shorts": "#FFFFFF",
+   "socks": "#FFFFFF",
+   "trim": "#12305C",
+   "line": "#B9C4D6"
+  },
+  "kit-x10": {
+   "body": "#FFFFFF",
+   "sleeve": "#FFFFFF",
+   "shorts": "#FFFFFF",
+   "socks": "#123B8C",
+   "trim": "#123B8C",
+   "line": "#999999"
   }
  },
  "design": {
@@ -394,6 +418,24 @@ export default {
    "trim": "#D9B14A",
    "badge": "goldLion",
    "sponsorColor": "#FFC83D"
+  },
+  "kit-x8": {
+   "pattern": "hoops",
+   "pat": "#1B3F7A",
+   "trim": "#E4FF4D",
+   "ink": "#E4FF4D",
+   "badge": "yellowLion"
+  },
+  "kit-x9": {
+   "pattern": "hoops",
+   "pat": "#3FC9C4",
+   "trim": "#12305C"
+  },
+  "kit-x10": {
+   "pattern": "yoke",
+   "pat": "#123B8C",
+   "accent": "#C8102E",
+   "trim": "#123B8C"
   }
  },
  "year": {
@@ -417,7 +459,10 @@ export default {
   "kit-x2": 2023,
   "kit-x3": 2024,
   "kit-x4": 2025,
-  "kit-x5": 2026
+  "kit-x5": 2026,
+  "kit-x8": 2009,
+  "kit-x9": 2022,
+  "kit-x10": 2013
  },
  "credits": [
   {

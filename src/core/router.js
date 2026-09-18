@@ -6,7 +6,7 @@ import { MUT } from '../core/mut.js';
 import { NAV_ICONS } from '../art/avatar.js';
 import { PHOTO_CREDITS } from '../data/globals.js';
 import { S, esc, save, today } from '../core/state.js';
-import { albumView, animateCoins, avatarView, gamesView, homeView, matchesModal, mountAlbumTabs, newsView, shopView, tasksView } from '../screens/index.js';
+import { albumBody, albumHeader, animateCoins, avatarView, gamesView, homeView, matchesModal, mountAlbumTabs, newsView, shopView, tasksView } from '../screens/index.js';
 import { answerValue } from '../games/value.js';
 import { buyItem, cardDetail, claimTask, downloadPhoto, openPack, packTap, playHighlight, recycleAll, shuffleAvatar, tapItem } from '../core/actions.js';
 import { coinSVG } from '../art/cards.js';
@@ -80,8 +80,15 @@ export function render(){
   if(MUT.ballTimer){clearInterval(MUT.ballTimer);MUT.ballTimer=null;}
   if(MUT.reelObserver){MUT.reelObserver.disconnect();MUT.reelObserver=null;}
   if(MUT.albumObserver){MUT.albumObserver.disconnect();MUT.albumObserver=null;}
-  const v={home:homeView,album:albumView,shop:shopView,games:gamesView,news:newsView,avatar:avatarView,tasks:tasksView,reels:reelsView}[S.screen]||homeView;
-  $('#view').innerHTML=`<div class="screen-in">${v()}</div>`;
+  if(S.screen==='album'){
+    /* הכותרת הדביקה יוצאת מ-.screen-in בכוונה: אנימציית הכניסה של המסך
+       עושה transform זמני על .screen-in, ואם ה-sticky בתוכה זה עלול
+       "לשבור" את ההצמדה למעלה בגלילה בחלק מהדפדפנים */
+    $('#view').innerHTML=albumHeader()+`<div class="screen-in">${albumBody()}</div>`;
+  }else{
+    const v={home:homeView,shop:shopView,games:gamesView,news:newsView,avatar:avatarView,tasks:tasksView,reels:reelsView}[S.screen]||homeView;
+    $('#view').innerHTML=`<div class="screen-in">${v()}</div>`;
+  }
   $('#view').scrollTop=0;
   $('#nav').innerHTML=['home','album','games','shop','news','reels'].map(k=>
     `<button data-nav="${k}" class="${S.screen===k?'on':''}">${NAV_ICONS[k]}</button>`).join('');
