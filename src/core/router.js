@@ -81,15 +81,19 @@ export function render(){
   if(MUT.reelObserver){MUT.reelObserver.disconnect();MUT.reelObserver=null;}
   if(MUT.albumObserver){MUT.albumObserver.disconnect();MUT.albumObserver=null;}
   if(S.screen==='album'){
-    /* הכותרת הדביקה יוצאת מ-.screen-in בכוונה: אנימציית הכניסה של המסך
-       עושה transform זמני על .screen-in, ואם ה-sticky בתוכה זה עלול
-       "לשבור" את ההצמדה למעלה בגלילה בחלק מהדפדפנים */
-    $('#view').innerHTML=albumHeader()+`<div class="screen-in">${albumBody()}</div>`;
+    /* position:sticky לא באמת נצמד בכל WebView (נבדק ונכשל בפועל במכשיר),
+       אז במקום זה הכותרת יוצאת לגמרי מהאזור הגלילה: #view הופך למיכל
+       flex שאינו גולל בעצמו, עם הכותרת כפריט קבוע ואזור פנימי נפרד
+       (.albumScroll) שהוא היחיד שגולל. זו הצמדה אמיתית, לא תלוית דפדפן */
+    $('#view').classList.add('albumMode');
+    $('#view').innerHTML=albumHeader()+`<div class="albumScroll"><div class="screen-in">${albumBody()}</div></div>`;
   }else{
+    $('#view').classList.remove('albumMode');
     const v={home:homeView,shop:shopView,games:gamesView,news:newsView,avatar:avatarView,tasks:tasksView,reels:reelsView}[S.screen]||homeView;
     $('#view').innerHTML=`<div class="screen-in">${v()}</div>`;
   }
   $('#view').scrollTop=0;
+  if(S.screen==='album'){const sc=$('.albumScroll');if(sc)sc.scrollTop=0;}
   $('#nav').innerHTML=['home','album','games','shop','news','reels'].map(k=>
     `<button data-nav="${k}" class="${S.screen===k?'on':''}">${NAV_ICONS[k]}</button>`).join('');
   animateCoins();

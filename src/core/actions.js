@@ -230,7 +230,9 @@ export function tapItem(id){
 
 export function previewItem(id){
   const it=ITEMS[id];
-  const locked=!!(it.req&&!got(it.req));
+  const reqLocked=!!(it.req&&!got(it.req));
+  const distLocked=!!(it.reqDist&&S.stats.runBest<it.reqDist);
+  const locked=reqLocked||distLocked;
   const short=Math.max(0,it.price-S.coins);
   const card=it.req?BY_ID[it.req]:null;
 
@@ -248,8 +250,9 @@ export function previewItem(id){
     <h2 style="margin:2px 0 1px;font-size:21px">${esc(it.name)}</h2>
     <p style="margin:0 0 8px">${LAYER_NAME[it.layer]||''}</p>
     <div class="prevStage">${stadiumBG(true)}${figure}</div>
-    ${locked?`<p class="lockmsg">צריך לאסוף קודם את «${esc(card?card.name:'המדבקה')}» באלבום</p>`
-            :`<p class="prevCoins">${coinSVG(18)} יש לך ${S.coins}</p>`}
+    ${reqLocked?`<p class="lockmsg">צריך לאסוף קודם את «${esc(card?card.name:'המדבקה')}» באלבום</p>`
+      :distLocked?`<p class="lockmsg">עברו ${it.reqDist} מ׳ במשחק ריצת סטמפורד כדי לפתוח (השיא שלכם: ${S.stats.runBest} מ׳)</p>`
+      :`<p class="prevCoins">${coinSVG(18)} יש לך ${S.coins}</p>`}
     <div class="endBtns">
       <button class="btn btn-gold" ${locked||short?'disabled':''} data-buy="${id}">
         ${label}${!locked&&!short&&it.price?coinSVG(17):''}</button>
@@ -282,6 +285,7 @@ export function buyItem(id){
   const it=ITEMS[id];
   if(!it||S.owned.includes(id))return;
   if(it.req&&!got(it.req))return toast('אספו קודם את המדבקה באלבום');
+  if(it.reqDist&&S.stats.runBest<it.reqDist)return toast(`עברו ${it.reqDist} מ׳ בריצת סטמפורד כדי לפתוח`);
   if(S.coins<it.price)return toast('אין מספיק מטבעות');
   S.coins-=it.price;S.owned.push(id);S.eq[it.layer]=id;
   save();sfx('coin');if(it.price>=50)confetti(24);

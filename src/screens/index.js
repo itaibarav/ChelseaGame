@@ -3,7 +3,7 @@ import { API_BASE, crestOf, lastMatch, liveMatch, matchDate, mediaUrl, nextMatch
 import { CARDS, CATS, GAMES, LAYER_TABS, MOCK_MATCH, MOCK_POSTS, PACKS, TOTAL, byLayer } from '../data/cards.js';
 import { TASKS } from '../data/tasks.js';
 import { MUT } from '../core/mut.js';
-import { S, collected, esc, got, today } from '../core/state.js';
+import { S, collected, esc, got, itemLocked, today } from '../core/state.js';
 import { avatarSVG, itemThumb } from '../art/avatar.js';
 import { ballImgSrc } from '../art/ball.js';
 import { coinSVG, crestSVG } from '../art/cards.js';
@@ -163,15 +163,13 @@ export function albumBody(){
 /* עוקבים אחר הקטגוריה שגלושה כרגע לתוך התצוגה, כדי שהצ'יפ הדביק למעלה
    יראה איפה נמצאים — עם סף/שוליים רחבים כך שהעדכון לא "מרצד" מהר מדי */
 export function mountAlbumTabs(){
-  const wrap=$('#albumTabs'),sticky=$('.albumSticky');
+  const wrap=$('#albumTabs'),scroller=$('.albumScroll');
   if(MUT.albumObserver){MUT.albumObserver.disconnect();MUT.albumObserver=null;}
-  if(!wrap||!sticky)return;
+  if(!wrap||!scroller)return;
   const sections=[...document.querySelectorAll('.albumCat')];
   if(!sections.length)return;
-  /* גובה הפס הדביק (hud+כותרת+צ'יפים) נמדד בפועל, כדי שקפיצה לצ'יפ ומעקב
-     הקטגוריה הנוכחית יתחשבו בו במדויק בכל גודל מסך */
-  const stickyH=sticky.getBoundingClientRect().height;
-  sections.forEach(s=>{s.style.scrollMarginTop=stickyH+'px';});
+  /* הכותרת יושבת כפריט flex קבוע מחוץ ל-.albumScroll (ראו albumMode ב-CSS),
+     כך שהיא לא חופפת את התוכן — אין צורך בקיזוז גובה כלשהו כאן */
   const setActive=k=>{
     if(S.tab===k)return;
     S.tab=k;
@@ -181,7 +179,7 @@ export function mountAlbumTabs(){
     let best=null;
     entries.forEach(en=>{if(en.isIntersecting&&(!best||en.intersectionRatio>best.intersectionRatio))best=en;});
     if(best)setActive(best.target.dataset.cat);
-  },{root:$('#view'),threshold:[0.25,0.5,0.75],rootMargin:`-${Math.round(stickyH+8)}px 0px -55% 0px`});
+  },{root:scroller,threshold:[0.25,0.5,0.75],rootMargin:'0px 0px -55% 0px'});
   sections.forEach(s=>io.observe(s));
   MUT.albumObserver=io;
 }
@@ -269,11 +267,13 @@ export function avatarView(){
     <button class="btn btn-ghost" data-act="shuffle-avatar" style="width:100%;margin:2px 0 10px">🎲 הרכבה אקראית</button>
     <div class="items">${items.map(it=>{
       const owned=S.owned.includes(it.id), on=S.eq[it.layer]===it.id;
-      const locked=it.req&&!got(it.req);
+      const locked=itemLocked(it);
+      const lockLabel=it.reqDist?`${it.reqDist} מ׳`:'נעול';
       return `<button class="item ${on?'on':''} ${locked&&!owned?'locked':''}" data-item="${it.id}">
         ${locked&&!owned?'<span class="lockbadge">🔒</span>':''}
         ${itemThumb(it)}<span class="nm">${esc(it.name)}</span>
-        <span class="pr ${owned?'owned':''}">${owned?(on?'לבוש':'ברשותך'):(locked?'נעול':(it.price?it.price+' ':'חינם')+(it.price?coinSVG(13):''))}</span>
+        <span class="pr ${owned?'owned':''}">${owned?(on?'לבוש':'ברשותך'):(locked?lockLabel:(it.price?it.price+' ':'חינם')+(it.price?coinSVG(13):''))}</span>
       </button>`;}).join('')}</div>
-    ${S.avTab==='kit'?'<p class="note">מדים נפתחים לרכישה רק אחרי שאספתם את מדבקת המדים המתאימה באלבום.</p>':''}`;
+    ${S.avTab==='kit'?'<p class="note">מדים נפתחים לרכישה רק אחרי שאספתם את מדבקת המדים המתאימה באלבום.</p>':''}
+    ${S.avTab==='boots'?'<p class="note">נעליים נפתחות לפי השיא שלכם במשחק "ריצת סטמפורד" — כל 300 מ׳ פותחים זוג חדש.</p>':''}`;
 }

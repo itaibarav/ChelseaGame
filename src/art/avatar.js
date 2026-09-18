@@ -109,6 +109,8 @@ const BADGE_ART={goldLion:['lionGold','#D9B14A'], yellowLion:['lionYellow','#FFD
 export function kitBadge(d){
   const b=BADGE_ART[d.badge];
   const src=b&&(typeof window!=='undefined'&&window.GAME_ART&&window.GAME_ART[b[0]])||'';
+  if(src&&d.badge==='goldLion')                     /* מדי 2026/27: אריה זהב בלי עיגול, כמו על צעיף 2027 */
+    return `<image href="${src}" x="75" y="86" width="11" height="14"/>`;
   if(src)
     return `<circle cx="80.5" cy="93" r="7.4" fill="#F5F8FD" stroke="${b[1]}" stroke-width="1.5"/>
       <image href="${src}" x="75" y="86" width="11" height="14"/>`;

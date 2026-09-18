@@ -95,13 +95,14 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
   background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.15);color:#C6D8F2}
 .tab.on{background:linear-gradient(180deg,#FFD766,#E09800);color:#3A2400;border-color:#FFF0BE}
 
-/* באלבום: כל הכותרת (hud + כותרת + צ'יפים) נדבקת כיחידה אחת למעלה בגלילה,
-   וכל הקטגוריות רצות ברצף אחד מתחתיה — scroll-margin-top (נקבע דינמית ב-JS
-   לפי הגובה בפועל) כדי שכותרת הקטגוריה לא תיעלם מתחת לפס הדביק בקפיצה לצ'יפ */
-.albumSticky{position:sticky;top:0;z-index:6;background:var(--navy);
-  box-shadow:0 8px 14px -6px rgba(0,0,0,.35)}
+/* באלבום: #view הופך (albumMode) למיכל flex שלא גולל בעצמו — הכותרת
+   (hud + כותרת + צ'יפים) יושבת כפריט קבוע מעליו, ו-.albumScroll היא האזור
+   היחיד שגולל בפועל. זו הצמדה אמיתית של הכותרת, לא position:sticky
+   (שלא תמיד נאמן ב-WebView) */
+#view.albumMode{display:flex;flex-direction:column;overflow:hidden;padding-bottom:0}
+.albumSticky{flex:none;background:var(--navy);box-shadow:0 8px 14px -6px rgba(0,0,0,.35);position:relative;z-index:6}
+.albumScroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:98px}
 .tabs.alltabs{padding-bottom:12px}
-.albumCat{scroll-margin-top:58px}
 .catHead{font-family:'Secular One';font-weight:400;font-size:19px;color:#FFD766;
   margin:16px var(--pad) 2px;padding-top:2px}
 
