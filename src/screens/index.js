@@ -1,5 +1,5 @@
 import { $, modal, stickerHTML } from '../core/dom.js';
-import { API_BASE, crestOf, lastMatch, liveMatch, liveMinute, matchDate, mediaUrl, nextMatch, online, ownCrest, standingsCrest, teamHe } from '../net/feed.js';
+import { API_BASE, crestOf, lastMatch, liveMatch, liveMinute, matchDate, mediaUrl, nextMatch, ownCrest, standingsCrest, teamHe } from '../net/feed.js';
 import { CARDS, CATS, GAMES, LAYER_TABS, MOCK_MATCH, MOCK_POSTS, PACKS, TOTAL, byLayer } from '../data/cards.js';
 import { TASKS } from '../data/tasks.js';
 import { MUT } from '../core/mut.js';
@@ -215,8 +215,6 @@ export const newsList=()=>{
   return posts||MOCK_POSTS.map(p=>({id:p.id,caption:p.txt,images:[],emoji:p.emoji}));
 };
 export function newsView(){
-  const posts=(S.news&&S.news.length)?S.news:null;
-  const off=!online();
   const list=newsList();
   const total=list.length;
   const idx=Math.min(Math.max(S.newsIdx||0,0),Math.max(total-1,0));
@@ -228,9 +226,6 @@ export function newsView(){
     ? images.map(src=>`<div class="newsSlide"><img src="${mediaUrl(src)}" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'phEmoji',textContent:'📰'}))"></div>`).join('')
     : `<div class="newsSlide"><div class="phEmoji">${p.emoji||'📰'}</div></div>`;
   const dots=images&&images.length>1?`<div class="newsDots">${images.map((_,i)=>`<span class="${i===0?'on':''}"></span>`).join('')}</div>`:'';
-  const badge=off?'<span class="mock" style="background:rgba(229,37,42,.16);border-color:rgba(229,37,42,.4);color:#FFB3B5">מצב לא-מקוון — מוצג מידע שמור</span>'
-    :posts?`<span class="mock">עודכן ${matchDate(new Date(S.feedAt).toISOString())}</span>`
-    :`<span class="mock">${API_BASE?'לא הגיע מידע מהשרת — מוצג תוכן לדוגמה':'תוכן לדוגמה — השרת עדיין לא מחובר'}</span>`;
   /* פוסט ארוך (מעל 1,000 תווים) שווה יותר בלחיצת "קראתי" — עידוד לקרוא
      כיתובים ארוכים ולא רק לדלג עליהם */
   const reward=(p.caption||'').length>1000?25:10;
@@ -241,7 +236,6 @@ export function newsView(){
         <div class="newsTitle"><h1>חדשות צ'לסי</h1><span class="newsCount">${total?idx+1:0} / ${total}</span></div>
         <button class="newsNavBtn" data-newsnav="next" ${idx>=total-1?'disabled':''}>הבא &#8249;</button>
       </div>
-      <div class="newsBadgeRow">${badge}</div>
     </div>
     <div class="newsBody">
       <div class="newsCarousel" id="newsCar">${slides}${dots}</div>
