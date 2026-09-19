@@ -174,6 +174,10 @@ export function mountAlbumTabs(){
     if(S.tab===k)return;
     S.tab=k;
     wrap.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===k));
+    /* מוצמד לצד ימין (inline:'start' בכיוון rtl) — כשמגיעים לסוף הרשימה
+       הדפדפן עוצר בגבול הגלילה בפועל ולא משאיר שטח ריק מעבר לתוכן */
+    const btn=wrap.querySelector(`.tab[data-tab="${k}"]`);
+    if(btn)btn.scrollIntoView({inline:'start',block:'nearest',behavior:'smooth'});
   };
   const io=new IntersectionObserver(entries=>{
     let best=null;
