@@ -2,6 +2,8 @@ import { $ } from '../core/dom.js';
 import { S, esc, save } from '../core/state.js';
 import { crestSVG } from '../art/cards.js';
 import { render } from '../core/router.js';
+import { Capacitor } from '@capacitor/core';
+import { LocalNotifications } from '@capacitor/local-notifications';
 
 /* ======================= פיד מהשרת ======================= */
 export const API_BASE=((typeof window!=='undefined'&&window.APP_CONFIG&&window.APP_CONFIG.apiBase)||'').replace(/\/$/,'');
@@ -22,9 +24,52 @@ export async function refreshFeed(force){
     if(d.standings&&Array.isArray(d.standings.table))S.standings=d.standings.table;
     S.feedAt=Date.now();save();
     if(S.screen==='news'||S.screen==='home')render();
+    scheduleMatchdayNotification();
   }catch(e){}
 }
 export const nextMatch=()=>(S.matches&&S.matches.upcoming&&S.matches.upcoming[0])||null;
+/* התראה מקומית (לא push) ליום משחק — מתוזמנת מראש דרך מערכת ההפעלה, אז
+   היא תישלח גם אם השרת יהיה מושבת בדיוק ברגע השליחה. מתוזמנת מחדש בכל
+   רענון פיד, תמיד למשחק הבא בתור בלבד — אותו מזהה קבוע כדי שכל תזמון
+   חדש פשוט מחליף את הקודם ולא נערמות התראות ישנות */
+const MATCHDAY_NOTIF_ID=990001;
+let notifyPermAsked=false;
+async function ensureNotifyPerm(){
+  if(!Capacitor.isNativePlatform())return false;
+  try{
+    const cur=await LocalNotifications.checkPermissions();
+    if(cur.display==='granted')return true;
+    if(notifyPermAsked)return false;
+    notifyPermAsked=true;
+    const req=await LocalNotifications.requestPermissions();
+    return req.display==='granted';
+  }catch(e){return false;}
+}
+async function scheduleMatchdayNotification(){
+  if(!Capacitor.isNativePlatform())return;
+  const m=nextMatch();
+  if(!m||!m.date)return;
+  try{
+    await LocalNotifications.cancel({notifications:[{id:MATCHDAY_NOTIF_ID}]});
+    if(!(await ensureNotifyPerm()))return;
+    const kickoff=new Date(m.date);
+    if(isNaN(kickoff))return;
+    const morning=new Date(kickoff);morning.setHours(9,0,0,0);
+    const now=new Date();
+    let at=morning;
+    if(morning<now){
+      if(kickoff<=now)return;               /* המשחק כבר החל/הסתיים — אין טעם */
+      at=new Date(now.getTime()+5000);        /* נלמד על המשחק אחרי 9 בבוקר של יום המשחק עצמו — מודיעים כמעט מיד */
+    }
+    const timeStr=kickoff.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});
+    await LocalNotifications.schedule({notifications:[{
+      id:MATCHDAY_NOTIF_ID,
+      title:'יום משחק! ⚽',
+      body:`היום יש משחק! צ'לסי נגד ${teamHe(m.opponent)} בשעה ${timeStr}`,
+      schedule:{at},
+    }]});
+  }catch(e){}
+}
 export const lastMatch=()=>(S.matches&&S.matches.past&&S.matches.past[0])||null;
 export const liveMatch=()=>(S.matches&&S.matches.live)||null;
 /* football-data.org לא חושף דקת משחק בפועל (בשכבת ה-API הנוכחית) —
