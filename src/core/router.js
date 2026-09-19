@@ -6,7 +6,7 @@ import { MUT } from '../core/mut.js';
 import { NAV_ICONS } from '../art/avatar.js';
 import { PHOTO_CREDITS } from '../data/globals.js';
 import { S, esc, save, today } from '../core/state.js';
-import { albumBody, albumHeader, animateCoins, avatarView, gamesView, homeView, matchesModal, mountAlbumTabs, newsView, shopView, tasksView } from '../screens/index.js';
+import { albumBody, albumHeader, animateCoins, avatarView, gamesView, homeView, matchesModal, mountAlbumTabs, mountNewsCarousel, newsList, newsView, shopView, tasksView } from '../screens/index.js';
 import { answerValue } from '../games/value.js';
 import { buyItem, cardDetail, claimTask, downloadPhoto, openPack, packTap, playHighlight, recycleAll, shuffleAvatar, tapItem } from '../core/actions.js';
 import { coinSVG } from '../art/cards.js';
@@ -80,16 +80,25 @@ export function render(){
   if(MUT.ballTimer){clearInterval(MUT.ballTimer);MUT.ballTimer=null;}
   if(MUT.reelObserver){MUT.reelObserver.disconnect();MUT.reelObserver=null;}
   if(MUT.albumObserver){MUT.albumObserver.disconnect();MUT.albumObserver=null;}
+  if(MUT.newsCarObserver){MUT.newsCarObserver.disconnect();MUT.newsCarObserver=null;}
   if(S.screen==='album'){
     /* position:sticky לא באמת נצמד בכל WebView (נבדק ונכשל בפועל במכשיר),
        אז במקום זה הכותרת יוצאת לגמרי מהאזור הגלילה: #view הופך למיכל
        flex שאינו גולל בעצמו, עם הכותרת כפריט קבוע ואזור פנימי נפרד
        (.albumScroll) שהוא היחיד שגולל. זו הצמדה אמיתית, לא תלוית דפדפן */
     $('#view').classList.add('albumMode');
+    $('#view').classList.remove('newsMode');
     $('#view').innerHTML=albumHeader()+`<div class="albumScroll"><div class="screen-in">${albumBody()}</div></div>`;
+  }else if(S.screen==='news'){
+    /* אותו עיקרון בדיוק כמו באלבום: פוסט אחד ממלא את כל המסך, בלי גלילת
+       עמוד — רק הקרוסלה (אופקית) וחלונית הכיתוב (אנכית) גוללות בעצמן */
+    $('#view').classList.add('newsMode');
+    $('#view').classList.remove('albumMode');
+    $('#view').innerHTML=newsView();
   }else{
     $('#view').classList.remove('albumMode');
-    const v={home:homeView,shop:shopView,games:gamesView,news:newsView,avatar:avatarView,tasks:tasksView,reels:reelsView}[S.screen]||homeView;
+    $('#view').classList.remove('newsMode');
+    const v={home:homeView,shop:shopView,games:gamesView,avatar:avatarView,tasks:tasksView,reels:reelsView}[S.screen]||homeView;
     $('#view').innerHTML=`<div class="screen-in">${v()}</div>`;
   }
   $('#view').scrollTop=0;
@@ -100,6 +109,7 @@ export function render(){
   if(S.screen==='home'){startHomeCarousel();startBallFX();}
   if(S.screen==='reels')mountReels();
   if(S.screen==='album')mountAlbumTabs();
+  if(S.screen==='news')mountNewsCarousel();
 }
 
 document.addEventListener('click',e=>{
@@ -107,7 +117,13 @@ document.addEventListener('click',e=>{
   if(cel&&!e.target.closest('button')){celebrate(cel);return;}
   const b=e.target.closest('button,[data-pk],[data-act]');if(!b)return;
   const d=b.dataset;
-  if(d.nav){if(S.screen==='album')MUT.NEW_IDS=new Set();S.screen=d.nav;closeModal();endTimer();MUT.G=null;MUT.PK=null;return render();}
+  if(d.nav){if(S.screen==='album')MUT.NEW_IDS=new Set();if(d.nav==='news')S.newsIdx=0;S.screen=d.nav;closeModal();endTimer();MUT.G=null;MUT.PK=null;return render();}
+  if(d.newsnav){
+    const total=newsList().length;
+    if(d.newsnav==='prev')S.newsIdx=Math.max(0,(S.newsIdx||0)-1);
+    if(d.newsnav==='next')S.newsIdx=Math.min(total-1,(S.newsIdx||0)+1);
+    return render();
+  }
   if(d.tab){
     if(S.screen==='album'){
       const sec=document.querySelector(`.albumCat[data-cat="${d.tab}"]`);
@@ -136,7 +152,7 @@ document.addEventListener('click',e=>{
   if(d.dl)return downloadPhoto(d.dl);
   if(d.pack)return openPack(d.pack);
   if(d.claim)return claimTask(d.claim);
-  if(d.read){if(!S.read.includes(d.read)){S.read.push(d.read);S.coins+=10;save();sfx('coin');render();toast('+10 מטבעות');}return;}
+  if(d.read){if(!S.read.includes(d.read)){const amt=+d.readamt||10;S.read.push(d.read);S.coins+=amt;save();sfx('coin');render();toast('+'+amt+' מטבעות');}return;}
   if(d.game&&GAME_START[d.game]){
     if(!S.stats.playedGames.includes(d.game)){S.stats.playedGames.push(d.game);save();}
     return GAME_START[d.game]();

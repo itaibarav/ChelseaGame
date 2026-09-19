@@ -155,10 +155,11 @@ async function fetchNewsCurated() {
   const list = await readJson('news.json', []);
   const posts = [];
   for (const p of list.slice(0, CFG.news.limit)) {
+    const img = p.imageLocal || (await cacheImage(p.image)) || p.image || null;
     posts.push({
       id: p.id,
       caption: p.caption || '',
-      image: p.imageLocal || (await cacheImage(p.image)) || p.image || null,
+      images: img ? [img] : [],
       permalink: p.permalink || '',
       timestamp: p.timestamp || new Date().toISOString(),
     });
@@ -173,7 +174,10 @@ const graphHost = () =>
 
 async function fetchNewsGraph() {
   const { userId, accessToken, apiVersion } = CFG.news.graph;
-  const fields = 'id,caption,media_type,media_url,thumbnail_url,permalink,timestamp';
+  /* children{...} מביא את כל התמונות של קרוסלה (CAROUSEL_ALBUM) — בלעדיו
+     ה-API מחזיר רק את התמונה הראשונה */
+  const fields = 'id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,'
+               + 'children{media_type,media_url,thumbnail_url}';
   const url = `${graphHost()}/${apiVersion || 'v23.0'}/${userId || 'me'}/media`
             + `?fields=${fields}&limit=${CFG.news.limit}&access_token=${accessToken}`;
   const r = await fetch(url);
@@ -182,10 +186,19 @@ async function fetchNewsGraph() {
   const posts = [];
   for (const m of data) {
     if (m.media_type === 'VIDEO' && !m.thumbnail_url) continue;
+    const items = (m.media_type === 'CAROUSEL_ALBUM' && m.children?.data?.length) ? m.children.data : [m];
+    const images = [];
+    for (const it of items) {
+      const src = it.media_type === 'VIDEO' ? it.thumbnail_url : (it.media_url || it.thumbnail_url);
+      if (!src) continue;
+      const cached = await cacheImage(src);
+      if (cached) images.push(cached);
+    }
+    if (!images.length) continue;
     posts.push({
       id: m.id,
       caption: m.caption || '',
-      image: await cacheImage(m.thumbnail_url || m.media_url),
+      images,
       permalink: m.permalink,
       timestamp: m.timestamp,
     });

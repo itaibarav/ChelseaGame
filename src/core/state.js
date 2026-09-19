@@ -6,7 +6,7 @@ export const DEFAULT_STATS={keepieBest:0,runBest:0,bubbleBest:0,penaltyGoals:0,r
   packsOpened:0,goldPacksOpened:0,legendPacksOpened:0,kitPacksOpened:0,recycled:0,
   shirtBestStreak:0,bgDownloaded:false,legendVideoWatched:false,trophyVideoWatched:false,
   playedGames:[],shuffledAvatar:false};
-export let S={name:'',coins:0,inv:{},claim:null,streak:0,tab:'squad',screen:'home',avTab:'kit',
+export let S={name:'',coins:0,inv:{},claim:null,streak:0,tab:'squad',screen:'home',avTab:'kit',newsIdx:0,
   news:[],matches:{past:[],upcoming:[],live:null},standings:[],feedAt:0,
   owned:['av-kit-base','av-boot-white','av-ball-basic'],
   eq:{kit:'av-kit-base',hat:null,scarf:null,boots:'av-boot-white',ball:'av-ball-basic'},read:[],

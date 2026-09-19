@@ -207,23 +207,65 @@ export function gamesView(){
     <p class="note">כל עשרת המשחקונים פעילים.</p>`;
 }
 
+/* רשימת הפוסטים בפועל (אמיתיים מהשרת, או תוכן לדוגמה כשאין עדיין חיבור) —
+   פונקציה משותפת כדי ש-router.js יוכל לחשב גבולות ניווט (קודם/הבא) בלי
+   לשכפל את לוגיקת ה-fallback */
+export const newsList=()=>{
+  const posts=(S.news&&S.news.length)?S.news:null;
+  return posts||MOCK_POSTS.map(p=>({id:p.id,caption:p.txt,images:[],emoji:p.emoji}));
+};
 export function newsView(){
   const posts=(S.news&&S.news.length)?S.news:null;
   const off=!online();
-  const list=posts||MOCK_POSTS.map(p=>({id:p.id,caption:p.txt,image:null,emoji:p.emoji}));
-  return hud()+`<div class="head"><h1>חדשות המועדון</h1><p>מבית מועדון האוהדים הישראלי</p></div>
-    <div style="padding:0 var(--pad)">${
-      off?'<span class="mock" style="background:rgba(229,37,42,.16);border-color:rgba(229,37,42,.4);color:#FFB3B5">מצב לא-מקוון — מוצג מידע שמור</span>'
-      :posts?`<span class="mock">עודכן ${matchDate(new Date(S.feedAt).toISOString())}</span>`
-      :`<span class="mock">${API_BASE?'לא הגיע מידע מהשרת — מוצג תוכן לדוגמה':'תוכן לדוגמה — השרת עדיין לא מחובר'}</span>`}</div>
-    ${list.map(p=>{const done=S.read.includes(p.id);
-      return `<div class="post">
-        ${p.image?`<img class="ph" src="${mediaUrl(p.image)}" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'ph',textContent:'📰'}))">`
-                 :`<div class="ph" style="background:linear-gradient(150deg,#2C6FE0,#062B63)">${p.emoji||'📰'}</div>`}
-        <div class="bd"><p>${esc((p.caption||'').slice(0,240))}</p>
-        ${p.permalink?`<a class="perma" href="${p.permalink}" target="_blank" rel="noopener">פתיחה באינסטגרם ↗</a>`:''}
-        <button class="readbtn ${done?'done':''}" ${done?'':`data-read="${p.id}"`}>${done?'✅ נקרא':'קראתי ✅ — 10 מטבעות'}</button></div></div>`;}).join('')}
-    <p class="note">כל פוסט מזכה פעם אחת בלבד, לפי מזהה הפוסט.</p>`;
+  const list=newsList();
+  const total=list.length;
+  const idx=Math.min(Math.max(S.newsIdx||0,0),Math.max(total-1,0));
+  S.newsIdx=idx;
+  const p=list[idx]||{};
+  const done=S.read.includes(p.id);
+  const images=(p.images&&p.images.length)?p.images:null;
+  const slides=images
+    ? images.map(src=>`<div class="newsSlide"><img src="${mediaUrl(src)}" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'phEmoji',textContent:'📰'}))"></div>`).join('')
+    : `<div class="newsSlide"><div class="phEmoji">${p.emoji||'📰'}</div></div>`;
+  const dots=images&&images.length>1?`<div class="newsDots">${images.map((_,i)=>`<span class="${i===0?'on':''}"></span>`).join('')}</div>`:'';
+  const badge=off?'<span class="mock" style="background:rgba(229,37,42,.16);border-color:rgba(229,37,42,.4);color:#FFB3B5">מצב לא-מקוון — מוצג מידע שמור</span>'
+    :posts?`<span class="mock">עודכן ${matchDate(new Date(S.feedAt).toISOString())}</span>`
+    :`<span class="mock">${API_BASE?'לא הגיע מידע מהשרת — מוצג תוכן לדוגמה':'תוכן לדוגמה — השרת עדיין לא מחובר'}</span>`;
+  /* פוסט ארוך (מעל 1,000 תווים) שווה יותר בלחיצת "קראתי" — עידוד לקרוא
+     כיתובים ארוכים ולא רק לדלג עליהם */
+  const reward=(p.caption||'').length>1000?25:10;
+  return `<div class="newsChrome">
+      ${hud()}
+      <div class="newsHead">
+        <button class="newsNavBtn" data-newsnav="prev" ${idx<=0?'disabled':''}>&#8250; קודם</button>
+        <div class="newsTitle"><h1>חדשות צ'לסי</h1><span class="newsCount">${total?idx+1:0} / ${total}</span></div>
+        <button class="newsNavBtn" data-newsnav="next" ${idx>=total-1?'disabled':''}>הבא &#8249;</button>
+      </div>
+      <div class="newsBadgeRow">${badge}</div>
+    </div>
+    <div class="newsBody">
+      <div class="newsCarousel" id="newsCar">${slides}${dots}</div>
+      <div class="newsCaption"><p>${esc(p.caption||'')}</p></div>
+      <button class="readbtn newsReadBtn ${done?'done':''}" ${done||!p.id?'':`data-read="${p.id}" data-readamt="${reward}"`}>${done?'✅ נקרא':`קראתי ✅ — ${reward} מטבעות`}</button>
+    </div>`;
+}
+/* עוקבים אחרי איזו תמונה בקרוסלה גלושה כרגע לתוך התצוגה, כדי לעדכן את
+   הנקודה הפעילה — אותה טכניקה בדיוק כמו בסרגל הקטגוריות באלבום */
+export function mountNewsCarousel(){
+  const car=$('#newsCar');
+  if(MUT.newsCarObserver){MUT.newsCarObserver.disconnect();MUT.newsCarObserver=null;}
+  if(!car)return;
+  const slides=[...car.querySelectorAll('.newsSlide')],dots=[...car.querySelectorAll('.newsDots span')];
+  if(slides.length<2||!dots.length)return;
+  const io=new IntersectionObserver(entries=>{
+    let best=null;
+    entries.forEach(en=>{if(en.isIntersecting&&(!best||en.intersectionRatio>best.intersectionRatio))best=en;});
+    if(!best)return;
+    const i=slides.indexOf(best.target);
+    dots.forEach((d,k)=>d.classList.toggle('on',k===i));
+  },{root:car,threshold:[0.5]});
+  slides.forEach(s=>io.observe(s));
+  MUT.newsCarObserver=io;
 }
 
 export function matchesModal(initial){

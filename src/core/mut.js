@@ -10,5 +10,6 @@ export const MUT = {
   liveTimer: null,
   reelObserver: null,
   albumObserver: null,
+  newsCarObserver: null,
 };
 
