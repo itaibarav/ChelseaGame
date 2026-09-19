@@ -138,6 +138,7 @@ document.addEventListener('click',e=>{
   }
   if(d.mt){
     const ids={up:'mUp',past:'mPast',table:'mTable',live:'mLive'};
+    if(d.mt==='table'&&!S.stats.tableViewed){S.stats.tableViewed=true;save();}
     b.parentElement.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
     Object.entries(ids).forEach(([k,id])=>{const el=$('#'+id);if(el)el.style.display=k===d.mt?'':'none';});
     return;

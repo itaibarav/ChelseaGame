@@ -144,8 +144,8 @@ export function cardDetail(id){
 export function playHighlight(id){
   const c=BY_ID[id],vid=CARD_VIDEOS[id];
   if(!vid)return toast('אין עדיין קטע וידאו לקלף הזה');
-  if(c.cat==='legend')S.stats.legendVideoWatched=true;
-  if(c.cat==='cat2')S.stats.trophyVideoWatched=true;
+  if(c.cat==='legend'&&!S.stats.legendVideosWatched.includes(id))S.stats.legendVideosWatched.push(id);
+  if(c.cat==='cat2'&&!S.stats.trophyVideosWatched.includes(id))S.stats.trophyVideosWatched.push(id);
   save();
   modal(`<div class="sheet"><h2 style="margin-bottom:12px">${esc(c.name)} — סרטון היילייטס</h2>
     <div style="position:relative;padding-top:56.25%;border-radius:14px;overflow:hidden;margin-bottom:14px;background:#000">

@@ -24,6 +24,7 @@ export const CONE_SVG=`<svg viewBox="0 0 40 46">
   <rect x="5" y="39" width="30" height="6" rx="2.5" fill="#F26A21" stroke="#B8410A" stroke-width="1.4"/></svg>`;
 
 export function startRun(){
+  if(!S.stats.runKits.includes(S.eq.kit)){S.stats.runKits.push(S.eq.kit);save();}
   const bg=(typeof window!=='undefined'&&window.GAME_ART&&window.GAME_ART.stadium)||'';
   modal(`<div class="sheet game">
     <div class="ghud"><span id="uD">0 מ׳</span><span id="uS">מהירות 1</span><span id="uC">0 🪙</span></div>

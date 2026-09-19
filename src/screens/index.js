@@ -3,7 +3,7 @@ import { API_BASE, crestOf, lastMatch, liveMatch, liveMinute, matchDate, mediaUr
 import { CARDS, CATS, GAMES, LAYER_TABS, MOCK_MATCH, MOCK_POSTS, PACKS, TOTAL, byLayer } from '../data/cards.js';
 import { TASKS } from '../data/tasks.js';
 import { MUT } from '../core/mut.js';
-import { S, collected, esc, got, itemLocked, today } from '../core/state.js';
+import { S, collected, esc, got, itemLocked, save, today } from '../core/state.js';
 import { avatarSVG, itemThumb } from '../art/avatar.js';
 import { ballImgSrc } from '../art/ball.js';
 import { coinSVG, crestSVG } from '../art/cards.js';
@@ -265,6 +265,7 @@ export function mountNewsCarousel(){
 export function matchesModal(initial){
   const lm=liveMatch();
   const tab=['up','past','table','live'].includes(initial)?initial:(lm?'live':'up');
+  if(tab==='table'&&!S.stats.tableViewed){S.stats.tableViewed=true;save();}
   const M=S.matches||{past:[],upcoming:[]};
   const T=S.standings||[];
   if(!lm&&!M.past.length&&!M.upcoming.length&&!T.length)
