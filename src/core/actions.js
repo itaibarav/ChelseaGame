@@ -52,7 +52,7 @@ export function openPack(type){
   if(type==='legend')S.stats.legendPacksOpened++;
   if(type==='kit')S.stats.kitPacksOpened++;
   save();
-  MUT.PK={p,slots,fresh,i:-1};
+  MUT.PK={p,slots,fresh,i:-1,suspenseShownFor:-1};
   renderPack();render();
 }
 export const RLBL={common:'מדבקה רגילה',rare:'קלף אגדה נדיר',luxury:'לוקסוס הולוגרפי'};
@@ -72,21 +72,40 @@ export function renderPack(){
       <button class="btn btn-gold" data-pk="done" style="width:100%">לאלבום</button></div>`);
   }
   const id=MUT.PK.slots[MUT.PK.i],c=BY_ID[id],isNew=MUT.PK.fresh[MUT.PK.i];
+  /* קלף לוקסוס חדש (לא כפילות) מקבל רגע "מתח" לפני החשיפה — קלפים
+     רגילים/נדירים, וגם כפילות לוקסוס, ממשיכים בדיוק כמו קודם */
+  const isNewLux=c.rarity==='luxury'&&isNew;
+  if(isNewLux&&MUT.PK.suspenseShownFor!==MUT.PK.i){
+    modal(`<div class="sheet">
+      <div class="pipdots">${[0,1,2,3,4].map(i=>`<i class="${i<=MUT.PK.i?'on':''}"></i>`).join('')}</div>
+      <div class="packstage">${raysSVG('#FFD766').replace('class="rays"','class="rays fast"')}
+        <div class="suspense"><span class="q">?</span></div>
+      </div>
+      <p class="suspense-txt">משהו מיוחד מתקרב...</p></div>`,{closable:false});
+    sfx('pop');
+    setTimeout(()=>{MUT.PK.suspenseShownFor=MUT.PK.i;renderPack();},1500);
+    return;
+  }
   const rayCol=c.rarity==='luxury'?'#FFD766':c.rarity==='rare'?'#C9A227':'#5FB0FF';
   modal(`<div class="sheet" data-pk="next">
     <div class="pipdots">${[0,1,2,3,4].map(i=>`<i class="${i<=MUT.PK.i?'on':''}"></i>`).join('')}</div>
     <div class="packstage">
-      ${MUT.PK.i===0?'<div class="flash"></div>':''}
+      ${isNewLux?'<div class="flash-big"></div>':(MUT.PK.i===0?'<div class="flash"></div>':'')}
       ${c.rarity!=='common'?raysSVG(rayCol):''}
-      <div class="bigcard ${c.rarity}">
-        <span class="newtag ${isNew?'':'dup'}">${isNew?'חדש!':'כפילות'}</span>
+      <div class="bigcard ${c.rarity}${isNewLux?' big':''}">
+        ${isNewLux?'<span class="luxribbon">&#10024; לוקסוס הולוגרפי! &#10024;</span>'
+                  :`<span class="newtag ${isNew?'':'dup'}">${isNew?'חדש!':'כפילות'}</span>`}
         <div class="frame">${art(c)}</div></div>
     </div>
     <h2 style="margin:2px 0 2px">${esc(c.name)}</h2>
     <p style="margin-bottom:10px">${RLBL[c.rarity]} · #${c.no}</p>
     <button class="btn btn-gold" data-pk="next" style="width:100%">${MUT.PK.i<4?'הבא':'סיכום'}</button></div>`);
   sfx(c.rarity==='luxury'?'win':c.rarity==='rare'?'coin':'pop');
-  if(c.rarity==='luxury')confetti(38);
+  if(c.rarity==='luxury')confetti(isNewLux?60:38);
+  if(isNewLux){
+    const sheetEl=$('.sheet');
+    if(sheetEl){sheetEl.classList.add('screenshake');setTimeout(()=>sheetEl.classList.remove('screenshake'),360);}
+  }
 }
 export function packTap(what){
   if(!MUT.PK)return;
