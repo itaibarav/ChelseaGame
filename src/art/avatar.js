@@ -183,7 +183,7 @@ export function avatarSVG(cls){
         <ellipse cx="48" cy="63" rx="5" ry="3.5" fill="#F0A98C" opacity=".5"/>
         <ellipse cx="92" cy="63" rx="5" ry="3.5" fill="#F0A98C" opacity=".5"/>
         <path d="M42 46 q6 -22 28 -22 q22 0 28 22 q-14 -9 -28 -9 q-14 0 -28 9z" fill="#3A2A1C"/>
-        ${hat?hatSVG(hat.shape,hat.pal):''}
+        ${hat?hatSVG(hat.shape,hat.pal,hat.badge):''}
       </g>
     </g>
   </svg>`;
@@ -203,7 +203,7 @@ export function itemThumb(it){
       <path d="M21 14 h18 v30 h-18z" fill="none" stroke="${K.line}" stroke-width="1.2"/>
       <path d="M27 14 a4 4 0 0 0 6 0" fill="none" stroke="${D.trim}" stroke-width="1.8"/>
       <rect x="24" y="46" width="12" height="9" rx="2" fill="${K.shorts}" stroke="${K.line}" stroke-width="1"/></svg>`;}
-  if(it.layer==='hat')return `<svg viewBox="0 0 140 60"><g transform="translate(0,4)">${hatSVG(it.shape,p)}</g></svg>`;
+  if(it.layer==='hat')return `<svg viewBox="0 0 140 60"><g transform="translate(0,4)">${hatSVG(it.shape,p,it.badge)}</g></svg>`;
   if(it.layer==='ball')return `<svg viewBox="0 0 60 60"><image href="${ballImgSrc(it)}" x="6" y="6" width="48" height="48"/></svg>`;
   if(it.layer==='scarf')return `<svg viewBox="0 0 60 60">
     <path d="M8 18 q22 13 44 0 l3 9 q-25 14 -50 0z" fill="${p[0]}"/>

@@ -10,16 +10,20 @@ export const crestSVG=(c1,c2,txt)=>`<svg class="crest" viewBox="0 0 40 40"><path
 export const CFC_BLUE='#034694', CFC_GOLD='#D9B14A';
 export const LION=(typeof window!=='undefined'&&window.GAME_ART&&window.GAME_ART.lion)||'';
 export const LION_AR=144/190;   // יחס הרוחב-גובה של הקובץ החתוך
-export const clubBadge=(cx,cy,r)=>{
+/* badge אופציונלי {art,ring} מחליף את תמונת האריה ואת צבע הטבעת הפנימית —
+   למשל תג כתום לכובע ספציפי — בלי לגעת בברירת המחדל הכחולה של כל תג אחר */
+export const clubBadge=(cx,cy,r,badge)=>{
+  const art=badge&&badge.art&&(typeof window!=='undefined'&&window.GAME_ART&&window.GAME_ART[badge.art]);
+  const ring=(badge&&badge.ring)||CFC_BLUE;
   const h=r*1.12, w=h*LION_AR;
-  const lion=LION
-    ? `<image href="${LION}" x="${(-w/2).toFixed(2)}" y="${(-h/2).toFixed(2)}" width="${w.toFixed(2)}" height="${h.toFixed(2)}"/>`
+  const lion=(art||LION)
+    ? `<image href="${art||LION}" x="${(-w/2).toFixed(2)}" y="${(-h/2).toFixed(2)}" width="${w.toFixed(2)}" height="${h.toFixed(2)}"/>`
     : `<g transform="scale(${(r/12).toFixed(3)})" fill="${CFC_BLUE}">
          <path d="M-3.4 5.6 L-2.1 0.6 L-4.8 -0.4 L-3.8 -2.6 L-1.5 -1.7 L-2.0 -4.2 L-0.4 -5.6
                   L1.5 -5.1 L2.3 -3.1 L1.3 -1.7 L2.9 0.8 L3.5 3.4 L5.1 1.5 L5.5 3.3 L3.7 5.2 L3.3 5.6 Z"/>
          <circle cx="0.5" cy="-4.7" r="1.6"/></g>`;
   return `<g transform="translate(${cx.toFixed(2)} ${cy.toFixed(2)})">
-    <circle r="${r.toFixed(2)}" fill="#F5F8FD" stroke="${CFC_BLUE}" stroke-width="${(r*0.26).toFixed(2)}"/>
+    <circle r="${r.toFixed(2)}" fill="#F5F8FD" stroke="${ring}" stroke-width="${(r*0.26).toFixed(2)}"/>
     <circle r="${(r*1.17).toFixed(2)}" fill="none" stroke="${CFC_GOLD}" stroke-width="${(r*0.075).toFixed(2)}"/>
     ${lion}</g>`;
 };
@@ -153,17 +157,17 @@ export const bootSVG=(x,p)=>`<g transform="translate(${x} 0)">
     <rect x="4.3" y="204.4" width="2" height="2" rx=".8"/>
     <rect x="16" y="204.4" width="2" height="2" rx=".8"/></g></g>`;
 
-export function hatSVG(shape,p){
+export function hatSVG(shape,p,badge){
   const gold=(typeof window!=='undefined'&&window.GAME_ART&&window.GAME_ART.lionGold)||'';
   if(shape==='cap')return `<path d="M40 42 q0 -25 30 -25 q30 0 30 25 z" fill="${p[0]}"/>
     <path d="M96 40 q22 2 22 10 q-14 3 -24 -2z" fill="${p[1]}"/>
     <circle cx="70" cy="18" r="4" fill="${p[1]}"/>
     <path d="M40 42 q0 -25 30 -25 q30 0 30 25" fill="none" stroke="${p[1]}" stroke-width="1.4" opacity=".7"/>
-    ${clubBadge(70,32,6.4)}`;
+    ${clubBadge(70,32,6.4,badge)}`;
   if(shape==='bucket')return `<path d="M44 42 q0 -24 26 -24 q26 0 26 24 z" fill="${p[0]}"/>
     <rect x="44" y="30" width="52" height="7" fill="${p[1]}" opacity=".85"/>
     <path d="M32 40 h76 q2 10 -12 12 h-52 q-14 -2 -12 -12z" fill="${p[1]}"/>
-    ${clubBadge(70,25,5.8)}`;
+    ${clubBadge(70,25,5.8,badge)}`;
   if(shape==='crown')return `<path d="M42 42 l2 -26 12 12 14 -18 14 18 12 -12 2 26z" fill="${p[0]}" stroke="${p[1]}" stroke-width="2"/>
     <rect x="41" y="40" width="58" height="6" rx="2.5" fill="${p[1]}"/>
     ${LION?`<image href="${LION}" x="63" y="23" width="14" height="18"/>`
@@ -172,7 +176,7 @@ export function hatSVG(shape,p){
     <g stroke="${p[1]}" stroke-width="1.3" opacity=".55" fill="none">
       <path d="M52 20 v22"/><path d="M62 16.5 v25.5"/><path d="M78 16.5 v25.5"/><path d="M88 20 v22"/></g>
     <rect x="38" y="37" width="64" height="12" rx="5.5" fill="${p[1]}"/>
-    ${clubBadge(70,43,5.4)}
+    ${clubBadge(70,43,5.4,badge)}
     <circle cx="70" cy="14" r="6" fill="${p[0]}"/>`;
 }
 export function kitStyleOf(item){

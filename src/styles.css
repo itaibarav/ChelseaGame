@@ -98,6 +98,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .tab{white-space:nowrap;border-radius:999px;padding:8px 15px;font-size:13px;font-weight:700;
   background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.15);color:#C6D8F2}
 .tab.on{background:linear-gradient(180deg,#FFD766,#E09800);color:#3A2400;border-color:#FFF0BE}
+.tab .cnt{opacity:.65;font-weight:600;font-variant-numeric:tabular-nums}
 
 /* באלבום: #view הופך (albumMode) למיכל flex שלא גולל בעצמו — הכותרת
    (hud + כותרת + צ'יפים) יושבת כפריט קבוע מעליו, ו-.albumScroll היא האזור

@@ -89,8 +89,12 @@ export const SCARVES=[
  ['av-scarf-retro',  'צעיף רטרו', 35,['#12305C','#E4C05B'],'badge'],
  ['av-scarf-il',     'צעיף ישראל',45,['#1E6BE6','#FFFFFF'],'badge'],
  ['av-scarf-white',  'צעיף לבן',  30,['#F2F5FA','#1E5BE0'],'badge'],
- ['av-scarf-2027',   'צעיף 2027', 55,['#0B45B5','#D9B14A'],'gold']];
-export const HATS=[['av-hat-beanie','כובע גרב',20,'beanie',['#1E6BE6','#0F4FB5']],['av-hat-cap','כובע מצחייה',20,'cap',['#034694','#FFC83D']],['av-hat-bucket','כובע פטרייה',30,'bucket',['#DDE7F5','#034694']],['av-hat-beanie2','כובע גרב שחור-כחול',40,'beanie',['#141414','#1E6BE6']],['av-hat-cap2','כובע מצחייה לבן',25,'cap',['#F2F5FA','#12305C']],['av-hat-crown','כתר אלופים',60,'crown',['#FFC83D','#B87700']]];
+ ['av-scarf-2027',   'צעיף 2027', 55,['#0B45B5','#D9B14A'],'gold'],
+ ['av-scarf-negative','צעיף נגטיב',40,['#141414','#FFFFFF'],'badge']];
+/* [מזהה, שם, מחיר, צורה, [צבע ראשי, הדגשה], תג-לוגו אופציונלי {art,ring} —
+   כשלא מוגדר, מוצג התג הכחול-זהב הרגיל */
+export const HATS=[['av-hat-beanie','כובע גרב',20,'beanie',['#1E6BE6','#0F4FB5']],['av-hat-cap','כובע מצחייה',20,'cap',['#034694','#FFC83D']],['av-hat-bucket','כובע פטרייה',30,'bucket',['#DDE7F5','#034694']],['av-hat-beanie2','כובע גרב שחור-כחול',40,'beanie',['#141414','#1E6BE6']],['av-hat-cap2','כובע מצחייה לבן',25,'cap',['#F2F5FA','#12305C']],['av-hat-crown','כתר אלופים',60,'crown',['#FFC83D','#B87700']],
+ ['av-hat-bucket2','פטרייה שחור/כתום',35,'bucket',['#141414','#EF7B10'],{art:'lionOrange',ring:'#EF7B10'}]];
 /* [מזהה, שם, מחיר, [צבע ראשי, הדגשה, סוליה ופקקים], מרחק שיא נדרש בריצת סטמפורד]
    נעליים נפתחות לפי השיא ב"ריצת סטמפורד" — 300 מ' בין נעל לנעל */
 export const BOOTS=[
@@ -99,7 +103,8 @@ export const BOOTS=[
  ['av-boot-blue',   'ניאון ושחור',25,['#C6F51D','#141414','#7E9E12'], 600],
  ['av-boot-neon',   'זהב וכחול', 35,['#E8B93B','#123A9E','#9C7615'],  900],
  ['av-boot-wb',     'לבנות וכחולות',45,['#F2F5FA','#1E6BE6','#0B2E7A'],1200],
- ['av-boot-gold',   'שחור ותכלת',70,['#1A1A1A','#5FD4F5','#000000'], 1500]];
+ ['av-boot-gold',   'שחור ותכלת',70,['#1A1A1A','#5FD4F5','#000000'], 1500],
+ ['av-boot-pink',   'ורוד רעל וכחול',90,['#FF2D8F','#0B5FFF','#141428'],1800]];
 /* [מזהה, שם, מחיר, מפתח GAME_ART] — כל הכדורים מצוירים מתמונה אמיתית */
 export const BALLS=[
  ['av-ball-basic',  'כדור בסיסי',        0, 'ballBasic'],
@@ -111,7 +116,7 @@ export const ITEMS={};
 ITEMS['av-kit-base']={id:'av-kit-base',layer:'kit',name:'מדי אימון',price:0,pal:['#2C6FE0','#0C3A8C','#FFFFFF']};
 KIT_CARDS.forEach(c=>{ITEMS['av-'+c.id]={id:'av-'+c.id,layer:'kit',name:c.name,price:50,pal:KITPAL[c.kit]||KITPAL.home,req:c.id};});
 SCARVES.forEach(([id,name,price,pal,emblem])=>ITEMS[id]={id,layer:'scarf',name,price,pal,emblem});
-HATS.forEach(([id,name,price,shape,pal])=>ITEMS[id]={id,layer:'hat',name,price,shape,pal});
+HATS.forEach(([id,name,price,shape,pal,badge])=>ITEMS[id]={id,layer:'hat',name,price,shape,pal,badge});
 BOOTS.forEach(([id,name,price,pal,reqDist])=>ITEMS[id]={id,layer:'boots',name,price,pal,reqDist:reqDist||undefined});
 BALLS.forEach(([id,name,price,art])=>ITEMS[id]={id,layer:'ball',name,price,art});
 export const byLayer=l=>Object.values(ITEMS).filter(i=>i.layer===l);

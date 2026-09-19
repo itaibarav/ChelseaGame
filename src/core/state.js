@@ -27,7 +27,6 @@ export const got=id=>(S.inv[id]||0)>0;
 /* נעילה כפולה: פריט יכול להיות תלוי במדבקה באלבום (req) ו/או בשיא מרחק
    בריצת סטמפורד (reqDist, למשל נעליים) — נבדק במקום אחד לשימוש עקבי */
 export const itemLocked=it=>!!((it.req&&!got(it.req))||(it.reqDist&&S.stats.runBest<it.reqDist));
-export const collected=()=>Object.values(S.inv).filter(q=>q>0).length;
 export const pick=a=>a[Math.floor(Math.random()*a.length)];
 export const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=(Math.random()*(i+1))|0;[a[i],a[j]]=[a[j],a[i]];}return a;};
 export const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));

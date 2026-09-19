@@ -271,7 +271,7 @@ export function claimTask(id){
 /* הרכבה אקראית: לכל שכבה בוחרים פריט אקראי מבין הפריטים שכבר ברשותכם —
    לכובע ולצעיף גם "בלי" הוא אפשרות חוקית, כי אפשר להסיר אותם */
 export function shuffleAvatar(){
-  ['kit','hat','scarf','boots','ball'].forEach(layer=>{
+  ['kit','hat','scarf','boots'].forEach(layer=>{
     const ownedItems=S.owned.filter(id=>ITEMS[id]&&ITEMS[id].layer===layer);
     const optional=layer==='hat'||layer==='scarf';
     const pool=optional?[...ownedItems,null]:ownedItems;

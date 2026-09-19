@@ -3,7 +3,7 @@ import { API_BASE, crestOf, lastMatch, liveMatch, liveMinute, matchDate, mediaUr
 import { CARDS, CATS, GAMES, LAYER_TABS, MOCK_MATCH, MOCK_POSTS, PACKS, TOTAL, byLayer } from '../data/cards.js';
 import { TASKS } from '../data/tasks.js';
 import { MUT } from '../core/mut.js';
-import { S, collected, esc, got, itemLocked, save, today } from '../core/state.js';
+import { S, esc, got, itemLocked, save, today } from '../core/state.js';
 import { avatarSVG, itemThumb } from '../art/avatar.js';
 import { ballImgSrc } from '../art/ball.js';
 import { coinSVG, crestSVG } from '../art/cards.js';
@@ -31,6 +31,12 @@ export function animateCoins(){
 
 /* שלוש שורות מהטבלה סביב צ'לסי: קבוצה לפני + צ'לסי + קבוצה אחרי.
    אם צ'לסי ראשונה או אחרונה בטבלה — שתי קבוצות מהצד הפנוי במקום אחת */
+/* סופר רק מדבקות ששייכות לקלף קיים בפועל — S.inv עלול להכיל רשומות
+   "יתומות" מקלפים שהוסרו/שונו במיזוגים קודמים של האלבום, שאף פעם לא
+   נספרות בצ'יפים של קטגוריה בודדת (אלה תמיד עוברות דרך CARDS.filter),
+   אבל היו מנופחות את הסכום הכולל אם היו נספרות ישירות מ-S.inv */
+export const collected=()=>CARDS.filter(c=>got(c.id)).length;
+
 export function chelseaNeighbors(T){
   const idx=T.findIndex(r=>r.own);
   if(idx<0)return[];
@@ -141,7 +147,7 @@ export function albumHeader(){
     ${hud()}
     <div class="head"><h1>האלבום שלי</h1><p>${collected()} מתוך ${TOTAL} מדבקות נאספו</p></div>
     <div class="tabs alltabs" id="albumTabs">${CATS.map(([k,l])=>{const n=CARDS.filter(c=>c.cat===k),o=n.filter(c=>got(c.id)).length;
-      return `<button class="tab ${S.tab===k?'on':''}" data-tab="${k}">${l} ${o}/${n.length}</button>`;}).join('')}</div>
+      return `<button class="tab ${S.tab===k?'on':''}" data-tab="${k}">${l} <span class="cnt">${o}/${n.length}</span></button>`;}).join('')}</div>
     </div>`;
 }
 export function albumBody(){
@@ -179,10 +185,19 @@ export function mountAlbumTabs(){
     const btn=wrap.querySelector(`.tab[data-tab="${k}"]`);
     if(btn)btn.scrollIntoView({inline:'start',block:'nearest',behavior:'smooth'});
   };
+  /* IntersectionObserver מדווח בכל קריאה רק על הסקציות שחצו סף מאז הבדיקה
+     הקודמת — לא על כל הסקציות הנצפות כרגע. הבאג היה שהבחירה ב"הכי נראית"
+     הסתמכה רק על המנה הזו: סקציה שכבר חצתה סף ונשארת יציבה (כמו "אגדות"
+     ו"גביעים", ששכנות לסקציות קצרות שחוצות ספים הרבה יותר) פשוט לא
+     מופיעה יותר בקריאות הבאות, ולכן אף פעם לא "מנצחת" שוב גם כשהיא בפועל
+     הכי נראית על המסך. פותרים בשמירת מפה של כל היחסים הידועים, ומחשבים
+     את הסקציה הכי נראית מתוך המפה המלאה בכל קריאה */
+  const ratios=new Map();
   const io=new IntersectionObserver(entries=>{
-    let best=null;
-    entries.forEach(en=>{if(en.isIntersecting&&(!best||en.intersectionRatio>best.intersectionRatio))best=en;});
-    if(best)setActive(best.target.dataset.cat);
+    entries.forEach(en=>ratios.set(en.target,en.isIntersecting?en.intersectionRatio:0));
+    let best=null,bestRatio=0;
+    ratios.forEach((r,el)=>{if(r>bestRatio){bestRatio=r;best=el;}});
+    if(best)setActive(best.dataset.cat);
   },{root:scroller,threshold:[0.25,0.5,0.75],rootMargin:'0px 0px -55% 0px'});
   sections.forEach(s=>io.observe(s));
   MUT.albumObserver=io;
@@ -318,10 +333,11 @@ export function avatarView(){
     <div style="padding:0 var(--pad)"><button class="btn btn-ghost" style="width:100%" data-act="edit-name">
       &#9997;&#65039; ${esc(S.name||'אלוף')} <span style="opacity:.6;font-size:12px">(שינוי שם)</span></button></div>
     <div class="studio">${stadiumBG(true)}${avatarSVG('avatar')}</div>
-    <div class="tabs">${LAYER_TABS.map(([k,l])=>`<button class="tab ${S.avTab===k?'on':''}" data-avtab="${k}">${l}</button>`).join('')}
-      ${S.avTab!=='kit'&&S.avTab!=='boots'&&S.avTab!=='ball'?`<button class="tab" data-equip="none">הסרה</button>`:''}</div>
+    <div class="tabs">${LAYER_TABS.map(([k,l])=>`<button class="tab ${S.avTab===k?'on':''}" data-avtab="${k}">${l}</button>`).join('')}</div>
     <button class="btn btn-ghost" data-act="shuffle-avatar" style="width:100%;margin:2px 0 10px">🎲 הרכבה אקראית</button>
-    <div class="items">${items.map(it=>{
+    <div class="items">${(S.avTab==='hat'||S.avTab==='scarf')?`<button class="item ${!S.eq[S.avTab]?'on':''}" data-equip="none">
+        <svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="20" fill="none" stroke="#8FA3C0" stroke-width="4"/><line x1="16" y1="44" x2="44" y2="16" stroke="#8FA3C0" stroke-width="4"/></svg>
+        <span class="nm">בלי</span><span class="pr">—</span></button>`:''}${items.map(it=>{
       const owned=S.owned.includes(it.id), on=S.eq[it.layer]===it.id;
       const locked=itemLocked(it);
       const lockLabel=it.reqDist?`${it.reqDist} מ׳`:'נעול';
