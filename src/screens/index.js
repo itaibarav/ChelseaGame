@@ -170,12 +170,9 @@ export function albumBody(){
    יראה איפה נמצאים — עם סף/שוליים רחבים כך שהעדכון לא "מרצד" מהר מדי */
 export function mountAlbumTabs(){
   const wrap=$('#albumTabs'),scroller=$('.albumScroll');
-  if(MUT.albumObserver){MUT.albumObserver.disconnect();MUT.albumObserver=null;}
   if(!wrap||!scroller)return;
   const sections=[...document.querySelectorAll('.albumCat')];
   if(!sections.length)return;
-  /* הכותרת יושבת כפריט flex קבוע מחוץ ל-.albumScroll (ראו albumMode ב-CSS),
-     כך שהיא לא חופפת את התוכן — אין צורך בקיזוז גובה כלשהו כאן */
   const setActive=k=>{
     if(S.tab===k)return;
     S.tab=k;
@@ -185,22 +182,27 @@ export function mountAlbumTabs(){
     const btn=wrap.querySelector(`.tab[data-tab="${k}"]`);
     if(btn)btn.scrollIntoView({inline:'start',block:'nearest',behavior:'smooth'});
   };
-  /* IntersectionObserver מדווח בכל קריאה רק על הסקציות שחצו סף מאז הבדיקה
-     הקודמת — לא על כל הסקציות הנצפות כרגע. הבאג היה שהבחירה ב"הכי נראית"
-     הסתמכה רק על המנה הזו: סקציה שכבר חצתה סף ונשארת יציבה (כמו "אגדות"
-     ו"גביעים", ששכנות לסקציות קצרות שחוצות ספים הרבה יותר) פשוט לא
-     מופיעה יותר בקריאות הבאות, ולכן אף פעם לא "מנצחת" שוב גם כשהיא בפועל
-     הכי נראית על המסך. פותרים בשמירת מפה של כל היחסים הידועים, ומחשבים
-     את הסקציה הכי נראית מתוך המפה המלאה בכל קריאה */
-  const ratios=new Map();
-  const io=new IntersectionObserver(entries=>{
-    entries.forEach(en=>ratios.set(en.target,en.isIntersecting?en.intersectionRatio:0));
-    let best=null,bestRatio=0;
-    ratios.forEach((r,el)=>{if(r>bestRatio){bestRatio=r;best=el;}});
-    if(best)setActive(best.dataset.cat);
-  },{root:scroller,threshold:[0.25,0.5,0.75],rootMargin:'0px 0px -55% 0px'});
-  sections.forEach(s=>io.observe(s));
-  MUT.albumObserver=io;
+  /* IntersectionObserver עם ספי יחס (threshold) התברר כלא אמין לסקציות
+     "אגדות"/"גביעים" — הן ארוכות מספיק שהיחס שלהן (שטח נראה חלקי גובה
+     הסקציה כולה) אף פעם לא מגיע לספים הגבוהים, כך שהן כמעט ולא "מנצחות".
+     במקום לשחק במשחק היחסים, בודקים ישירות איזו סקציה חצתה עם הראש שלה
+     קו התייחסות קרוב לראש אזור הגלילה — בדיוק כמו scrollspy רגיל, ובלתי
+     תלוי לגמרי בגובה הסקציה */
+  const OFFSET=24;
+  let ticking=false;
+  const update=()=>{
+    ticking=false;
+    const top=scroller.getBoundingClientRect().top+OFFSET;
+    let current=sections[0];
+    for(const s of sections){
+      if(s.getBoundingClientRect().top<=top)current=s;else break;
+    }
+    setActive(current.dataset.cat);
+  };
+  const onScroll=()=>{if(!ticking){ticking=true;requestAnimationFrame(update);}};
+  scroller.addEventListener('scroll',onScroll,{passive:true});
+  MUT.albumScrollEl=scroller;MUT.albumScrollHandler=onScroll;
+  update();
 }
 
 export function shopView(){
@@ -342,8 +344,8 @@ export function avatarView(){
       const locked=itemLocked(it);
       const lockLabel=it.reqDist?`${it.reqDist} מ׳`:'נעול';
       return `<button class="item ${on?'on':''} ${locked&&!owned?'locked':''}" data-item="${it.id}">
-        ${locked&&!owned?'<span class="lockbadge">🔒</span>':''}
-        ${itemThumb(it)}<span class="nm">${esc(it.name)}</span>
+        <div class="thumbWrap">${itemThumb(it)}${locked&&!owned?'<span class="lockIcon">🔒</span>':''}</div>
+        <span class="nm">${esc(it.name)}</span>
         <span class="pr ${owned?'owned':''}">${owned?(on?'לבוש':'ברשותך'):(locked?lockLabel:(it.price?it.price+' ':'חינם')+(it.price?coinSVG(13):''))}</span>
       </button>`;}).join('')}</div>
     ${S.avTab==='kit'?'<p class="note">מדים נפתחים לרכישה רק אחרי שאספתם את מדבקת המדים המתאימה באלבום.</p>':''}

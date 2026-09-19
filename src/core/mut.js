@@ -9,7 +9,8 @@ export const MUT = {
   ballTimer: null,
   liveTimer: null,
   reelObserver: null,
-  albumObserver: null,
+  albumScrollEl: null,
+  albumScrollHandler: null,
   newsCarObserver: null,
 };
 

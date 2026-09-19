@@ -79,7 +79,7 @@ export function render(){
   if(MUT.homeTimer){clearInterval(MUT.homeTimer);MUT.homeTimer=null;}
   if(MUT.ballTimer){clearInterval(MUT.ballTimer);MUT.ballTimer=null;}
   if(MUT.reelObserver){MUT.reelObserver.disconnect();MUT.reelObserver=null;}
-  if(MUT.albumObserver){MUT.albumObserver.disconnect();MUT.albumObserver=null;}
+  if(MUT.albumScrollEl&&MUT.albumScrollHandler){MUT.albumScrollEl.removeEventListener('scroll',MUT.albumScrollHandler);MUT.albumScrollEl=null;MUT.albumScrollHandler=null;}
   if(MUT.newsCarObserver){MUT.newsCarObserver.disconnect();MUT.newsCarObserver=null;}
   if(S.screen==='album'){
     /* position:sticky לא באמת נצמד בכל WebView (נבדק ונכשל בפועל במכשיר),
