@@ -7,7 +7,7 @@ import { NAV_ICONS } from '../art/avatar.js';
 import { PHOTO_CREDITS } from '../data/globals.js';
 import { S, esc, save, today } from '../core/state.js';
 import { albumBody, albumHeader, animateCoins, avatarView, gamesView, homeView, matchesModal, mountAlbumTabs, mountNewsCarousel, newsList, newsView, shopView, tasksView } from '../screens/index.js';
-import { answerValue } from '../games/value.js';
+import { answerValue, setValueMode } from '../games/value.js';
 import { buyItem, cardDetail, claimTask, downloadPhoto, openPack, packTap, playHighlight, recycleAll, shuffleAvatar, tapItem } from '../core/actions.js';
 import { coinSVG } from '../art/cards.js';
 import { confetti, sfx } from '../core/fx.js';
@@ -162,6 +162,7 @@ document.addEventListener('click',e=>{
   if(d.ttt!==undefined&&MUT.G)return playTTT(+d.ttt);
   if(d.num!==undefined&&MUT.G)return shirtKey(d.num);
   if(d.vs!==undefined&&MUT.G)return answerValue(+d.vs);
+  if(d.vsmode!==undefined&&MUT.G)return setValueMode(d.vsmode);
   if(d.rps&&MUT.G)return playRPS(d.rps);
   if(d.mem!==undefined&&MUT.G)return flipMemory(+d.mem);
   if(d.cup!==undefined&&MUT.G)return guessCup(+d.cup);
