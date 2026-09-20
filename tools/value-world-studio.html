@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>עורך שחקני עולם — קרב שווי</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=Secular+One&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#071A38;color:#fff;font-family:Rubik,system-ui,sans-serif;padding:18px 14px 60px}
+.wrap{max-width:960px;margin:0 auto}
+h1{font-family:'Secular One';font-weight:400;font-size:27px;margin:0 0 4px}
+.sub{color:#9FB8DA;font-size:13.5px;margin:0 0 16px;line-height:1.65;max-width:760px}
+button,select,input{font-family:inherit}
+.btn{font-weight:700;font-size:13.5px;border:0;border-radius:11px;padding:10px 16px;cursor:pointer}
+.go{background:linear-gradient(180deg,#FFD766,#E09800);color:#3A2400}
+.alt{background:rgba(255,255,255,.1);color:#fff;border:1.5px solid rgba(255,255,255,.22)}
+.dim{background:rgba(255,255,255,.06);color:#C6D8F2;border:1.5px solid rgba(255,255,255,.14)}
+.btn:disabled{opacity:.4;cursor:default}
+.bar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.prog{height:7px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden;margin-bottom:14px}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2C7DF0,#FFC83D);transition:width .25s}
+
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:start;font-size:11.5px;color:#8FA3C0;font-weight:700;padding:6px 7px;white-space:nowrap}
+td{padding:5px 7px;border-top:1px solid rgba(255,255,255,.08);vertical-align:middle}
+tr.ok td{background:rgba(60,200,120,.07)}
+tr.miss td{background:rgba(229,37,42,.08)}
+input[type=text],input[type=number]{width:100%;background:rgba(0,0,0,.3);color:#fff;
+  border:1.5px solid rgba(255,255,255,.16);border-radius:9px;padding:8px 9px;font-size:13px}
+input:focus{outline:none;border-color:#FFC83D}
+.w-mv{width:76px}
+.thumb{width:46px;height:60px;border-radius:7px;background:#0D2E5E;overflow:hidden;display:grid;place-items:center;font-size:16px;flex:none}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.mini{font-size:11.5px;font-weight:700;border:0;border-radius:8px;padding:7px 9px;cursor:pointer;
+  background:rgba(255,255,255,.11);color:#fff;white-space:nowrap}
+.mini.del{background:rgba(229,37,42,.25)}
+.mini:hover{background:rgba(255,255,255,.22)}
+.lic{font-size:10.5px;color:#8FA3C0;display:block;max-width:150px;line-height:1.3}
+label.up{cursor:pointer}
+label.up input{display:none}
+.log{margin-top:16px;background:rgba(0,0,0,.32);border-radius:12px;padding:12px;font-size:12px;
+  color:#9FB8DA;max-height:170px;overflow:auto;white-space:pre-wrap;line-height:1.6}
+.hint{color:#FFC83D;font-size:12.5px;margin:10px 0 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>עורך שחקני עולם — מצב "עולמי" בקרב שווי</h1>
+  <p class="sub">רשימת שחקנים (לא צ'לסי) להשוואת שווי שוק במשחק "קרב שווי". לכל שחקן: שם בעברית, שווי שוק ב-€M,
+  ושם באנגלית כדי שאפשר יהיה למשוך לו תמונה חופשית מוויקישיתוף (או להעלות תמונה בעצמך).
+  יעד גס: כ-40 שחקנים, אבל אפשר פחות/יותר. בסוף לוחצים "הורד worldPlayers.js" ושולחים לי את הקובץ בצ'אט.</p>
+
+  <div class="bar">
+    <button class="btn go" id="add">+ הוסף שורה</button>
+    <button class="btn alt" id="fetchAll">משוך תמונות לכולם</button>
+    <button class="btn go" id="export">הורד worldPlayers.js</button>
+    <label class="btn dim up">ייבא worldPlayers.js<input type="file" id="import" accept=".js"></label>
+    <button class="btn dim" id="reset">אפס לרשימה ריקה</button>
+    <span id="stat" style="color:#9FB8DA;font-size:13px"></span>
+  </div>
+  <div class="prog"><i id="pfill"></i></div>
+
+  <div id="tableWrap"></div>
+  <p class="hint" id="hint"></p>
+  <div class="log" id="log">מוכן. הרשימה נשמרת בדפדפן אוטומטית — התמונות לא, אז אל תסגור לפני שהורדת את הקובץ.</div>
+</div>
+
+<script>
+const W=320,H=420,Q=.82,KEY='blue-value-world-studio-v1';
+
+let players=[];
+
+const $=s=>document.querySelector(s);
+const log=m=>{const l=$('#log');l.textContent+='\n'+m;l.scrollTop=l.scrollHeight;};
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- persistence (רשימה בלבד, תמונות כבדות מדי ל-localStorage) ---------- */
+function persist(){
+  try{localStorage.setItem(KEY,JSON.stringify(players.map(({photo,credit,...r})=>r)));}catch(e){}
+}
+function restore(){
+  try{
+    const d=JSON.parse(localStorage.getItem(KEY)||'null');if(!d)return;
+    players=d.map(r=>({...r,photo:null,credit:null}));
+    log('נטענה רשימה שמורה מהדפדפן.');
+  }catch(e){}
+}
+
+/* ---------- wikimedia (זהה לעורך הסגל) ---------- */
+const api=async(host,params)=>{
+  const u=`https://${host}/w/api.php?${new URLSearchParams({format:'json',origin:'*',...params})}`;
+  const r=await fetch(u);if(!r.ok)throw new Error('HTTP '+r.status);return r.json();};
+const strip=h=>(h||'').replace(/<[^>]*>/g,'').replace(/\s+/g,' ').trim();
+const isFree=m=>{const l=(m&&m.LicenseShortName&&m.LicenseShortName.value||'').toLowerCase();
+  if(!l||l.includes('fair use')||l.includes('non-free'))return false;
+  return l.startsWith('cc')||l.includes('public domain')||l.includes('cc0');};
+const pack=(i,title)=>({url:i.thumburl||i.url,file:title,
+  author:strip(i.extmetadata.Artist&&i.extmetadata.Artist.value)||'לא צוין',
+  license:(i.extmetadata.LicenseShortName&&i.extmetadata.LicenseShortName.value)||'',
+  page:i.descriptionurl||''});
+
+async function byFile(title){
+  const d=await api('commons.wikimedia.org',{action:'query',prop:'imageinfo',
+    iiprop:'url|extmetadata',iiurlwidth:'600',titles:title});
+  const p=Object.values(d.query&&d.query.pages||{})[0],i=p&&p.imageinfo&&p.imageinfo[0];
+  return i&&isFree(i.extmetadata)?pack(i,title):null;
+}
+async function byLead(title){
+  const d=await api('en.wikipedia.org',{action:'query',prop:'pageimages',piprop:'name',redirects:'1',titles:title});
+  const p=Object.values(d.query&&d.query.pages||{})[0];
+  return p&&p.pageimage?byFile('File:'+p.pageimage):null;
+}
+async function bySearch(name){
+  const d=await api('commons.wikimedia.org',{action:'query',generator:'search',gsrnamespace:'6',
+    gsrsearch:name+' footballer',gsrlimit:'10',prop:'imageinfo',iiprop:'url|extmetadata',iiurlwidth:'600'});
+  for(const p of Object.values(d.query&&d.query.pages||{})){
+    const i=p.imageinfo&&p.imageinfo[0];
+    if(!i||!/\.(jpe?g|png)$/i.test(p.title)||!isFree(i.extmetadata))continue;
+    return pack(i,p.title);
+  }
+  return null;
+}
+async function toCard(blob){
+  const bmp=await createImageBitmap(blob);
+  const cv=document.createElement('canvas');cv.width=W;cv.height=H;
+  const x=cv.getContext('2d');
+  const s=Math.max(W/bmp.width,H/bmp.height),dw=bmp.width*s,dh=bmp.height*s;
+  x.drawImage(bmp,(W-dw)/2,-dh*0.04,dw,dh);
+  return cv.toDataURL('image/jpeg',Q);
+}
+async function fetchOne(r){
+  if(!r.wiki){r.credit={error:'חסר שם באנגלית'};return false;}
+  let info=await byLead(r.wiki);
+  if(!info)info=await bySearch(r.wiki.replace(/\s*\(.*\)$/,''));
+  if(!info){r.credit={error:'אין תמונה חופשית'};return false;}
+  const blob=await (await fetch(info.url)).blob();
+  r.photo=await toCard(blob);
+  r.credit={author:info.author,license:info.license,page:info.page};
+  return true;
+}
+
+/* ---------- render ---------- */
+function render(){
+  $('#tableWrap').innerHTML=`<table><thead><tr>
+      <th>שם בעברית</th><th>שווי €M</th><th>שם באנגלית (לחיפוש תמונה)</th><th>תמונה</th><th></th>
+    </tr></thead><tbody>${
+    players.map((r,i)=>{
+      const cls=r.photo?'ok':(r.credit&&r.credit.error?'miss':'');
+      const thumb=`<div class="thumb">${r.photo?`<img src="${r.photo}">`:'<span style="opacity:.35">—</span>'}</div>`;
+      const lic=r.photo&&r.credit?`<span class="lic">${r.credit.author}<br>${r.credit.license}</span>`
+        :(r.credit&&r.credit.error?`<span class="lic" style="color:#FF9A9C">${r.credit.error}</span>`:'');
+      const actions=`<button class="mini" data-find="${i}">חפש</button>
+        <label class="mini up">העלה<input type="file" accept="image/*" data-up="${i}"></label>
+        <button class="mini del" data-del="${i}">מחק</button>`;
+      return `<tr class="${cls}">
+        <td><input type="text" value="${esc(r.name)}" data-f="name" data-i="${i}" placeholder="למשל: ליאונל מסי"></td>
+        <td><input type="number" class="w-mv" value="${r.mv}" data-f="mv" data-i="${i}"></td>
+        <td><input type="text" value="${esc(r.wiki||'')}" data-f="wiki" data-i="${i}" placeholder="Lionel Messi"></td>
+        <td style="display:flex;gap:7px;align-items:center">${thumb}${lic}</td>
+        <td style="white-space:nowrap">${actions}</td>
+      </tr>`;
+    }).join('')}</tbody></table>`;
+  const withPhoto=players.filter(r=>r.photo).length;
+  $('#stat').textContent=`${players.length} שחקנים · ${withPhoto} תמונות`;
+  const dupes=players.map(r=>r.name.trim()).filter((n,i,a)=>n&&a.indexOf(n)!==i);
+  $('#hint').textContent=dupes.length?('שים לב: שם כפול — '+[...new Set(dupes)].join(', ')):'';
+}
+
+/* ---------- events ---------- */
+document.addEventListener('input',e=>{
+  const t=e.target;if(!t.dataset.f)return;
+  const r=players[+t.dataset.i];if(!r)return;
+  const f=t.dataset.f;
+  r[f]=f==='mv'?(+t.value||0):t.value;
+  persist();
+});
+document.addEventListener('click',async e=>{
+  const t=e.target.closest('[data-find],[data-del]');
+  if(!t)return;
+  if(t.dataset.del!==undefined){
+    const i=+t.dataset.del;
+    if(!confirm('למחוק את '+(players[i].name||'השורה')+'?'))return;
+    players.splice(i,1);persist();return render();}
+  if(t.dataset.find!==undefined){
+    const r=players[+t.dataset.find];
+    t.textContent='…';t.disabled=true;
+    try{const ok=await fetchOne(r);log((ok?'✓ ':'✕ ')+r.name+' — '+(ok?r.credit.license:r.credit.error));}
+    catch(err){r.credit={error:'שגיאה'};log('! '+r.name+' — '+err.message);}
+    render();}
+});
+document.addEventListener('change',async e=>{
+  const inp=e.target.closest('[data-up]');if(!inp||!inp.files[0])return;
+  const r=players[+inp.dataset.up];
+  r.photo=await toCard(inp.files[0]);
+  r.credit={author:'תמונה פרטית',license:'שימוש אישי',page:''};
+  log('↑ הועלתה תמונה עבור '+r.name);render();
+});
+
+$('#add').addEventListener('click',()=>{
+  players.push({name:'',mv:10,wiki:'',photo:null,credit:null});
+  persist();render();
+  window.scrollTo(0,document.body.scrollHeight);
+  const last=document.querySelector('tbody tr:last-child input[data-f="name"]');
+  if(last)last.focus();
+});
+
+$('#fetchAll').addEventListener('click',async()=>{
+  const list=players.filter(r=>!r.photo&&r.wiki);
+  if(!list.length)return log('אין למי למשוך — או שיש כבר תמונה, או שחסר שם באנגלית.');
+  $('#fetchAll').disabled=true;let done=0,ok=0;
+  for(const r of list){
+    try{if(await fetchOne(r)){ok++;log('✓ '+r.name+' — '+r.credit.license);}
+        else log('✕ '+r.name+' — '+r.credit.error);}
+    catch(err){r.credit={error:'שגיאה'};log('! '+r.name+' — '+err.message);}
+    done++;$('#pfill').style.width=(done/list.length*100)+'%';render();
+    await new Promise(res=>setTimeout(res,140));
+  }
+  $('#fetchAll').disabled=false;
+  log('\nהסתיים. '+ok+' תמונות חדשות.');
+});
+
+$('#export').addEventListener('click',()=>{
+  const missing=players.filter(r=>!r.name.trim());
+  if(missing.length)return alert('יש שורות בלי שם — השלימו או מחקו לפני ההורדה.');
+  const PHOTOS={},CREDITS=[];
+  players.forEach((r,i)=>{if(r.photo){const id='wp-'+i;PHOTOS[id]=r.photo;
+    CREDITS.push({id,author:r.credit.author,license:r.credit.license,page:r.credit.page||''});}});
+  const txt=
+   'window.WORLD_PLAYERS='+JSON.stringify(players.map((r,i)=>({id:'wp-'+i,name:r.name,mv:+r.mv,wiki:r.wiki||''})))+';\n'+
+   'window.WORLD_PHOTOS='+JSON.stringify(PHOTOS)+';\n'+
+   'window.WORLD_CREDITS='+JSON.stringify(CREDITS)+';\n';
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([txt],{type:'text/javascript'}));
+  a.download='worldPlayers.js';a.click();
+  log('נוצר worldPlayers.js — '+(txt.length/1048576).toFixed(2)+'MB, '+Object.keys(PHOTOS).length+' תמונות מתוך '+players.length+' שחקנים');
+});
+
+$('#import').addEventListener('change',async e=>{
+  const f=e.target.files[0];if(!f)return;
+  try{
+    const txt=await f.text(),w={};
+    new Function('window',txt)(w);
+    if(w.WORLD_PLAYERS)players=w.WORLD_PLAYERS.map(r=>({...r,photo:null,credit:null}));
+    if(w.WORLD_PHOTOS){
+      players.forEach((r,i)=>{const p=w.WORLD_PHOTOS['wp-'+i]||w.WORLD_PHOTOS[r.id];if(p){r.photo=p;r.credit=findCredit(w,r.id||('wp-'+i));}});
+    }
+    persist();render();log('יובא '+f.name);
+  }catch(err){log('ייבוא נכשל: '+err.message);}
+});
+const findCredit=(w,id)=>(w.WORLD_CREDITS||[]).find(c=>c.id===id)||{author:'לא צוין',license:''};
+
+$('#reset').addEventListener('click',()=>{
+  if(!confirm('לאפס לרשימה ריקה? תמונות שמשכת יימחקו.'))return;
+  localStorage.removeItem(KEY);players=[];render();
+});
+
+restore();render();
+</script>
+</body>
+</html>
