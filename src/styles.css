@@ -668,6 +668,17 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
   animation:shimmer 2.6s linear infinite}
 .gamecard svg{display:block;width:100%;height:auto;border-radius:8px}
 .numin{font-family:'Secular One';font-size:40px;min-height:48px;letter-spacing:5px}
+/* מתג יחיד (לא שני צ'יפים נפרדים) בין מצב צ'לסי למצב עולמי בקרב שווי —
+   inset-inline-start מכבד rtl אוטומטית, אז אין צורך לחשב כיוון בעצמנו */
+.vsSwitch{position:relative;display:flex;width:100%;max-width:230px;margin:0 auto 8px;
+  background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.15);border-radius:999px;padding:3px}
+.vsSwitch .vsThumb{position:absolute;top:3px;bottom:3px;inset-inline-start:3px;width:calc(50% - 3px);
+  border-radius:999px;background:linear-gradient(180deg,#FFD766,#E09800);
+  transition:inset-inline-start .25s cubic-bezier(.3,1,.4,1)}
+.vsSwitch.world .vsThumb{inset-inline-start:50%}
+.vsSwitch button{position:relative;z-index:1;flex:1;text-align:center;padding:7px 0;font-size:13px;
+  font-weight:700;color:#C6D8F2;background:none;border:0;font-family:inherit;cursor:pointer;transition:color .2s}
+.vsSwitch button.on{color:#3A2400}
 .vscards{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin:8px 0 6px}
 .vscard{background:none;border:0;padding:0;transition:transform .1s}
 .vscard:active{transform:scale(.95)}

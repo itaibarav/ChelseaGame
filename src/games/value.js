@@ -18,7 +18,7 @@ export function startValue(){
   MUT.G={k:'value',coins:0,q:0,right:0,streak:0,pair:null,busy:false,mode:'chelsea'};
   modal(`<div class="sheet game">
     <div class="ghud"><span id="vQ">שאלה 1</span><span id="vR">0 נכונות</span><span id="vC">0 🪙</span></div>
-    <div class="mtabs" id="vModeTabs" style="grid-template-columns:repeat(2,1fr);margin-bottom:6px">
+    <div class="vsSwitch" id="vModeTabs"><span class="vsThumb"></span>
       <button class="on" data-vsmode="chelsea">צ'לסי</button>
       <button data-vsmode="world">עולמי</button></div>
     <h2 style="margin:2px 0 8px;font-size:21px">למי שווי שוק גבוה יותר?</h2>
@@ -35,7 +35,10 @@ export function setValueMode(mode){
   if(mode==='world'&&!worldReady())return toast('עדיין אין שחקני עולם — בקרוב!');
   MUT.G.mode=mode;
   const tabs=$('#vModeTabs');
-  if(tabs)tabs.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.vsmode===mode));
+  if(tabs){
+    tabs.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.vsmode===mode));
+    tabs.classList.toggle('world',mode==='world');
+  }
   nextValue();
 }
 /* שחקן צ'לסי אקראי, מנורמל לצורה משותפת עם שחקן עולם — כך ש-answerValue
