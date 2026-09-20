@@ -249,7 +249,13 @@ async function fetchMatches() {
     fetch(`https://api.football-data.org/v4/teams/${teamId}`, { headers: { 'X-Auth-Token': apiKey } })
       .then(r => (r.ok ? r.json() : null)).catch(() => null),
   ]);
-  const teamLogo = teamInfo?.crest ? await cacheImage(teamInfo.crest) : null;
+  /* סמלי קבוצות (בניגוד לתמונות אינסטגרם) הם קבצים סטטיים יציבים אצל
+     football-data.org עצמו, שלא פגים ולא דורשים אימות — אין סיבה
+     להעביר אותם דרך המטמון המקומי בדיסק. זה גם נמנע מבעיה אמיתית:
+     בדיסק הזמני של הפריסה (Render) קבצים יכולים להיעלם אחרי הפעלה
+     מחדש בזמן שה-JSON שמצביע עליהם עדיין "טרי" לפי ה-TTL, מה שהשאיר
+     סמלים שבורים */
+  const teamLogo = teamInfo?.crest || null;
 
   const map = async (m) => {
     const home = m.homeTeam.id === teamId;
@@ -259,7 +265,7 @@ async function fetchMatches() {
     return {
       id: String(m.id),
       opponent: opp.shortName || opp.name,
-      opponentLogo: await cacheImage(opp.crest),
+      opponentLogo: opp.crest || null,
       homeAway: home ? 'H' : 'A',
       status: m.status,
       score: cur ? `${cur.home}-${cur.away}` : null,
@@ -295,7 +301,7 @@ async function fetchStandings() {
     team: row.team.shortName || row.team.name,
     teamId: row.team.id,
     own: row.team.id === teamId,
-    crest: await cacheImage(row.team.crest),
+    crest: row.team.crest || null,
     played: row.playedGames,
     won: row.won,
     draw: row.draw,
